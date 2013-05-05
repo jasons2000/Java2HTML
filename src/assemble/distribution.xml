@@ -7,16 +7,7 @@
   </formats>
   <files>
     <file>
-      <source>README.txt</source>
-      <outputDirectory>/</outputDirectory>
-      <filtered>true</filtered>
-    </file>
-    <file>
-      <source>LICENSE.txt</source>
-      <outputDirectory>/</outputDirectory>
-    </file>
-    <file>
-      <source>NOTICE.txt</source>
+      <source>src\main\webapp\zip\readme.txt</source>
       <outputDirectory>/</outputDirectory>
       <filtered>true</filtered>
     </file>

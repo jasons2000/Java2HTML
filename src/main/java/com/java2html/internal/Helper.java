@@ -38,7 +38,7 @@ public class Helper {
         }
     }
 
-    public static final String version = "Java2HTML Version @VERSION@";
+    public static final String version = "Java2HTML Version  ${project.version}";
 
     public static final String copyRight =
         "Copyright (c) 1999-2007, Enterprise Solution Consultants Limited, All Rights Reserved.." +

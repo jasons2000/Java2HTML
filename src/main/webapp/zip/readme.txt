@@ -1,4 +1,4 @@
-* Java2HTML Version @VERSION@ is a tool that converts a whole bunch of Java Source Code into colourised browsable HTML format.
+* Java2HTML Version ${project.version} is a tool that converts a whole bunch of Java Source Code into colourised browsable HTML format.
 
 * Unzip Java2HTML.zip to a temporary directory. Java2HTML.zip contains the following files and directories:- 
 

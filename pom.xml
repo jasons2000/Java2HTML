@@ -24,7 +24,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javacc-maven-plugin</artifactId>
                 <dependencies>
-                    <!-- doesnt work with javac grater than this version, we need to upgrade-->
+                    <!-- doesnt work with javac greater than this version, we need to upgrade-->
                     <dependency>
                         <groupId>net.java.dev.javacc</groupId>
                         <artifactId>javacc</artifactId>
@@ -54,13 +54,12 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-
-                    <!--<filters>-->
-                    <!--<filter>src/assemble/filter.properties</filter>-->
-                    <!--</filters>-->
-                    <!--<descriptors>-->
-                    <!--<descriptor>src/assemble/distribution.xml</descriptor>-->
-                    <!--</descriptors>-->
+                    <filters>
+                        <filter>src/assemble/filter.properties</filter>
+                    </filters>
+                    <descriptors>
+                        <descriptor>src/assemble/distribution.xml</descriptor>
+                    </descriptors>
                 </configuration>
                 <executions>
                     <execution>
