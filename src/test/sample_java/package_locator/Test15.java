@@ -1,0 +1,2 @@
+@Annotation
+class Test{}
