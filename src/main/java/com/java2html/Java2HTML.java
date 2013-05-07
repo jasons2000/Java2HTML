@@ -50,11 +50,15 @@
  */
 package com.java2html;
 
+import com.google.common.io.Resources;
 import com.java2html.internal.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
  * Generates Java2HTML output
  */
+import java.nio.charset.Charset;
 import java.util.*;
 import java.io.*;
 /**
@@ -78,7 +82,7 @@ public class Java2HTML {
     private JavaDoc[] javaDocOptionList = null;
 
     private String destination = "output";
-
+    public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
     /**
      * Called by Command Line Wrappers
@@ -90,7 +94,7 @@ public class Java2HTML {
         int success = 0;
 
         System.out.println(Helper.version);
-        System.out.println(Helper.copyRight);
+        System.out.println(bundle.getString("copyright"));
 
         Java2HTML java2HTML = new Java2HTML();
 
@@ -105,7 +109,7 @@ public class Java2HTML {
             final String msg = e.getMessage();
             System.err.print( msg != null ? msg : e.toString() );
             success = 1;
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         System.exit(success);
     }
@@ -140,14 +144,17 @@ public class Java2HTML {
         // Create Output desination directory
         (new File(destination)).mkdirs();
 
-        File f = null;
-        FileWriter file = null;
 
         //Create StyleSheet
-        f = new File(destination + File.separator + "stylesheet.css");
-        file = new FileWriter(f);
-        file.write(Helper.getStyleSheet());
-        file.close();
+
+        ;
+
+//                Resources.toString(Resources.getResource("/stylesheet.css"), Charset.defaultCharset());
+        File f = new File(destination + "/stylesheet.css");
+        FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
+
+        FileWriter file;
+
         if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
 
 
@@ -156,9 +163,19 @@ public class Java2HTML {
         if (!simple) {
 
             // Create Front.html
+            Map map = new HashMap();
+            map.put("date", new Date());
+            StrSubstitutor s = new StrSubstitutor(map);
+                              //
+            String frontHtml = FileUtils.readFileToString(new File(getClass().getResourceAsStream("/front.html").getFile()));
+            frontHtml = s.replace(frontHtml);
+
+
+
+
             f = new File(destination + File.separator + "front.html");
             file = new FileWriter(f);
-            file.write(Helper.getFront());
+            file.write(frontHtml);
             file.close();
             if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
 

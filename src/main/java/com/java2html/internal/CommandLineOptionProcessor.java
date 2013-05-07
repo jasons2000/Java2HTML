@@ -46,7 +46,7 @@ public class CommandLineOptionProcessor {
 
         if (args.length == 0 ||
             getOptionFlag(new String[] {"help", "h", "?", "/?"})) {
-            System.out.println(Helper.usage);
+            System.out.println(Java2HTML.bundle.getString("usage") );
             return false;
         }
 
