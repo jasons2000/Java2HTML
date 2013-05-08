@@ -39,7 +39,7 @@ public class Java2HTMLTask extends Task {
     public void execute() throws BuildException {
         try {
             java2HTML.setJavaFileSource(javaSourceFileList);
-            java2HTML.setJavaDoc(convertToArray(javaDocList));
+            java2HTML.setJavaDoc( convertToArray(javaDocList));
             if (!java2HTML.buildJava2HTML() && failOnError) throw new BuildException("Some Java files failed to convert to HTML");
         }
         catch (Exception e) {

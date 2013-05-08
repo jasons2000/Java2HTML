@@ -50,7 +50,6 @@
  */
 package com.java2html;
 
-import com.google.common.io.Resources;
 import com.java2html.internal.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
@@ -157,7 +156,6 @@ public class Java2HTML {
 
         if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
 
-
         // Check File.Separator
 
         if (!simple) {
@@ -167,10 +165,8 @@ public class Java2HTML {
             map.put("date", new Date());
             StrSubstitutor s = new StrSubstitutor(map);
                               //
-            String frontHtml = FileUtils.readFileToString(new File(getClass().getResourceAsStream("/front.html").getFile()));
+            String frontHtml = Url.readFileToString(new File(getClass().getResourceAsStream("/front.html").getFile()));
             frontHtml = s.replace(frontHtml);
-
-
 
 
             f = new File(destination + File.separator + "front.html");

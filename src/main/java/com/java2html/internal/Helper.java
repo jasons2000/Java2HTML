@@ -19,11 +19,10 @@
 
 package com.java2html.internal;
 
-import com.java2html.*;
-
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.File;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Vector;
 
 public class Helper {
 
@@ -148,41 +147,43 @@ public class Helper {
      * replaces "." with web delimeter c
      */
     static String convertDots(String webRef, char c) {
-        StringBuffer buf = new StringBuffer(webRef);
-        int x = 0;
-        while (true) {
-
-            x = webRef.indexOf('.', x);
-            if (x == -1) {
-                break;
-            }
-            buf.setCharAt(x, c);
-            x++;
-        }
-        return buf.toString();
+        return webRef.replace('.', c);
+//        StringBuffer buf = new StringBuffer(webRef);
+//        int x = 0;
+//        while (true) {
+//
+//            x = webRef.indexOf('.', x);
+//            if (x == -1) {
+//                break;
+//            }
+//            buf.setCharAt(x, c);
+//            x++;
+//        }
+//        return buf.toString();
     }
 
     /**
      * replaces "\" with web delimeter
      */
     static String convert(String webRef) {
+        return webRef.replace('\\', '/').replaceFirst(":", "|");
 
-        StringBuffer buf = new StringBuffer(webRef);
-        int x = 0;
-        while (true) {
-
-            x = webRef.indexOf(File.separatorChar, x);
-            if (x == -1) {
-                break;
-            }
-            buf.setCharAt(x, '/');
-            x++;
-        }
-        x = webRef.indexOf(':', 0);
-        if (x != -1) {
-            buf.setCharAt(x, '|');
-        }
-        return buf.toString();
+//        StringBuffer buf = new StringBuffer(webRef);
+//        int x = 0;
+//        while (true) {
+//
+//            x = webRef.indexOf(File.separatorChar, x);
+//            if (x == -1) {
+//                break;
+//            }
+//            buf.setCharAt(x, '/');
+//            x++;
+//        }
+//        x = webRef.indexOf(':', 0);
+//        if (x != -1) {
+//            buf.setCharAt(x, '|');
+//        }
+//        return buf.toString();
     }
 
 
