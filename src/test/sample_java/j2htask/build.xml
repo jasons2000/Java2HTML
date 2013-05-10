@@ -19,7 +19,7 @@
   ~
   -->
 
-<project name="OwnTaskExample" default="main" basedir=".">
+<project name="OwnTaskExample" default="main" basedir="">
 	<description>
 	    Tests the Java2HTML Task
  	</description>

@@ -19,9 +19,10 @@
 
 package com.java2html.internal;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.util.Date;
+import org.apache.commons.lang.text.StrSubstitutor;
+
+import java.io.*;
+import java.util.Map;
 import java.util.Vector;
 
 public class Helper {
@@ -30,63 +31,67 @@ public class Helper {
 
     static final String webSep = "/";
 
+    private final StrSubstitutor substitutor;
+
     public static final String version = "Java2HTML Version ${project.version}";
 
-    public static String getFront() {
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-            DateFormat.SHORT);
+    private final String destination;
+    private final boolean quiet;
 
-        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\"" + lineSep +
-            "<HTML>" + lineSep +
-            "<HEAD>" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
-            "<TITLE>Java2HTML</TITLE>" + lineSep +
-            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-            lineSep +
-            "</HEAD>" + lineSep +
-            "<BODY>" + lineSep +
-            "<p><strong>Instructions:-</strong></p>" + lineSep +
-            "<ul>" + lineSep +
-            "<li>Top-Left Panel Selects a Package</li>" + lineSep +
-            "<li>Bottom-Left Panel Selects a Java File</li>" + lineSep +
-            "<li>Text displayed like <FONT CLASS=\"Classes\"><A href=\"#\">this</A></FONT> represents a link to another Java source, clicking on it selects it in this panel.</li>" +
-            lineSep +
-            "</ul>" + lineSep +
-            "<p><strong>Credits:-</strong></p>" + lineSep +
-            "<ul><li>Produced by " +
-            "<a href=\"http://www.java2html.com\" TARGET=\"_top\"><em>" +
-            version +
-            "</em></a> on the " + df.format(new Date()) +
-            "</li></ul>" + lineSep +
-            "<em>(If you like this tool, please <a href=\"mailto:?subject=http://www.java2html.com\">email</a> the reference <A href=\"http://www.java2html.com\" TARGET=\"_top\">http://www.java2html.com</A> to a colleague)</em>" +
-            lineSep +
-            "</BODY>" + lineSep +
-            "</HTML>" + lineSep;
+    public Helper(String destination, Map subs, boolean quiet) {
+        this.destination = destination;
+        this.substitutor = new StrSubstitutor(subs);
+        this.quiet = quiet;
+        // Create Output destination directory
+       (new File(destination)).mkdirs();
+    }
+
+    public void createPage(String fileName) throws IOException {
+
+        // Create Front.html
+
+
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(getClass().getResource("/" + fileName).openStream()));
+
+        File f =  new File(destination + File.separator + fileName);
+
+        PrintWriter printWriter = new PrintWriter(f);
+
+        String line = reader.readLine();
+        while (line != null) {
+            String subLine = substitutor.replace(line);
+            printWriter.println(subLine);
+            line = reader.readLine();
+        }
+        printWriter.close();
+        reader.close();
+
+        if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
 
     }
 
     public static String getFrame(String title) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" + lineSep +
-            "<HTML>" + lineSep +
-            "<HEAD>" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
-            "<TITLE>" + title + " (Java2HTML)</TITLE>" + lineSep +
-            lineSep +
-            "</HEAD>" + lineSep +
-            "<FRAMESET cols=\"30%, 70%\">" + lineSep +
-            "<FRAMESET rows=\"30%, 70%\">" + lineSep +
-            "<FRAME src=\"packages.html\" name=\"packageListFrame\">" + lineSep +
-            "<FRAME src=\"AllClasses.html\" name=\"packageFrame\">" + lineSep +
-            "</FRAMESET>" + lineSep +
-            "<FRAME src=\"front.html\" name=\"SourceFrame\">" + lineSep +
-            "</FRAMESET>" + lineSep +
-            "<NOFRAMES>" + lineSep +
-            "<H2>Frame Alert</H2>" + lineSep +
-            "<P>" + lineSep +
-            "This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client." +
-            lineSep +
-            "</NOFRAMES>" + lineSep +
-            "</HTML>";
+                "<HTML>" + lineSep +
+                "<HEAD>" + lineSep +
+                "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
+                "<TITLE>" + title + " (Java2HTML)</TITLE>" + lineSep +
+                lineSep +
+                "</HEAD>" + lineSep +
+                "<FRAMESET cols=\"30%, 70%\">" + lineSep +
+                "<FRAMESET rows=\"30%, 70%\">" + lineSep +
+                "<FRAME src=\"packages.html\" name=\"packageListFrame\">" + lineSep +
+                "<FRAME src=\"AllClasses.html\" name=\"packageFrame\">" + lineSep +
+                "</FRAMESET>" + lineSep +
+                "<FRAME src=\"front.html\" name=\"SourceFrame\">" + lineSep +
+                "</FRAMESET>" + lineSep +
+                "<NOFRAMES>" + lineSep +
+                "<H2>Frame Alert</H2>" + lineSep +
+                "<P>" + lineSep +
+                "This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client." +
+                lineSep +
+                "</NOFRAMES>" + lineSep +
+                "</HTML>";
     }
 
     public static String getStyleOption() {
@@ -97,14 +102,14 @@ public class Helper {
 
     public static String getPreText(String styleSheetRef, String className) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" + lineSep +
-            "<HTML>" + lineSep +
-            "<HEAD>" + lineSep +
-            "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + styleSheetRef +
-            "\" TITLE=\"Style\">" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
-            "<TITLE>" + className + " (Java2HTML)</TITLE>" + lineSep +
-            "</HEAD>" + lineSep +
-            "<BODY>";
+                "<HTML>" + lineSep +
+                "<HEAD>" + lineSep +
+                "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + styleSheetRef +
+                "\" TITLE=\"Style\">" + lineSep +
+                "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
+                "<TITLE>" + className + " (Java2HTML)</TITLE>" + lineSep +
+                "</HEAD>" + lineSep +
+                "<BODY>";
     }
 
     public static String getPostText() {
@@ -114,15 +119,15 @@ public class Helper {
     private static String getMainText(String name, String date) {
 
         return "<TABLE CLASS=\"Header\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">" +
-            lineSep +
-            "<tr>" + lineSep +
-            "<td colspan=\"2\" width=\"33%\">&nbsp;</td>" + lineSep +
-            "<td align=\"center\" colspan=\"2\" width=\"33%\">" + lineSep +
-            "<font size=\"4\">" + name + ".java</font>" + lineSep +
-            "</td>" + lineSep +
-            "<td align=\"right\" colspan=\"2\" width=\"33%\">&nbsp;</td>" + lineSep +
-            "</tr>" + lineSep +
-            "</TABLE>" + lineSep;
+                lineSep +
+                "<tr>" + lineSep +
+                "<td colspan=\"2\" width=\"33%\">&nbsp;</td>" + lineSep +
+                "<td align=\"center\" colspan=\"2\" width=\"33%\">" + lineSep +
+                "<font size=\"4\">" + name + ".java</font>" + lineSep +
+                "</td>" + lineSep +
+                "<td align=\"right\" colspan=\"2\" width=\"33%\">&nbsp;</td>" + lineSep +
+                "</tr>" + lineSep +
+                "</TABLE>" + lineSep;
     }
 
     public static String getHeader(String name, String date, boolean header) {
@@ -187,8 +192,7 @@ public class Helper {
     }
 
 
-
-    public static Vector getFileListFromDirectory(String directory, Vector vector){
+    public static Vector getFileListFromDirectory(String directory, Vector vector) {
 
         File directoryFile = new File(directory);
         String[] list = directoryFile.list();

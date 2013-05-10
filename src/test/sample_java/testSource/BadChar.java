@@ -1,7 +1,7 @@
 // $Header$
-// copyright © 1997 - 2002 tangro software components gmbh - all rights reserved.
+// copyright ï¿½ 1997 - 2002 tangro software components gmbh - all rights reserved.
 
-package dz;
+package sample_java.testSource;
 
 /**
   * @todo class docu
@@ -17,18 +17,18 @@ public class BadChar {
              }
          }
 
-         ªall = 47;
-         ¤VALUE = 99;
-         System.out.println(ªall + ¤VALUE);
-         BadChar.¤VALUE = 1;
+         ï¿½all = 47;
+         ï¿½VALUE = 99;
+         System.out.println(ï¿½all + ï¿½VALUE);
+         BadChar.ï¿½VALUE = 1;
      }
 
-     private int ºinst = 0;
+     private int ï¿½inst = 0;
 
-     private static int ªall, ¤VALUE, ¢CLASS, ¢next;
+     private static int ï¿½all, ï¿½VALUE, ï¿½CLASS, ï¿½next;
 
      private void nix() {
-         System.out.println(ºinst);
+         System.out.println(ï¿½inst);
      }
 }
 

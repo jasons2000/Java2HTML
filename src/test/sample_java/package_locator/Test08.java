@@ -1,2 +1,2 @@
-package/*bla*/net.foo;
+package/*bla*/sample_java.package_locator;
 class Test{}

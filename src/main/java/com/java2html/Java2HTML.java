@@ -50,19 +50,25 @@
  */
 package com.java2html;
 
-import com.java2html.internal.*;
+import com.java2html.internal.CommandLineOptionProcessor;
+import com.java2html.internal.Helper;
+import com.java2html.internal.JavaDocManager;
+import com.java2html.internal.JavaSource;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.text.StrSubstitutor;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
 /**
  * Generates Java2HTML output
  */
-import java.nio.charset.Charset;
-import java.util.*;
-import java.io.*;
-/**
- * Generates Java2HTML output
- */
+
 public class Java2HTML {
 
     // Options
@@ -116,7 +122,7 @@ public class Java2HTML {
     /**
      * Builds the Java2HTML
      *
-     * returns true if there where no failures detected
+     * returns false if any failures were detected
      */
     public boolean buildJava2HTML() throws Exception {
 
@@ -140,15 +146,17 @@ public class Java2HTML {
 
     private void createSupportingFiles() throws IOException {
 
-        // Create Output desination directory
-        (new File(destination)).mkdirs();
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                        DateFormat.SHORT);
 
+        HashMap subs= new HashMap();
+        subs.put("date", df.format(new Date()));
+        subs.put("version", "1.0");
+
+
+        Helper helper = new Helper(destination, subs, quiet);
 
         //Create StyleSheet
-
-        ;
-
-//                Resources.toString(Resources.getResource("/stylesheet.css"), Charset.defaultCharset());
         File f = new File(destination + "/stylesheet.css");
         FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
@@ -160,20 +168,8 @@ public class Java2HTML {
 
         if (!simple) {
 
-            // Create Front.html
-            Map map = new HashMap();
-            map.put("date", new Date());
-            StrSubstitutor s = new StrSubstitutor(map);
-                              //
-            String frontHtml = Url.readFileToString(new File(getClass().getResourceAsStream("/front.html").getFile()));
-            frontHtml = s.replace(frontHtml);
+            helper.createPage("front.html");
 
-
-            f = new File(destination + File.separator + "front.html");
-            file = new FileWriter(f);
-            file.write(frontHtml);
-            file.close();
-            if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
 
             // Create main Index.html
             f = new File(destination + File.separator + "index.html");
@@ -262,7 +258,7 @@ public class Java2HTML {
      *
      * @param directories List of Java Source Directories
      */
-    public void setJavaDirectorySource(String[] directories) throws BadOptionException {
+    public void setJavaDirectorySource(String... directories) throws BadOptionException {
 
         // Validate that all sources are directories
         for (int i = 0; i < directories.length; i++)  {

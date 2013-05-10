@@ -1,6 +1,6 @@
 
 
-package dz.testlinks;
+package sample_java.testSource.testlinks;
 
 /**
  * Created by IntelliJ IDEA.

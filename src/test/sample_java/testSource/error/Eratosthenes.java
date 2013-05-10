@@ -13,7 +13,7 @@
  *   Mailto: codemaster@javajungel.de
  */
 
-package javajungle.math.primes;
+package sample_java.testSource.error;
 
 import javajungle.math.util.IRange;
 import java.io.PrintWriter ;
@@ -275,9 +275,9 @@ public class Eratosthenes implements PrimeSieve
         }
 
         /**
-         * Erzeugt die Iterationsfunktionen für ein Punktintervall.
-         * Eine etwas ungewoehnliche Abzählung, zugegeben. Aber
-         * 'Eratosthenes' implementiert mit ihr den Test auf Primalität
+         * Erzeugt die Iterationsfunktionen fï¿½r ein Punktintervall.
+         * Eine etwas ungewoehnliche Abzï¿½hlung, zugegeben. Aber
+         * 'Eratosthenes' implementiert mit ihr den Test auf Primalitï¿½t
          * einer Zahl. Denn eine Zahl cand ist genau dann prim, wenn im
          * Intervall  (cand-1, cand] eine Primzahl liegt.
          *
@@ -300,7 +300,7 @@ public class Eratosthenes implements PrimeSieve
         }
 
         /**
-         * Erzeugt die Iterationsfunktionen für ein Teilintervall
+         * Erzeugt die Iterationsfunktionen fï¿½r ein Teilintervall
          * der berechneten Primzahlen.
          * Untere Grenze ist aus-, obere Grenze wird eingeschlossen.
          * Exception wird geworfen, wenn NICHT gilt:
@@ -361,11 +361,11 @@ public class Eratosthenes implements PrimeSieve
 
         /**
          * Identifiziert den Index einer Primzahl.
-         * Verwendet dazu eine (modifizierte!) binäre Suche.
+         * Verwendet dazu eine (modifizierte!) binï¿½re Suche.
          *
          * @param value gegebene  Primzahl
-         * @param low unterer Schranke für den Index, muss ein gültiger Index sein
-         * @param high oberer Schranke für den Index, muss KEIN gültiger Index sein!
+         * @param low unterer Schranke fï¿½r den Index, muss ein gï¿½ltiger Index sein
+         * @param high oberer Schranke fï¿½r den Index, muss KEIN gï¿½ltiger Index sein!
          *
          * @return Index der Primzahl
          */

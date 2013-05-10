@@ -1,8 +1,6 @@
-package dz.testlinks;
+package sample_java.testSource.testlinks;
 
-import static dz.testlinks.SomeThingA.*;
-
-import java.util.Map;
+import static sample_java.testSource.testlinks.SomeThingA.*;
 
 /**
  * Created by IntelliJ IDEA.
