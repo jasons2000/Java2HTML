@@ -78,9 +78,9 @@ public class Java2HTML {
 
     private String title = "Java Source";
 
-    private String[] javaSourceFileList = null;
+    private List<String> javaSourceFileList = null;
 
-    private JavaDoc[] javaDocOptionList = null;
+    private List<String> javaDocOptionList = Collections.emptyList();
 
     private String destination = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
@@ -124,10 +124,10 @@ public class Java2HTML {
 
         createSupportingFiles();
 
-        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionList);
+        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionList.toArray(new String[0]));
 
         if (javaSourceFileList == null) {
-            setJavaDirectorySource(new String[] {"."});
+            setJavaDirectorySource(Arrays.asList("."));
         }
         // Performs first parse
         JavaSource javaSource = new JavaSource(javaSourceFileList, destination, marginSize,
@@ -250,21 +250,20 @@ public class Java2HTML {
      *
      * @param directories List of Java Source Directories
      */
-    public void setJavaDirectorySource(String... directories) throws BadOptionException {
+    public void setJavaDirectorySource(List<String> directories) throws BadOptionException {
 
         // Validate that all sources are directories
-        for (int i = 0; i < directories.length; i++)  {
-            File file = new File(directories[i]);
-            if (!file.isDirectory()) throw new BadOptionException(directories[i] + " is not a directory");
+        for (String directory : directories)  {
+            File file = new File(directory);
+            if (!file.isDirectory()) throw new BadOptionException(directory + " is not a directory");
         }
 
         // Convert directory to String[] of file names
-        List<String> javaSourceFileVector = new ArrayList<String>();
+        javaSourceFileList = new ArrayList<String>();
         for (String directory :directories) {
-            getFileListFromDirectory(directory, javaSourceFileVector);
+            getFileListFromDirectory(directory, javaSourceFileList);
         }
 
-        javaSourceFileList = javaSourceFileVector.toArray(new String[0]);
 
     }
 
@@ -295,7 +294,7 @@ public class Java2HTML {
      *
      * @param files List of Java Files
      */
-    public void setJavaFileSource(String[] files) {
+    public void setJavaFileSource(List<String> files) {
         javaSourceFileList = files;
     }
 
@@ -304,8 +303,13 @@ public class Java2HTML {
      *
      * @param javaDocOptions List of JavaDocOptions
      */
-    public void setJavaDoc(JavaDoc[] javaDocOptions) {
-        javaDocOptionList = javaDocOptions;
+    public void setJavaDoc(List<JavaDoc> javaDocOptions) {
+        List<String> list = new ArrayList<String>();
+        for (JavaDoc doc : javaDocOptions) {
+            list.add(doc.getHttpRef());
+
+        }
+        javaDocOptionList = list;
     }
 
     /**

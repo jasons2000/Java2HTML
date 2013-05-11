@@ -122,7 +122,7 @@ public class JavaSource {
     private boolean header;
     private boolean footer;
 
-    public JavaSource(String[] javaSourceFileList,
+    public JavaSource(List<String> javaSourceFileList,
                       String destination,
                       int marginSize,
                       int tabSize,
@@ -130,8 +130,8 @@ public class JavaSource {
                       boolean footer,
                       JavaDocManager javaDoc) {
 
-        for (int i = 0 ; i < javaSourceFileList.length; i++) {
-            processFile(javaSourceFileList[i]);
+        for (String sourceDir : javaSourceFileList) {
+            processFile(sourceDir);
         }
 
         this.destination = destination;
@@ -174,7 +174,7 @@ public class JavaSource {
 
         Enumeration e = classList.keys();
         Vector sortedVector = new Vector();
-        String text = null;
+        String text;
 
         createAllClassIndex(dest);
 
@@ -236,9 +236,9 @@ public class JavaSource {
 
         Vector sortedVector = new Vector();
         Enumeration e = classList.elements();
-        Enumeration ef = null;
-        String text = null;
-        Pair p = null;
+        Enumeration ef;
+        String text;
+        Pair p;
 
         while (e.hasMoreElements()) {
 
@@ -311,7 +311,7 @@ public class JavaSource {
         }
 
         text = null;
-        String href = null;
+        String href;
 
         e = sortedVector.elements();
         while (e.hasMoreElements()) {

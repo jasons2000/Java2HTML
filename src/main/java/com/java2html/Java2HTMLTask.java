@@ -13,35 +13,28 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.FileSet;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class Java2HTMLTask extends Task {
 
     private Java2HTML java2HTML = new Java2HTML();
 
-    private String[] javaSourceFileList = null;
-    private Vector javaDocList = new Vector();
+    private List<String> javaSourceFileList = new ArrayList<String>();
+    private List<JavaDoc> javaDocList = new ArrayList<JavaDoc>();
 
     private boolean failOnError = false;
 
     public void execute() throws BuildException {
         try {
             java2HTML.setJavaFileSource(javaSourceFileList);
-            java2HTML.setJavaDoc( convertToArray(javaDocList));
+            java2HTML.setJavaDoc(javaDocList);
             if (!java2HTML.buildJava2HTML() && failOnError) throw new BuildException("Some Java files failed to convert to HTML");
         }
         catch (Exception e) {
             throw new BuildException("Java2HTML Build Problem:" + e.getMessage(), e);
         }
-    }
-
-    private JavaDoc[] convertToArray(Vector javaDocList ) {
-        JavaDoc[] JavaDocArray = new JavaDoc[javaDocList.size()];
-        for (int i = 0; i < javaDocList.size(); i++) {
-            JavaDocArray[i] = (JavaDoc)javaDocList.elementAt(i);
-        }
-        return JavaDocArray;
-
     }
 
 
@@ -118,26 +111,15 @@ public class Java2HTMLTask extends Task {
 
     public void addConfiguredFileSet(FileSet fileSet) {
 
-        DirectoryScanner dScan = fileSet.getDirectoryScanner(project);
+        DirectoryScanner dScan = fileSet.getDirectoryScanner(getProject());
         dScan.scan();
         String baseDir = dScan.getBasedir().getAbsolutePath() + File.separator;
         String[] files = dScan.getIncludedFiles();
 
         // append base sedir
-        for (int i=0; i < files.length; i++) {
-            files[i] = baseDir + files[i];
+        for (String file : files) {
+            javaSourceFileList.add(baseDir + file);
         }
-
-        if (javaSourceFileList  == null) {
-            javaSourceFileList = files;
-        }
-        else {
-            String[] allFiles = new String[javaSourceFileList.length + files.length];
-            System.arraycopy(javaSourceFileList,0 ,allFiles, 0, javaSourceFileList.length);
-            System.arraycopy(files,0 ,allFiles, javaSourceFileList.length, files.length);
-            javaSourceFileList = allFiles;
-        }
-
     }
 
     public void setFailOnError(boolean failOnError) {
@@ -153,7 +135,7 @@ public class Java2HTMLTask extends Task {
         catch (BadOptionException e) {
             throw new BuildException(e.getMessage());
         }
-        javaDocList.addElement(javaDoc);
+        javaDocList.add(javaDoc);
     }
 
 

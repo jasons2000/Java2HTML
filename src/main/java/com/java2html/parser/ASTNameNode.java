@@ -126,7 +126,7 @@ public class ASTNameNode
                 extra = " target=\"packageFrame\"";
             }
             else {
-                href = (String) JavaDocManager.packageList.get(text.substring(0,
+                href = JavaDocManager.packageList.get(text.substring(0,
                     text.length() - 2));
             }
         }

@@ -21,6 +21,8 @@ package com.java2html.internal;
 
 import com.java2html.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 import java.util.Enumeration;
 
@@ -50,10 +52,10 @@ public class CommandLineOptionProcessor {
             return false;
         }
 
-        String[] names = getOptionSingleValue(new String[] {"name", "n"}
+        List<String> names = getOptionSingleValue(new String[] {"name", "n"}
                                               , false, 1);
-        if (names.length == 1) {
-            java2HTML.setTitle(names[0]);
+        if (names.size() == 1) {
+            java2HTML.setTitle(names.get(0));
 
         }
         java2HTML.setFooter(getOptionFlag(new String[] {"nofooter", "nf"}));
@@ -76,26 +78,26 @@ public class CommandLineOptionProcessor {
             java2HTML.setTabSize(tabs[0]);
 
         }
-        String[] destinations = getOptionSingleValue(new String[] {
+        List<String> destinations = getOptionSingleValue(new String[] {
             "destination", "d"}
             , false, 1);
         // todo Create and Validate directories
-        if (destinations.length == 1) {
-            java2HTML.setDestination(destinations[0]);
+        if (destinations.size() == 1) {
+            java2HTML.setDestination(destinations.get(0));
 
         }
-        String[] sources = getOptionSingleValue(new String[] {"javasource",
+        List<String> sources = getOptionSingleValue(new String[] {"javasource",
                                                 "js"}
                                                 , false, -1);
         // todo validate directories
-        if (sources.length > 0) {
+        if (sources.size() > 0) {
             java2HTML.setJavaDirectorySource(sources);
 
         }
-        JavaDoc[] javaDocsOptions = getOptionJavaDoc(new String[] {
+        List<JavaDoc> javaDocsOptions = getOptionJavaDoc(new String[] {
             "javadoc", "jd"});
         // todo validate directories
-        if (javaDocsOptions.length > 0) {
+        if (javaDocsOptions.size() > 0) {
             java2HTML.setJavaDoc(javaDocsOptions);
 
         }
@@ -133,7 +135,7 @@ public class CommandLineOptionProcessor {
      * if maxSettings = -1 then assume no max limit
      *
      */
-    private String[] getOptionSingleValue(String[] names, boolean required,
+    private List<String> getOptionSingleValue(String[] names, boolean required,
                                           int maxSettingCount) throws
         BadOptionException {
 
@@ -168,7 +170,7 @@ public class CommandLineOptionProcessor {
         if (required && settingCount == 0) {
             throw new BadOptionException(names[0] + " needs to be set");
         }
-        return convertToStringArray(values);
+        return values;
     }
 
     private int[] getOptionSingleIntegerValue(String[] names, boolean required,
@@ -217,12 +219,12 @@ public class CommandLineOptionProcessor {
 
     }
 
-    public JavaDoc[] getOptionJavaDoc(String[] names) throws
+    public List<JavaDoc> getOptionJavaDoc(String[] names) throws
         BadOptionException {
 
         int cnt = 0;
         int settingCount = 0;
-        Vector values = new Vector();
+        List<JavaDoc> values = new ArrayList<JavaDoc>();
 
         while (cnt < args.length) {
 
@@ -256,20 +258,16 @@ public class CommandLineOptionProcessor {
                     else {
                         jdOption = new JavaDoc(localRef);
                     }
-                    values.addElement(jdOption);
+                    values.add(jdOption);
                     settingCount++;
                     break;
                 }
             }
             cnt++;
         }
-        JavaDoc[] jdOption = new JavaDoc[values.size()];
 
-        for (int i = 0; i < values.size(); i++) {
-            jdOption[i] = (JavaDoc) values.elementAt(i);
 
-        }
-        return jdOption;
+        return values;
     }
 
     private String[] convertToStringArray(Vector vector) {

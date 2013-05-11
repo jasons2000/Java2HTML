@@ -39,8 +39,6 @@ public class JavaDoc {
      */
     @Deprecated
     public JavaDoc(File localRef) {
-
-//        this.localRef = localRef;
     }
 
     /**
@@ -51,7 +49,6 @@ public class JavaDoc {
      */
     public JavaDoc(File localRef, String httpRef) {
 
-//        this.localRef = localRef;
         this.httpRef = httpRef;
     }
 
@@ -59,7 +56,6 @@ public class JavaDoc {
      * Set the Local Reference
      */
     public void setLocalRef(File localRef) {
-//        this.localRef = localRef;
     }
 
 
@@ -78,7 +74,7 @@ public class JavaDoc {
     }
 
     /**
-     * Retrn the Local Reference
+     * Return the Local Reference
      */
     public File getLocalRef() {
         return null;

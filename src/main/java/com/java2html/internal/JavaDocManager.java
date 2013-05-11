@@ -19,110 +19,100 @@
 
 package com.java2html.internal;
 
-import com.java2html.*;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
 
 // TODO :Does this deal with the import AClass; scenario, probabaly not
 
 public class JavaDocManager {
-    private static Hashtable classList = new Hashtable();
-    public static Hashtable packageList = new Hashtable(); //use JavaSource
 
-    public JavaDocManager(JavaDoc[] jdOptions) throws IOException {
+    private final static Map<String, String> classList = new Hashtable<String, String>();
+    public final static Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
-        if (jdOptions == null) return;
+    public JavaDocManager(String... urls) throws IOException {
 
-        for (int i = 0; i < jdOptions.length; i++) {
-            if (jdOptions[i].getHttpRef() == null) {
-                String absolutePath = "file:///" +
-                    Helper.convert( (jdOptions[i].getLocalRef()).
-                                   getCanonicalPath());
-                addDirectory(jdOptions[i].getLocalRef(), absolutePath);
-            }
-            else {
-                addDirectory(jdOptions[i].getLocalRef(), jdOptions[i].getHttpRef());
-            }
+        for (String urlString : urls) {
+            URL url = new URL(urlString);
+
+            parsePackages(new URL(url, "overview-frame.html"));
+            parseClasses(new URL(url, "allclasses-frame.html"));
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    private void parseClasses(URL urlClasses) {
+        //<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="javax/swing/AbstractAction.html" title="class in javax.swing" target="classFrame">AbstractAction</A>
+        try {
+            Connection con = Jsoup.connect(urlClasses.toString());
+            Document doc = con.get();
 
-        JavaDoc jdo = new JavaDoc(new File(args[0]), args[1]);
-        JavaDocManager jd = new JavaDocManager(new JavaDoc[] {jdo});
-        System.out.println("ClassList:-");
-        jd.print();
+            Elements links = doc.select("a[href]");
+            for (Element link : links) {
+                String titleAttr = link.attr("title");
+                String classRef = titleAttr.substring(titleAttr.indexOf(" in") + 4) + "." + link.text();
+                classList.put(classRef, new URL(urlClasses, link.attr("href")).toString());
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    private void parsePackages(URL urlPackages) {
+
+        try {
+            Connection con = Jsoup.connect(urlPackages.toString());
+            Document doc = con.get();
+
+            Elements links = doc.select("a[href]");
+            for (Element link : links) {
+                String text = link.text();
+                 if (text.equals("All Classes")) continue;
+                packageList.put(link.text(), new URL(urlPackages, link.attr("href")).toString());
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
     }
 
-    public void print() {
 
-        Enumeration en = classList.keys();
+    public String toString() {
 
-        while (en.hasMoreElements()) {
-            String s = (String) en.nextElement();
-            System.out.print(s + ",");
-            System.out.println( (String) classList.get(s));
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("*** Classes ***\n");
+
+        for (String s : classList.keySet()) {
+            sb.append(s + " = ");
+            sb.append(classList.get(s));
+            sb.append("\n");
         }
+
+        sb.append("*** Packages ***\n");
+
+        for (String s : packageList.keySet()) {
+            sb.append(s +  " = ");
+            sb.append(packageList.get(s));
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     public String getClassHRef(String text) {
-        return (String) classList.get(text);
-    }
-
-    public void addDirectory(File directory, String refDirectory) {
-        //File dir = new File(directory);
-        //if (dir.isDirectory()) throw new Exception ("Not Directory");
-        add(directory, "", refDirectory, true);
-    }
-
-    private void add(File dir, String packageLevel, String refDirectory,
-                     boolean top) {
-
-        String[] list = dir.list();
-        if (list == null) {
-            return;
-        }
-        int cnt = 0;
-        File file = null;
-
-        while (cnt < list.length) {
-
-            file = new File(dir.getAbsolutePath() + File.separatorChar + list[cnt]);
-            if (file.isFile()) {
-                if (list[cnt].equals("package-summary.html")) {
-                    packageList.put(packageLevel,
-                                    refDirectory + Helper.webSep + list[cnt]);
-                }
-                else if (list[cnt].endsWith(".html")) {
-                    String classString = list[cnt].substring(0,
-                        list[cnt].lastIndexOf('.'));
-                    int isPackageFile = classString.lastIndexOf('.');
-                    if (top && (isPackageFile != -1)) {
-                        classList.put(classString,
-                                      refDirectory + Helper.webSep + list[cnt]);
-                    }
-                    else {
-                        classList.put(packageLevel + "." + classString,
-                                      refDirectory + Helper.webSep + list[cnt]);
-                    }
-                }
-            }
-            else {
-
-                //TODO need to ignore directories with . in the name
-                String temp = packageLevel;
-                if (temp == "") {
-                    temp = list[cnt];
-                }
-                else {
-                    temp = temp + "." + list[cnt];
-                }
-                add(new File(dir.getAbsolutePath() + File.separatorChar + list[cnt]), temp,
-                    refDirectory + Helper.webSep + list[cnt], false);
-            }
-            cnt++;
-        }
+        return classList.get(text);
     }
 }
+
+//
+
