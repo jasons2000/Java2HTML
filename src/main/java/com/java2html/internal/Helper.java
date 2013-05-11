@@ -22,8 +22,8 @@ package com.java2html.internal;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import java.io.*;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 public class Helper {
 
@@ -48,10 +48,7 @@ public class Helper {
 
     public void createPage(String fileName) throws IOException {
 
-        // Create Front.html
-
-
-        LineNumberReader reader = new LineNumberReader(new InputStreamReader(getClass().getResource("/" + fileName).openStream()));
+        LineNumberReader reader = new LineNumberReader(new InputStreamReader(getClass().getResource("/templates/" + fileName).openStream()));
 
         File f =  new File(destination + File.separator + fileName);
 
@@ -70,29 +67,6 @@ public class Helper {
 
     }
 
-    public static String getFrame(String title) {
-        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" + lineSep +
-                "<HTML>" + lineSep +
-                "<HEAD>" + lineSep +
-                "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
-                "<TITLE>" + title + " (Java2HTML)</TITLE>" + lineSep +
-                lineSep +
-                "</HEAD>" + lineSep +
-                "<FRAMESET cols=\"30%, 70%\">" + lineSep +
-                "<FRAMESET rows=\"30%, 70%\">" + lineSep +
-                "<FRAME src=\"packages.html\" name=\"packageListFrame\">" + lineSep +
-                "<FRAME src=\"AllClasses.html\" name=\"packageFrame\">" + lineSep +
-                "</FRAMESET>" + lineSep +
-                "<FRAME src=\"front.html\" name=\"SourceFrame\">" + lineSep +
-                "</FRAMESET>" + lineSep +
-                "<NOFRAMES>" + lineSep +
-                "<H2>Frame Alert</H2>" + lineSep +
-                "<P>" + lineSep +
-                "This document is designed to be viewed using the frames feature. If you see this message, you are using a non-frame-capable web client." +
-                lineSep +
-                "</NOFRAMES>" + lineSep +
-                "</HTML>";
-    }
 
     public static String getStyleOption() {
         String text = "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">";
@@ -153,18 +127,6 @@ public class Helper {
      */
     static String convertDots(String webRef, char c) {
         return webRef.replace('.', c);
-//        StringBuffer buf = new StringBuffer(webRef);
-//        int x = 0;
-//        while (true) {
-//
-//            x = webRef.indexOf('.', x);
-//            if (x == -1) {
-//                break;
-//            }
-//            buf.setCharAt(x, c);
-//            x++;
-//        }
-//        return buf.toString();
     }
 
     /**
@@ -172,45 +134,25 @@ public class Helper {
      */
     static String convert(String webRef) {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
-
-//        StringBuffer buf = new StringBuffer(webRef);
-//        int x = 0;
-//        while (true) {
-//
-//            x = webRef.indexOf(File.separatorChar, x);
-//            if (x == -1) {
-//                break;
-//            }
-//            buf.setCharAt(x, '/');
-//            x++;
-//        }
-//        x = webRef.indexOf(':', 0);
-//        if (x != -1) {
-//            buf.setCharAt(x, '|');
-//        }
-//        return buf.toString();
     }
 
 
-    public static Vector getFileListFromDirectory(String directory, Vector vector) {
+    public static void getFileListFromDirectory(String directory, List<String> files) {
 
         File directoryFile = new File(directory);
         String[] list = directoryFile.list();
-        if (list == null) return vector;
-        int cnt = 0;
+        if (list == null) return;
 
-        while (cnt < list.length) {
+        for (String file : list) {
 
-            String fileName = directory + File.separatorChar + list[cnt];
+            String fileName = directory + File.separatorChar + file;
 
             if (new File(fileName).isFile()) {
-                if (fileName.endsWith(".java")) vector.addElement(fileName);
+                if (fileName.endsWith(".java")) files.add(fileName);
             }
             else {
-                vector = getFileListFromDirectory(fileName, vector);
+                getFileListFromDirectory(fileName, files);
             }
-            cnt++;
         }
-        return vector;
     }
 }

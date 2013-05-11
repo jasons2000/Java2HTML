@@ -57,13 +57,9 @@ import com.java2html.internal.JavaSource;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Generates Java2HTML output
@@ -149,9 +145,10 @@ public class Java2HTML {
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
                         DateFormat.SHORT);
 
-        HashMap subs= new HashMap();
+        HashMap<String,String> subs= new HashMap<String,String>();
         subs.put("date", df.format(new Date()));
         subs.put("version", "1.0");
+        subs.put("title", title);
 
 
         Helper helper = new Helper(destination, subs, quiet);
@@ -160,7 +157,6 @@ public class Java2HTML {
         File f = new File(destination + "/stylesheet.css");
         FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
-        FileWriter file;
 
         if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
 
@@ -169,13 +165,9 @@ public class Java2HTML {
         if (!simple) {
 
             helper.createPage("front.html");
-
-
             // Create main Index.html
-            f = new File(destination + File.separator + "index.html");
-            file = new FileWriter(f);
-            file.write(Helper.getFrame(title));
-            file.close();
+            helper.createPage("index.html");
+
         }
     }
 
@@ -267,16 +259,13 @@ public class Java2HTML {
         }
 
         // Convert directory to String[] of file names
-        Vector javaSourceFileVector = new Vector();
-        for (int i = 0; i < directories.length; i++) {
-            javaSourceFileVector = Helper.getFileListFromDirectory(directories[i], javaSourceFileVector);
+        List<String> javaSourceFileVector = new ArrayList<String>();
+        for (String directory :directories) {
+            Helper.getFileListFromDirectory(directory, javaSourceFileVector);
         }
 
-        javaSourceFileList = new String[javaSourceFileVector.size()];
+        javaSourceFileList = javaSourceFileVector.toArray(new String[0]);
 
-        for (int i = 0; i < javaSourceFileVector.size(); i++) {
-            javaSourceFileList[i] = (String)javaSourceFileVector.elementAt(i);
-        }
     }
 
     /**
