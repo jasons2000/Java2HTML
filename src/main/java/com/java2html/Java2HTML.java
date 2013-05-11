@@ -261,12 +261,31 @@ public class Java2HTML {
         // Convert directory to String[] of file names
         List<String> javaSourceFileVector = new ArrayList<String>();
         for (String directory :directories) {
-            Helper.getFileListFromDirectory(directory, javaSourceFileVector);
+            getFileListFromDirectory(directory, javaSourceFileVector);
         }
 
         javaSourceFileList = javaSourceFileVector.toArray(new String[0]);
 
     }
+
+    private static void getFileListFromDirectory(String directory, List<String> files) {
+
+          File directoryFile = new File(directory);
+          String[] list = directoryFile.list();
+          if (list == null) return;
+
+          for (String file : list) {
+
+              String fileName = directory + File.separatorChar + file;
+
+              if (new File(fileName).isFile()) {
+                  if (fileName.endsWith(".java")) files.add(fileName);
+              }
+              else {
+                  getFileListFromDirectory(fileName, files);
+              }
+          }
+      }
 
     /**
      * Sets a list of java source files that will be converted into HTML.

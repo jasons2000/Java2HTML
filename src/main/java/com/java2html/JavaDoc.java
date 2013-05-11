@@ -23,7 +23,6 @@ import java.io.*;
 
 public class JavaDoc {
 
-    private File localRef;
     private String httpRef;
 
     /**
@@ -38,9 +37,10 @@ public class JavaDoc {
      * @param localRef Local Reference to a JavaDoc Source, this reference will be used in the
      *                       generated HTML output.
      */
+    @Deprecated
     public JavaDoc(File localRef) {
 
-        this.localRef = localRef;
+//        this.localRef = localRef;
     }
 
     /**
@@ -51,7 +51,7 @@ public class JavaDoc {
      */
     public JavaDoc(File localRef, String httpRef) {
 
-        this.localRef = localRef;
+//        this.localRef = localRef;
         this.httpRef = httpRef;
     }
 
@@ -59,7 +59,7 @@ public class JavaDoc {
      * Set the Local Reference
      */
     public void setLocalRef(File localRef) {
-        this.localRef = localRef;
+//        this.localRef = localRef;
     }
 
 
@@ -81,15 +81,15 @@ public class JavaDoc {
      * Retrn the Local Reference
      */
     public File getLocalRef() {
-        return localRef;
+        return null;
     }
 
     /**
      * Validate the this object is in a consistent state
      */
     public void validate() throws BadOptionException {
-        if (localRef == null) throw new BadOptionException("localRef must be set");
-        if (!localRef.isDirectory()) throw new BadOptionException("localRef must be a Directory");
+//        if (localRef == null) throw new BadOptionException("localRef must be set");
+//        if (!localRef.isDirectory()) throw new BadOptionException("localRef must be a Directory");
         if (httpRef != null && !httpRef.toLowerCase().startsWith("http://")) throw new BadOptionException("httpRef must begin with http://");
     }
 

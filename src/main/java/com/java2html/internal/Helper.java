@@ -137,22 +137,5 @@ public class Helper {
     }
 
 
-    public static void getFileListFromDirectory(String directory, List<String> files) {
 
-        File directoryFile = new File(directory);
-        String[] list = directoryFile.list();
-        if (list == null) return;
-
-        for (String file : list) {
-
-            String fileName = directory + File.separatorChar + file;
-
-            if (new File(fileName).isFile()) {
-                if (fileName.endsWith(".java")) files.add(fileName);
-            }
-            else {
-                getFileListFromDirectory(fileName, files);
-            }
-        }
-    }
 }
