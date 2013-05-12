@@ -13,5 +13,25 @@
         <module>java2html-maven-plugin</module>
     </modules>
 
+    <!-- cyclic depency-->
+    <build>
+        <plugins>
+            <plugin>
+              <groupId>com.java2html</groupId>
+              <artifactId>java2html-maven-plugin</artifactId>
+              <version>1.6-SNAPSHOT</version>
+
+              <executions>
+                  <execution>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>generate</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>
