@@ -13,7 +13,7 @@
         <module>java2html-maven-plugin</module>
     </modules>
 
-    <!-- cyclic depency-->
+    <!-- cyclic dependency-->
     <build>
         <plugins>
             <plugin>
