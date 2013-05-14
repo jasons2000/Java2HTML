@@ -19,14 +19,14 @@
 
 package com.java2html.internal;
 
-import com.java2html.*;
+import com.java2html.BadOptionException;
+import com.java2html.Java2HTML;
+import com.java2html.JavaDoc;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.Enumeration;
-
-import java.io.File;
 
 public class CommandLineOptionProcessor {
 
@@ -60,7 +60,7 @@ public class CommandLineOptionProcessor {
         }
         java2HTML.setFooter(getOptionFlag(new String[] {"nofooter", "nf"}));
 
-        java2HTML.setFooter(getOptionFlag(new String[] {"noheader", "nh"}));
+        java2HTML.setHeader(getOptionFlag(new String[] {"noheader", "nh"}));
 
         java2HTML.setSimple(getOptionFlag(new String[] {"simple", "s"}));
 

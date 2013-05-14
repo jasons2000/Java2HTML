@@ -35,8 +35,8 @@ import java.util.Map;
 
 public class JavaDocManager {
 
-    private final static Map<String, String> classList = new Hashtable<String, String>();
-    public final static Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
+    private final Map<String, String> classList = new Hashtable<String, String>();
+    private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
     public JavaDocManager(String... urls) throws IOException {
 
@@ -109,9 +109,13 @@ public class JavaDocManager {
         return sb.toString();
     }
 
-    public String getClassHRef(String text) {
-        return classList.get(text);
+    public String getClassHRef(String classSpec) {
+        return classList.get(classSpec);
     }
+
+    public String getPackageHRef(String packageSpec) {
+           return classList.get(packageSpec);
+       }
 }
 
 //
