@@ -64,20 +64,41 @@ public class CommandLineOption2Test {
 
     @Test
     public void test() throws ParseException {
-        String[] args = {};
-        checkValues(args, Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, false, false));
+
+        checkValues("", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, false, false));
+
+        checkValues("-s", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, true, false));
+
+        checkValues("-q", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, false, true));
+
+        checkValues("-sq", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, true, true));
+
+        checkValues("-nh", Options.create(".", DEFAULT, EMPTY, 0, 4, true, false, false, false));
+
+        checkValues("-nf", Options.create(".", DEFAULT, EMPTY, 0, 4, false, true, false, false));
+
 
         List<String> expectedSources = Arrays.asList("a/b/c","a","b","c");
+        List<String> expectedJavaDoc = Arrays.asList("e","f");
+        checkValues("-js a/b/c a b c", Options.create(".",expectedSources, EMPTY,0,4));
 
-        checkValues("-js a/b/c,a,b,c".split(" "), Options.create(".",expectedSources, EMPTY,0,4));
+        checkValues("-js a/b/c a b c -jd e f", Options.create(".",expectedSources, expectedJavaDoc,0,4));
+
+        List<String> expectedSourcesWithTwoSets = Arrays.asList("a/b/c","a","b","c", "g", "h");
+        checkValues("-js a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,0,4));
+
+        checkValues("-javasource a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,0,4));
+
+        checkValues("-javasource a/b/c a b c -m 8 -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,8,4));
+
 
     }
 
 
-    private void checkValues(String[] args,
+    private void checkValues(String args,
                              Options options) throws ParseException {
 
-        CommandLineOption2 clo = new CommandLineOption2(args);
+        CommandLineOption2 clo = new CommandLineOption2(args.split(" "));
         assertEquals("destination not same", options.destination, clo.getDestination());
         assertEquals("", options.noHeader, clo.noHeader());
         assertEquals("", options.noFooter, clo.noFooter());

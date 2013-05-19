@@ -24,25 +24,25 @@ public class CommandLineOption2 {
 
         options.addOption(OptionBuilder.withLongOpt("margin")
                 .hasArg()
-                .withType(new Integer(0))
+                .withType(Number.class)
                 .withDescription("Margin Size (with Line Numbers)")
                 .create("m"));
 
         options.addOption(OptionBuilder.withLongOpt("tabs")
                 .hasArg()
-                .withType(new Integer(0))
+                .withType(Number.class)
                 .withDescription("Tab Size")
                 .create("t"));
 
         options.addOption(OptionBuilder.withLongOpt("javadoc")
                 .hasArgs()
-                .withValueSeparator(',')
+                .withValueSeparator(' ')
                 .withDescription("Java Doc HTTP location")
                 .create("jd"));
 
         options.addOption(OptionBuilder.withLongOpt("javasource")
                 .hasArgs()
-                .withValueSeparator(',')
+                .withValueSeparator(' ')
                 .withDescription("Java Source File Location")
                 .create("js"));
 
@@ -53,7 +53,7 @@ public class CommandLineOption2 {
     }
 
     public List<String> getSourceFiles() {
-        String[] javaSources = line.getOptionValues("jd");
+        String[] javaSources = line.getOptionValues("js");
         if (javaSources == null) {
             javaSources = new String[]{"."};
         }
@@ -71,23 +71,23 @@ public class CommandLineOption2 {
     }
 
     public int getMarginSize() throws ParseException {
-        Integer margin = (Integer) line.getParsedOptionValue("m");
+        Long margin = (Long) line.getParsedOptionValue("m");
         if (margin == null) {
-            margin = 0;
+            margin = 0l;
         }
-        return margin;
+        return margin.intValue();
     }
 
     public int getTabCount() throws ParseException {
-        Integer tabcount = (Integer) line.getParsedOptionValue("t");
-        if (tabcount == null) {
-            tabcount = 4;
+        Long tabs = (Long) line.getParsedOptionValue("t");
+        if (tabs == null) {
+            tabs = 4l;
         }
-        return tabcount;
+        return tabs.intValue();
     }
 
     public boolean isQuite() {
-        return line.hasOption("v");
+        return line.hasOption("q");
     }
 
     public boolean isSimple() {
