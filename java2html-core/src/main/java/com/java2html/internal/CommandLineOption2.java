@@ -11,6 +11,7 @@ public class CommandLineOption2 {
 
     public CommandLineOption2(String[] args) throws ParseException {
         Options options = new Options();
+        options.addOption("h", "help", false, "print this help");
         options.addOption("nh", "noheader", false, "prevents header from being displayed");
         options.addOption("nf", "nofooter", false, "prevents footer from being displayed");
         options.addOption("q", "quite", false, "be extra quite");
@@ -21,6 +22,12 @@ public class CommandLineOption2 {
                 .hasArg()
                 .withDescription("Destination output directory")
                 .create("d"));
+
+        options.addOption(OptionBuilder.
+                       withLongOpt("name")
+                       .hasArg()
+                       .withDescription("Title")
+                       .create("n"));
 
         options.addOption(OptionBuilder.withLongOpt("margin")
                 .hasArg()
