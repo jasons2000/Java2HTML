@@ -11,6 +11,8 @@ public class JavaDocManagerTest {
     @Test
     public void test() throws IOException {
 
+        // test need internet connection
+
         JavaDocManager javaDocManager = new JavaDocManager("http://docs.oracle.com/javase/6/docs/api/" );
       //  System.out.println(javaDocManager.toString());
 

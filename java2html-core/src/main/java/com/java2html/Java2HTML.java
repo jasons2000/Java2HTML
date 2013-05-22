@@ -50,10 +50,7 @@
  */
 package com.java2html;
 
-import com.java2html.internal.CommandLineOptionProcessor;
-import com.java2html.internal.Helper;
-import com.java2html.internal.JavaDocManager;
-import com.java2html.internal.JavaSource;
+import com.java2html.internal.*;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -99,8 +96,9 @@ public class Java2HTML {
 
         Java2HTML java2HTML = new Java2HTML();
 
-        CommandLineOptionProcessor cmd = new CommandLineOptionProcessor(options);
+
         try {
+            CommandLineOption2 cmd = new CommandLineOption2(options);
             if (!cmd.setOptionsFromCommandLine(java2HTML)) {
                 return; // return if just asking for help
             }
@@ -302,6 +300,7 @@ public class Java2HTML {
      * Set the Java Doc directories.
      *
      * @param javaDocOptions List of JavaDocOptions
+     * @Deprecated
      */
     public void setJavaDoc(List<JavaDoc> javaDocOptions) {
         List<String> list = new ArrayList<String>();
@@ -311,6 +310,16 @@ public class Java2HTML {
         }
         javaDocOptionList = list;
     }
+
+    /**
+         * Set the Java Doc directories.
+         *
+         * @param javaDocUrls List of JavaDocOptions
+         * @Deprecated
+         */
+        public void setJavaDocUrls(List<String> javaDocUrls) {
+            javaDocOptionList = javaDocUrls;
+        }
 
     /**
      * Sets the output directory that the generated HTML will be placed into.

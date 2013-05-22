@@ -1,5 +1,7 @@
 package com.java2html.internal;
 
+import com.java2html.BadOptionException;
+import com.java2html.Java2HTML;
 import org.apache.commons.cli.*;
 
 import java.util.Arrays;
@@ -8,9 +10,10 @@ import java.util.List;
 public class CommandLineOption2 {
 
     private CommandLine line;
+    private final Options options = new Options();
 
     public CommandLineOption2(String[] args) throws ParseException {
-        Options options = new Options();
+
         options.addOption("h", "help", false, "print this help");
         options.addOption("nh", "noheader", false, "prevents header from being displayed");
         options.addOption("nf", "nofooter", false, "prevents footer from being displayed");
@@ -24,10 +27,10 @@ public class CommandLineOption2 {
                 .create("d"));
 
         options.addOption(OptionBuilder.
-                       withLongOpt("name")
-                       .hasArg()
-                       .withDescription("Title")
-                       .create("n"));
+                withLongOpt("name")
+                .hasArg()
+                .withDescription("Title")
+                .create("n"));
 
         options.addOption(OptionBuilder.withLongOpt("margin")
                 .hasArg()
@@ -108,5 +111,55 @@ public class CommandLineOption2 {
     public boolean noFooter() {
         return line.hasOption("nf");
     }
+
+    private String getTitle() {
+        return line.getOptionValue("n");
+    }
+
+
+    /**
+     * @return false if just Help was requested
+     * @throws com.java2html.BadOptionException
+     *
+     */
+    public boolean setOptionsFromCommandLine(Java2HTML java2HTML) throws
+            BadOptionException {
+        try {
+
+            if (line.hasOption("h")) {
+                // automatically generate the help statement
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("ant", options);
+                return false;
+            }
+
+            java2HTML.setTitle(getTitle());
+
+            java2HTML.setFooter(noFooter());
+
+            java2HTML.setHeader(noHeader());
+
+            java2HTML.setSimple(isSimple());
+
+            java2HTML.setQuiet(isQuite());
+
+            java2HTML.setMarginSize(getMarginSize());
+
+            java2HTML.setTabSize(getTabCount());
+
+            java2HTML.setDestination(getDestination());
+
+            java2HTML.setJavaDirectorySource(getSourceFiles());
+
+            java2HTML.setJavaDocUrls(getJavaDocUrls());
+
+            return true;
+
+        }
+        catch (ParseException e) {
+            throw new BadOptionException(e.getMessage());
+        }
+    }
+
 
 }
