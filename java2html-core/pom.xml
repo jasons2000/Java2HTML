@@ -45,6 +45,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sourceforge.jwebunit</groupId>
+            <artifactId>jwebunit-htmlunit-plugin</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -56,61 +63,61 @@
     <build>
 
 
-         <plugins>
+        <plugins>
 
 
-             <plugin>
-                 <groupId>org.codehaus.mojo</groupId>
-                 <artifactId>javacc-maven-plugin</artifactId>
-                 <dependencies>
-                     <!-- doesnt work with javac greater than this version, we need to upgrade-->
-                     <dependency>
-                         <groupId>net.java.dev.javacc</groupId>
-                         <artifactId>javacc</artifactId>
-                         <version>4.0</version>
-                     </dependency>
-                 </dependencies>
-                 <version>2.6</version>
-                 <executions>
-                     <execution>
-                         <id>javacc</id>
-                         <goals>
-                             <goal>jjtree-javacc</goal>
-                         </goals>
-                     </execution>
-                 </executions>
-             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javacc-maven-plugin</artifactId>
+                <dependencies>
+                    <!-- doesnt work with javac greater than this version, we need to upgrade-->
+                    <dependency>
+                        <groupId>net.java.dev.javacc</groupId>
+                        <artifactId>javacc</artifactId>
+                        <version>4.0</version>
+                    </dependency>
+                </dependencies>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>javacc</id>
+                        <goals>
+                            <goal>jjtree-javacc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
 
-             <plugin>
-                 <artifactId>maven-assembly-plugin</artifactId>
-                 <configuration>
-                     <archive>
-                         <manifest>
-                             <mainClass>com.java2html.Java2HTML</mainClass>
-                         </manifest>
-                     </archive>
-                     <descriptorRefs>
-                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                     </descriptorRefs>
-                     <filters>
-                         <filter>src/assemble/filter.properties</filter>
-                     </filters>
-                     <descriptors>
-                         <descriptor>src/assemble/distribution.xml</descriptor>
-                     </descriptors>
-                 </configuration>
-                 <executions>
-                     <execution>
-                         <id>make-my-jar-with-dependencies</id>
-                         <phase>package</phase>
-                         <goals>
-                             <goal>single</goal>
-                         </goals>
-                     </execution>
-                 </executions>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.java2html.Java2HTML</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <filters>
+                        <filter>src/assemble/filter.properties</filter>
+                    </filters>
+                    <descriptors>
+                        <descriptor>src/assemble/distribution.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-my-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
-             </plugin>
-         </plugins>
-     </build>
+            </plugin>
+        </plugins>
+    </build>
 </project>
