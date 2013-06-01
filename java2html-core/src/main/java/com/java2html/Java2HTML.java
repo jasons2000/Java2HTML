@@ -60,6 +60,31 @@ import java.util.*;
 
 /**
  * Generates Java2HTML output
+ *
+ * TODO
+ * Hi
+ *  property expansion
+ *  jsoup needs user agent
+ *  fix umlat and foreign chars problem
+ *  download javadoc sample
+ *  create test java which use javadoc sample package and class
+ *  write unit test case which tests javadoc links using webunit or jsoup
+ *  create ITCase for general results,
+ *     test each frame
+ *     link to full
+ *     ant test
+ *     mojo test
+ *
+ * Low
+ *   support other languages,
+ *      reorg for dir for src2html - maintain old class, and ant task integration
+ *       abstract reference lookup with Type and matching String
+ *       0th parse detects sources
+ *       1st parse build up all references
+ *       2nd parse detectect references
+ *
+ *
+ *
  */
 
 public class Java2HTML {
