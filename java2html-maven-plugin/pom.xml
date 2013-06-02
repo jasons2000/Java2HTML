@@ -10,19 +10,35 @@
     <packaging>maven-plugin</packaging>
 
     <dependencies>
-        <dependency>
+
+
+          <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>3.0.5</version>
+          </dependency>
+        <!-- annonatations don't seem to work for some reason-->
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- annonatations don't seem to work for some reason-->
-        <!--<dependency>-->
-            <!--<groupId>org.apache.maven.plugin-tools</groupId>-->
-            <!--<artifactId>maven-plugin-annotations</artifactId>-->
-            <!--<version>3.2</version>-->
-            <!--<scope>provided</scope>-->
-        <!--</dependency>-->
+
 
     </dependencies>
+
+    <build>
+         <plugins>
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-plugin-plugin</artifactId>
+                 <version>3.2</version>
+                 <configuration>
+                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                 </configuration>
+             </plugin>
+         </plugins>
+     </build>
 </project>
