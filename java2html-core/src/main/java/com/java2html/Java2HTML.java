@@ -64,9 +64,7 @@ import java.util.*;
  * TODO
  * Hi
  *  property expansion
- *  jsoup needs user agent
  *  fix umlat and foreign chars problem
- *  download javadoc sample
  *  create test java which use javadoc sample package and class
  *  write unit test case which tests javadoc links using webunit or jsoup
  *  create ITCase for general results,

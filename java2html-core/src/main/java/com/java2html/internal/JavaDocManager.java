@@ -51,8 +51,7 @@ public class JavaDocManager {
     private void parseClasses(URL urlClasses) {
         //<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="javax/swing/AbstractAction.html" title="class in javax.swing" target="classFrame">AbstractAction</A>
         try {
-            //todo need to supply user agent
-            Connection con = Jsoup.connect(urlClasses.toString());
+            Connection con = Jsoup.connect(urlClasses.toString()).userAgent("Mozilla");
             Document doc = con.get();
 
             Elements links = doc.select("a[href]");

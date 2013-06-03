@@ -12,14 +12,12 @@ public class JavaDocManagerTest {
     @Test
     public void test() throws Exception {
 
-        // test need internet connection
+        WebServer webServer = new WebServer(this.getClass().getResource("/javadoc-sample/jsoup-1.7.2-javadoc").getPath(), "index.html");
 
-        WebServer  webServer = new WebServer("./java2html-core/src/test/resources/javadoc-sample/jsoup-1.7.2-javadoc", "index.html");
+        JavaDocManager jdm = new JavaDocManager("http://localhost:" + webServer.getPort());
+        contains(jdm.getPackageHRef("org.jsoup.select"), "jsoup/select/package-frame.html");
 
-        JavaDocManager jdm = new JavaDocManager("http://localhost:" + webServer.getPort() );
-         contains(jdm.getPackageHRef("org.jsoup.select"),"jsoup/select/package-frame.html");
-
-        contains(jdm.getClassHRef("org.jsoup.select.Selector.SelectorParseException"),"/org/jsoup/select/Selector.SelectorParseException.html");
+        contains(jdm.getClassHRef("org.jsoup.select.Selector.SelectorParseException"), "/org/jsoup/select/Selector.SelectorParseException.html");
         System.out.println(jdm.toString());
 
         webServer.close();
@@ -31,6 +29,5 @@ public class JavaDocManagerTest {
         for (String contain : contains) {
             assertTrue(s.contains(contain));
         }
-
     }
 }
