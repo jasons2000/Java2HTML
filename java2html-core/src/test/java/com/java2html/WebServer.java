@@ -14,6 +14,7 @@ public class WebServer {
 
     public static void main(String[] args) throws Exception {
 
+        // simple test
         new WebServer("./java2html-core/src/test/resources/javadoc-sample/jsoup-1.7.2-javadoc", "index.html");
     }
 
@@ -31,12 +32,19 @@ public class WebServer {
         server.setHandler(handlers);
 
         server.start();
-//        server.join();
-
     }
 
     public int getPort() {
         return server.getConnectors()[0].getLocalPort();
+    }
+
+    public void close() {
+        try {
+            server.stop();
+        }
+        catch (Exception e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
 

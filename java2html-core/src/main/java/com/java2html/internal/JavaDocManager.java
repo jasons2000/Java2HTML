@@ -115,7 +115,7 @@ public class JavaDocManager {
     }
 
     public String getPackageHRef(String packageSpec) {
-           return classList.get(packageSpec);
+           return packageList.get(packageSpec);
        }
 }
 
