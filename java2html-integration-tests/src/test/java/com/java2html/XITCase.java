@@ -1,3 +1,5 @@
+package com.java2html;
+
 import com.java2html.testingtools.WebServer;
 import org.junit.Before;
 import org.junit.Test;

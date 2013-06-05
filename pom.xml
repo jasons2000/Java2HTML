@@ -10,30 +10,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>java2html-core</module>
+        <module>java2html-java-parser</module>
         <module>java2html-maven-plugin</module>
         <module>java2html-site</module>
         <module>java2html-testing-tools</module>
-        <module>java2html-plugin-interface</module>
-        <module>java-plugin</module>
-        <module>java2html-java-plugin</module>
-        <module>java2html-java-parser</module>
+        <module>java2html-integration-tests</module>
     </modules>
-
-    <dependencies>
-        <dependency>
-                <groupId>com.java2html</groupId>
-                <version>1.6-SNAPSHOT</version>
-                <artifactId>java2html-testing-tools</artifactId>
-                <scope>test</scope>
-            </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.jwebunit</groupId>
-            <artifactId>jwebunit-htmlunit-plugin</artifactId>
-            <version>3.1</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
 
     <!--<build>-->

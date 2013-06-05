@@ -12,7 +12,6 @@ public class WebServer {
     private Server server;
 
     public static void main(String[] args) throws Exception {
-
         // simple test
         new WebServer("./java2html-core/src/test/resources/javadoc-sample/jsoup-1.7.2-javadoc", "index.html");
     }
