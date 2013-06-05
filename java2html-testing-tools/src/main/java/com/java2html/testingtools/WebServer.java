@@ -1,5 +1,4 @@
-package com.java2html;
-
+package com.java2html.testingtools;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;

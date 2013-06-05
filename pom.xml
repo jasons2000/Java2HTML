@@ -12,56 +12,77 @@
         <module>java2html-core</module>
         <module>java2html-maven-plugin</module>
         <module>java2html-site</module>
+        <module>java2html-testing-tools</module>
+        <module>java2html-plugin-interface</module>
+        <module>java-plugin</module>
+        <module>java2html-java-plugin</module>
+        <module>java2html-java-parser</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+                <groupId>com.java2html</groupId>
+                <version>1.6-SNAPSHOT</version>
+                <artifactId>java2html-testing-tools</artifactId>
+                <scope>test</scope>
+            </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.jwebunit</groupId>
+            <artifactId>jwebunit-htmlunit-plugin</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 
     <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-enforcer-plugin</artifactId>-->
+    <!--<version>1.2</version>-->
+    <!--<executions>-->
+    <!--<execution>-->
+    <!--<id>enforce-versions</id>-->
+    <!--<goals>-->
+    <!--<goal>enforce</goal>-->
+    <!--</goals>-->
+    <!--<configuration>-->
+    <!--<rules>-->
+    <!--<DependencyConvergence>-->
+    <!--<uniqueVersions>true</uniqueVersions>-->
+    <!--</DependencyConvergence>-->
+    <!--<requireJavaVersion>-->
+    <!--<version>1.6</version>-->
+    <!--</requireJavaVersion>-->
+    <!--</rules>-->
+    <!--</configuration>-->
+    <!--</execution>-->
+    <!--</executions>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
+
+    <!-- cyclic dependency-->
+    <!--<build>-->
         <!--<plugins>-->
             <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-enforcer-plugin</artifactId>-->
-                <!--<version>1.2</version>-->
+                <!--<groupId>com.java2html</groupId>-->
+                <!--<artifactId>java2html-maven-plugin</artifactId>-->
+                <!--<version>1.6-SNAPSHOT</version>-->
+
                 <!--<executions>-->
                     <!--<execution>-->
-                        <!--<id>enforce-versions</id>-->
+                        <!--<phase>generate-resources</phase>-->
                         <!--<goals>-->
-                            <!--<goal>enforce</goal>-->
+                            <!--<goal>sayhi</goal>-->
                         <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<rules>-->
-                                <!--<DependencyConvergence>-->
-                                    <!--<uniqueVersions>true</uniqueVersions>-->
-                                <!--</DependencyConvergence>-->
-                                <!--<requireJavaVersion>-->
-                                    <!--<version>1.6</version>-->
-                                <!--</requireJavaVersion>-->
-                            <!--</rules>-->
-                        <!--</configuration>-->
                     <!--</execution>-->
                 <!--</executions>-->
             <!--</plugin>-->
         <!--</plugins>-->
     <!--</build>-->
-
-    <!-- cyclic dependency-->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.java2html</groupId>
-                <artifactId>java2html-maven-plugin</artifactId>
-                <version>1.6-SNAPSHOT</version>
-
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>sayhi</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 
 </project>

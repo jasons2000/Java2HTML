@@ -1,6 +1,6 @@
 package com.java2html.internal;
 
-import com.java2html.WebServer;
+import com.java2html.testingtools.WebServer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -12,7 +12,7 @@ public class JavaDocManagerTest {
     @Test
     public void test() throws Exception {
 
-        WebServer webServer = new WebServer(this.getClass().getResource("/javadoc-sample/jsoup-1.7.2-javadoc").getPath(), "index.html");
+        WebServer webServer = new WebServer(getClass().getResource("/javadoc-sample/jsoup-1.7.2-javadoc").getPath(), "index.html");
 
         JavaDocManager jdm = new JavaDocManager("http://localhost:" + webServer.getPort());
         contains(jdm.getPackageHRef("org.jsoup.select"), "jsoup/select/package-frame.html");

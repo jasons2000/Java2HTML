@@ -4,5 +4,4 @@ public interface ReferenceMap {
 
     String getReference(ReferenceId referenceId);
 
-
 }
