@@ -100,7 +100,7 @@ public class Java2HTML {
 
     private List<String> javaSourceFileList = null;
 
-    private List<String> javaDocOptionList = Collections.emptyList();
+    private List<String> javaDocOptionLinks = Collections.emptyList();
 
     private String destination = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
@@ -144,7 +144,7 @@ public class Java2HTML {
 
         createSupportingFiles();
 
-        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionList.toArray(new String[0]));
+        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new String[0]));
 
         if (javaSourceFileList == null) {
             setJavaDirectorySource(Arrays.asList("."));
@@ -319,28 +319,12 @@ public class Java2HTML {
     }
 
     /**
-     * Set the Java Doc directories.
-     *
-     * @param javaDocOptions List of JavaDocOptions
-     * @Deprecated
-     */
-    public void setJavaDoc(List<JavaDoc> javaDocOptions) {
-        List<String> list = new ArrayList<String>();
-        for (JavaDoc doc : javaDocOptions) {
-            list.add(doc.getHttpRef());
-
-        }
-        javaDocOptionList = list;
-    }
-
-    /**
          * Set the Java Doc directories.
          *
-         * @param javaDocUrls List of JavaDocOptions
-         * @Deprecated
+         * @param javaDocLinks List of JavaDocOptions
          */
-        public void setJavaDocUrls(List<String> javaDocUrls) {
-            javaDocOptionList = javaDocUrls;
+        public void setJavaDocLinks(List<String> javaDocLinks) {
+            javaDocOptionLinks = javaDocLinks;
         }
 
     /**

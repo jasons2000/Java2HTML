@@ -7,29 +7,28 @@
 
 package com.java2html;
 
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class Java2HTMLTask extends Task {
 
     private Java2HTML java2HTML = new Java2HTML();
 
     private List<String> javaSourceFileList = new ArrayList<String>();
-    private List<JavaDoc> javaDocList = new ArrayList<JavaDoc>();
+    private List<String> javaDocList = new ArrayList<String>();
 
     private boolean failOnError = false;
 
     public void execute() throws BuildException {
         try {
             java2HTML.setJavaFileSource(javaSourceFileList);
-            java2HTML.setJavaDoc(javaDocList);
+            java2HTML.setJavaDocLinks(javaDocList);
             if (!java2HTML.buildJava2HTML() && failOnError) throw new BuildException("Some Java files failed to convert to HTML");
         }
         catch (Exception e) {
@@ -126,16 +125,9 @@ public class Java2HTMLTask extends Task {
         this.failOnError = failOnError;
     }
 
-    public void addConfiguredJavaDoc(JavaDoc javaDoc) throws BuildException {
+    public void addConfiguredJavaDoc(String javaDocLink) throws BuildException {
 
-        /*if (javaDoc.getLocalRef() == null) throw new BuildException("Must set Local Ref");*/
-        try {
-            javaDoc.validate();
-        }
-        catch (BadOptionException e) {
-            throw new BuildException(e.getMessage());
-        }
-        javaDocList.add(javaDoc);
+        javaDocList.add(javaDocLink);
     }
 
 

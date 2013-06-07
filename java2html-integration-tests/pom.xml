@@ -26,5 +26,23 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.java2html</groupId>
+                <artifactId>java2html-maven-plugin</artifactId>
+                <version>1.6-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>sayhi</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

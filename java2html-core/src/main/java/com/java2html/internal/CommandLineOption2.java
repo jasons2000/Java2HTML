@@ -151,7 +151,7 @@ public class CommandLineOption2 {
 
             java2HTML.setJavaDirectorySource(getSourceFiles());
 
-            java2HTML.setJavaDocUrls(getJavaDocUrls());
+            java2HTML.setJavaDocLinks(getJavaDocUrls());
 
             return true;
 
