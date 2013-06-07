@@ -120,7 +120,7 @@ public class Java2HTML {
         Java2HTML java2HTML = new Java2HTML();
 
         try {
-            CommandLineOption2 cmd = new CommandLineOption2(options);
+            CommandLineOptions cmd = new CommandLineOptions(options);
             if (!cmd.setOptionsFromCommandLine(java2HTML)) {
                 return; // return if just asking for help
             }

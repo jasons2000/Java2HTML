@@ -7,12 +7,12 @@ import org.apache.commons.cli.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandLineOption2 {
+public class CommandLineOptions {
 
     private CommandLine line;
     private final Options options = new Options();
 
-    public CommandLineOption2(String[] args) throws ParseException {
+    public CommandLineOptions(String[] args) throws ParseException {
 
         options.addOption("h", "help", false, "print this help");
         options.addOption("nh", "noheader", false, "prevents header from being displayed");

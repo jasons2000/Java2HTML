@@ -10,7 +10,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-public class CommandLineOption2Test {
+public class CommandLineOptionsTest {
 
     private static final List<String> DEFAULT = Arrays.asList(".");
     private static final List<String> EMPTY = Collections.EMPTY_LIST;
@@ -98,7 +98,7 @@ public class CommandLineOption2Test {
     private void checkValues(String args,
                              Options options) throws ParseException {
 
-        CommandLineOption2 clo = new CommandLineOption2(args.split(" "));
+        CommandLineOptions clo = new CommandLineOptions(args.split(" "));
         assertEquals("destination not same", options.destination, clo.getDestination());
         assertEquals("", options.noHeader, clo.noHeader());
         assertEquals("", options.noFooter, clo.noFooter());
