@@ -15,7 +15,7 @@ import java.io.File;
 /**
  * Says "Hi" to the user.
  */
-@Mojo(name = "sayhi", defaultPhase = LifecyclePhase.CLEAN)
+@Mojo(name = "sayhi", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
 public class Java2HTMLMojo extends AbstractMojo {
 
     @Component

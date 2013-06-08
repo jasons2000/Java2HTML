@@ -27,7 +27,9 @@
     </dependencies>
 
     <build>
+
         <plugins>
+            <!-- test for Mojo (aka Maven Plugin)-->
             <plugin>
                 <groupId>com.java2html</groupId>
                 <artifactId>java2html-maven-plugin</artifactId>
@@ -41,6 +43,46 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- test Ant Java2HTMLTask-->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <target>
+                                <taskdef name="java2html" classname="com.java2html.Java2HTMLTask"
+                                         classpathref="maven.plugin.classpath"/>
+                                <java2html title="Java2HTML Ant Task Test"
+                                           simple="no"
+                                           tabsize="4"
+                                           marginsize="4"
+                                           destination="test_out">
+                                    <fileset dir=".">
+                                        <include name="**/*.java"/>
+                                    </fileset>
+                                    <link httpRef="http://java.sun.com/products/jdk/1.4/docs/api"/>
+                                </java2html>
+
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.java2html</groupId>
+                        <artifactId>java2html-core</artifactId>
+                        <version>1.6-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+
         </plugins>
     </build>
 

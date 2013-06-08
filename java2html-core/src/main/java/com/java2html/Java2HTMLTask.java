@@ -7,6 +7,7 @@
 
 package com.java2html;
 
+import com.java2html.ant.Link;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
@@ -125,9 +126,9 @@ public class Java2HTMLTask extends Task {
         this.failOnError = failOnError;
     }
 
-    public void addConfiguredJavaDoc(String javaDocLink) throws BuildException {
+    public void addLink(Link link) throws BuildException {
 
-        javaDocList.add(javaDocLink);
+        javaDocList.add(link.getUrlRef());
     }
 
 
