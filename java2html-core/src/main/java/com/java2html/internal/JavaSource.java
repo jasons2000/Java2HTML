@@ -398,12 +398,10 @@ public class JavaSource {
     }
 
 
-
-
     /**
      * Add the command Line Directory, as directores passed as -js
      */
-    public void generateJava2HTML() throws Exception {
+    public void generateJava2HTML() throws IOException {
 
         Hashtable filelist = getFileList();
         Enumeration keys = filelist.keys();
@@ -445,8 +443,7 @@ public class JavaSource {
             //File f = new File(destFileName);
             //System.out.println("temp"+temp);
 
-            HTMLFileWriter dest = new HTMLFileWriter(destFileName, marginSize,
-                tabSize);
+            HTMLFileWriter dest = new HTMLFileWriter(destFileName, marginSize, tabSize);
             FileReader source = new FileReader(fileName);
             dest.setHTMLMode(false);
 

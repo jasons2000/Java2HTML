@@ -140,7 +140,7 @@ public class Java2HTML {
      *
      * returns false if any failures were detected
      */
-    public boolean buildJava2HTML() throws Exception {
+    public boolean buildJava2HTML() throws IOException, BadOptionException {
 
         createSupportingFiles();
 

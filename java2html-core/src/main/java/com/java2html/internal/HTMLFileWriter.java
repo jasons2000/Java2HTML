@@ -23,8 +23,7 @@ import com.java2html.*;
 
 import java.io.*;
 
-public class HTMLFileWriter
-    extends FileWriter {
+public class HTMLFileWriter extends FileWriter {
     private boolean htmlMode = false;
     private int lineCount = 0;
     final private int convertTabsToSpacesCount;
@@ -43,25 +42,25 @@ public class HTMLFileWriter
     /**
      *
      */
-    public HTMLFileWriter(String s, int lineNumberMargin,
-                          int convertTabsToSpacesCount) throws Exception {
+    // todo consider capturing these IlleglArgumentExceptions
+    public HTMLFileWriter(String s, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
         super(s);
         if (lineNumberMargin > 64) {
-            throw new Exception("Margin too Large");
+            throw new IllegalArgumentException("Margin too Large");
         }
         if (lineNumberMargin < 0) {
-            throw new Exception("Margin too Small");
+            throw new IllegalArgumentException("Margin too Small");
         }
         if (convertTabsToSpacesCount > 64) {
-            throw new Exception("TabSize too Large");
+            throw new IllegalArgumentException("TabSize too Large");
         }
         if (convertTabsToSpacesCount < 1) {
-            throw new Exception("TabSize too Small");
+            throw new IllegalArgumentException("TabSize too Small");
         }
         if (lineNumberMargin == 0) {
             this.useLineNumbers = false;
         }
-        ;
+
         this.lineNumberMargin = lineNumberMargin;
         this.convertTabsToSpacesCount = convertTabsToSpacesCount;
     }
@@ -80,6 +79,7 @@ public class HTMLFileWriter
             }
         }
         catch (IOException e) {
+            //todo whats this?
         }
     }
 
@@ -212,7 +212,7 @@ public class HTMLFileWriter
 
     /* TODO: added conversion of tabs to spaces */
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         HTMLFileWriter fw = new HTMLFileWriter("test.html", 4, 4);
         fw.setHTMLMode(true);
         fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +

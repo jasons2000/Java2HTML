@@ -32,7 +32,7 @@ public class Java2HTMLMojo extends AbstractMojo {
             java2HTML.buildJava2HTML();
         }
         catch (Exception e) {
-            throw new MojoExecutionException(e.getMessage());
+            throw new MojoExecutionException("Java2HTML encountered a problem" , e);
         }
 
 
