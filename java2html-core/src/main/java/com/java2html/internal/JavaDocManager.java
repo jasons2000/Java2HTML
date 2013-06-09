@@ -41,6 +41,7 @@ public class JavaDocManager {
     public JavaDocManager(String... urls) throws IOException {
 
         for (String urlString : urls) {
+            // todo need to handle non connectables
             URL url = new URL(urlString);
 
             parsePackages(new URL(url, "overview-frame.html"));

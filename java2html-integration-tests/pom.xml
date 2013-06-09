@@ -53,7 +53,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <taskdef name="java2html" classname="com.java2html.Java2HTMLTask"
+                                <taskdef name="java2html" classname="com.java2html.ant.Java2HTMLTask"
                                          classpathref="maven.plugin.classpath"/>
                                 <java2html title="Java2HTML Ant Task Test"
                                            simple="no"
@@ -63,7 +63,7 @@
                                     <fileset dir=".">
                                         <include name="**/*.java"/>
                                     </fileset>
-                                    <link httpRef="http://java.sun.com/products/jdk/1.4/docs/api"/>
+                                    <link url="http://java.sun.com/products/jdk/1.4/docs/api"/>
                                 </java2html>
 
                             </target>

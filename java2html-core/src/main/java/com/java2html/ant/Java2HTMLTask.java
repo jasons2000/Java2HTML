@@ -5,9 +5,9 @@
  * Ant Task
  */
 
-package com.java2html;
+package com.java2html.ant;
 
-import com.java2html.ant.Link;
+import com.java2html.Java2HTML;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
@@ -128,7 +128,7 @@ public class Java2HTMLTask extends Task {
 
     public void addLink(Link link) throws BuildException {
 
-        javaDocList.add(link.getUrlRef());
+        javaDocList.add(link.getUrl());
     }
 
 
