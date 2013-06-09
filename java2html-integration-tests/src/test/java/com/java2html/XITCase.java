@@ -11,7 +11,7 @@ public class XITCase {
     private WebServer webServer;
 
     @Before
-    public void prepare() {
+    public void prepare() throws Exception {
 //        webServer = new WebServer();
         setBaseUrl("http://localhost:8080/test");
     }

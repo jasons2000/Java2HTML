@@ -63,7 +63,7 @@
                                     <fileset dir=".">
                                         <include name="**/*.java"/>
                                     </fileset>
-                                    <link url="http://java.sun.com/products/jdk/1.4/docs/api"/>
+                                    <link url="http://docs.oracle.com/javase/6/docs/api/"/>
                                 </java2html>
 
                             </target>
