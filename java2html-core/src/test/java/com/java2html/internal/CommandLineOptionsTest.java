@@ -1,6 +1,7 @@
 package com.java2html.internal;
 
 
+import com.java2html.ant.Link;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
@@ -13,20 +14,20 @@ import static junit.framework.Assert.assertEquals;
 public class CommandLineOptionsTest {
 
     private static final List<String> DEFAULT = Arrays.asList(".");
-    private static final List<String> EMPTY = Collections.EMPTY_LIST;
+    private static final List<Link> EMPTY = Collections.EMPTY_LIST;
 
     static class Options {
         boolean noHeader;
         boolean noFooter;
         boolean isSimple;
         boolean isQuite;
-        List<String> javaDoc;
+        List<Link> javaDoc;
         List<String> javaSource;
         String destination;
         int tabSize;
         int margin;
 
-        Options(String destination, List<String> javaSource, List<String> javaDoc, int margin, int tabSize, boolean noHeader, boolean noFooter, boolean simple, boolean quite) {
+        Options(String destination, List<String> javaSource, List<Link> javaDoc, int margin, int tabSize, boolean noHeader, boolean noFooter, boolean simple, boolean quite) {
             this.destination = destination;
             isQuite = quite;
             isSimple = simple;
@@ -40,7 +41,7 @@ public class CommandLineOptionsTest {
 
         static Options create(String destination,
                                       List<String> javaSource,
-                                      List<String> javaDoc,
+                                      List<Link> javaDoc,
                                       int margin,
                                       int tabSize) {
             return new Options(destination, javaSource, javaDoc, margin, tabSize, false, false, false, false);
@@ -48,7 +49,7 @@ public class CommandLineOptionsTest {
 
         static Options create(String destination,
                               List<String> javaSource,
-                              List<String> javaDoc,
+                              List<Link> javaDoc,
                               int margin,
                               int tabSize,
                               boolean noHeader,
@@ -79,7 +80,7 @@ public class CommandLineOptionsTest {
 
 
         List<String> expectedSources = Arrays.asList("a/b/c","a","b","c");
-        List<String> expectedJavaDoc = Arrays.asList("e","f");
+        List<Link> expectedJavaDoc = Arrays.asList(new Link().setUrl("e"),new Link().setUrl("f"));
         checkValues("-js a/b/c a b c", Options.create(".",expectedSources, EMPTY,0,4));
 
         checkValues("-js a/b/c a b c -jd e f", Options.create(".",expectedSources, expectedJavaDoc,0,4));
@@ -93,7 +94,6 @@ public class CommandLineOptionsTest {
 
 
     }
-
 
     private void checkValues(String args,
                              Options options) throws ParseException {

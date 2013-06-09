@@ -15,7 +15,18 @@
         <module>java2html-site</module>
         <module>java2html-testing-tools</module>
         <module>java2html-integration-tests</module>
+        <module>java2html-java-parser2</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+        	<groupId>junit</groupId>
+        	<artifactId>junit</artifactId>
+        	<version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 
     <!--<build>-->

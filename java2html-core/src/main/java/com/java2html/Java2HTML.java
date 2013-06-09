@@ -50,7 +50,11 @@
  */
 package com.java2html;
 
-import com.java2html.internal.*;
+import com.java2html.ant.Link;
+import com.java2html.internal.CommandLineOptions;
+import com.java2html.internal.Helper;
+import com.java2html.internal.JavaDocManager;
+import com.java2html.internal.JavaSource;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -100,7 +104,7 @@ public class Java2HTML {
 
     private List<String> javaSourceFileList = null;
 
-    private List<String> javaDocOptionLinks = Collections.emptyList();
+    private List<Link> javaDocOptionLinks = Collections.emptyList();
 
     private String destination = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
@@ -144,7 +148,7 @@ public class Java2HTML {
 
         createSupportingFiles();
 
-        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new String[0]));
+        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
 
         if (javaSourceFileList == null) {
             setJavaDirectorySource(Arrays.asList("."));
@@ -323,7 +327,7 @@ public class Java2HTML {
          *
          * @param javaDocLinks List of JavaDocOptions
          */
-        public void setJavaDocLinks(List<String> javaDocLinks) {
+        public void setJavaDocLinks(List<Link> javaDocLinks) {
             javaDocOptionLinks = javaDocLinks;
         }
 

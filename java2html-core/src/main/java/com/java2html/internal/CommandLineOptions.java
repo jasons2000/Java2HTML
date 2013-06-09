@@ -2,9 +2,12 @@ package com.java2html.internal;
 
 import com.java2html.BadOptionException;
 import com.java2html.Java2HTML;
+import com.java2html.ant.Link;
 import org.apache.commons.cli.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandLineOptions {
@@ -71,9 +74,15 @@ public class CommandLineOptions {
 
     }
 
-    public List<String> getJavaDocUrls() {
+    public List<Link> getJavaDocUrls() {
+
         String[] values = line.getOptionValues("jd");
-        return Arrays.asList(values != null ? values : new String[0]);
+        List<Link> links = new ArrayList<Link>();
+        if (values != null) for (String value : values) {
+            links.add(new Link().setUrl(value));
+        }
+
+        return Collections.unmodifiableList(links);
     }
 
     public String getDestination() {

@@ -22,7 +22,7 @@ public class Java2HTMLTask extends Task {
     private Java2HTML java2HTML = new Java2HTML();
 
     private List<String> javaSourceFileList = new ArrayList<String>();
-    private List<String> javaDocList = new ArrayList<String>();
+    private List<Link> javaDocList = new ArrayList<Link>();
 
     private boolean failOnError = false;
 
@@ -126,9 +126,10 @@ public class Java2HTMLTask extends Task {
         this.failOnError = failOnError;
     }
 
-    public void addLink(Link link) throws BuildException {
-
-        javaDocList.add(link.getUrl());
+    public Link createLink() {
+        Link link = new Link();
+        javaDocList.add(link);
+        return link;
     }
 
 

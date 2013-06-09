@@ -19,6 +19,7 @@
 
 package com.java2html.internal;
 
+import com.java2html.ant.Link;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,11 +39,11 @@ public class JavaDocManager {
     private final Map<String, String> classList = new Hashtable<String, String>();
     private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
-    public JavaDocManager(String... urls) throws IOException {
+    public JavaDocManager(Link... urls) throws IOException {
 
-        for (String urlString : urls) {
+        for (Link urlString : urls) {
             // todo need to handle non connectables
-            URL url = new URL(urlString);
+            URL url = new URL(urlString.getUrl());
 
             parsePackages(new URL(url, "overview-frame.html"));
             parseClasses(new URL(url, "allclasses-frame.html"));
