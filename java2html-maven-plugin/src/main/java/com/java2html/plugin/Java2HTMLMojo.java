@@ -23,9 +23,7 @@ public class Java2HTMLMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
 
-        getLog().info("Hello, world. X: " + project.getCompileSourceRoots());
-
-        getLog().info("Hello, world. Y: " + project.getBuild().getOutputDirectory());
+        getLog().info("Java2HTML Mojo Running");
 
         Java2HTML java2HTML = new Java2HTML();
 
@@ -38,6 +36,8 @@ public class Java2HTMLMojo extends AbstractMojo {
         catch (Exception e) {
             throw new MojoExecutionException("Java2HTML encountered a problem", e);
         }
+
+        getLog().info("Java2HTML Mojo Completed");
 
 
     }

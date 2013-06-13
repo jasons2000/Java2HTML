@@ -16,6 +16,7 @@
         <module>java2html-testing-tools</module>
         <module>java2html-integration-tests</module>
         <module>java2html-java-parser2</module>
+        <module>java2html-parser-core</module>
     </modules>
 
     <dependencies>

@@ -11,5 +11,29 @@
 
     <artifactId>java2html-java-parser</artifactId>
 
+    <dependencies>
+        <!--<dependency>-->
+            <!--<artifactId>java2html-core</artifactId>-->
+            <!--<groupId>com.java2html</groupId>-->
+            <!--<version>1.6-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!--<dependency>-->
+        <!--<artifactId>java2html-parser-core</artifactId>-->
+        <!--<groupId>com.java2html</groupId>-->
+        <!--<version>1.6-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <!-- temp-->
+        <dependency>
+             <groupId>org.jsoup</groupId>
+             <artifactId>jsoup</artifactId>
+             <version>1.7.2</version>
+         </dependency>
+
+    </dependencies>
+
+
+
 
 </project>

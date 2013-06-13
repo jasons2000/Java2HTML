@@ -17,7 +17,7 @@
  *
  */
 
-package com.java2html.parser;
+package com.java2html.java_parser;
 
 /**
  * Class to hold modifiers.

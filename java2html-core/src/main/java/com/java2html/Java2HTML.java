@@ -53,8 +53,8 @@ package com.java2html;
 import com.java2html.ant.Link;
 import com.java2html.internal.CommandLineOptions;
 import com.java2html.internal.Helper;
-import com.java2html.internal.JavaDocManager;
-import com.java2html.internal.JavaSource;
+import com.java2html.java_parser.JavaDocManager;
+import com.java2html.java_parser.JavaSource;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -82,8 +82,8 @@ import java.util.*;
  *      reorg for dir for src2html - maintain old class, and ant task integration
  *       abstract reference lookup with Type and matching String
  *       0th parse detects sources
- *       1st parse build up all references
- *       2nd parse detectect references
+ *       1st parse build up all com.java2html.references
+ *       2nd parse detectect com.java2html.references
  *
  *
  *
@@ -99,6 +99,9 @@ public class Java2HTML {
     private boolean footer = true;
     private boolean simple = false;
     private boolean quiet  = false;
+
+//    private List<ReferenceParser> referenceParsers = new ArrayList<ReferenceParser>();
+//    private List<SourceParser> sourceParsers = new ArrayList<SourceParser>();
 
     private String title = "Java Source";
 
@@ -339,5 +342,28 @@ public class Java2HTML {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+
+//    private void loadParsers() {
+//        List<ReferenceParser> referenceParsers = locateAllReferenceParsers();
+//
+//        for (ReferenceParser referenceParser : referenceParsers) {
+//            if (referenceParser instanceof SourceParser){
+//                sourceParsers.add((SourceParser)referenceParser);
+//            }
+//            else {
+//                referenceParsers.add(referenceParser);
+//            }
+//        }
+//    }
+//
+//    private List<ReferenceParser> locateAllReferenceParsers() {
+//        // TODO needs to locate dynamiclly either from  classpath or something
+//
+//        List<ReferenceParser> referenceParsers = new ArrayList<ReferenceParser>();
+//        referenceParsers.add(new JavaSource());
+//        referenceParsers.add(new JavaDocManager());
+//        return referenceParsers;
+//
+//    }
 
 }

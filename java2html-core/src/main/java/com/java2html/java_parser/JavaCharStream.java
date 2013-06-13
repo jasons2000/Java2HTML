@@ -18,13 +18,12 @@
  *
  */
 
-package com.java2html.parser;
+package com.java2html.java_parser;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (with java-like unicode escape processing).
  */
-import com.java2html.internal.Position;
 import java.util.Hashtable;
 
 public class JavaCharStream

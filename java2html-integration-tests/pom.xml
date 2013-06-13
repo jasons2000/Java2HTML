@@ -11,6 +11,18 @@
 
     <artifactId>java2html-integration-tests</artifactId>
     <dependencies>
+
+        <dependency>
+            <groupId>com.java2html</groupId>
+            <artifactId>java2html-core</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.java2html</groupId>
+            <artifactId>java2html-core</artifactId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>net.sourceforge.jwebunit</groupId>
             <artifactId>jwebunit-htmlunit-plugin</artifactId>
@@ -59,7 +71,7 @@
                                            simple="no"
                                            tabsize="4"
                                            marginsize="4"
-                                           destination="test_out">
+                                           destination="${project.build.directory}/integration-tests-ant-output">
                                     <fileset dir=".">
                                         <include name="**/*.java"/>
                                     </fileset>

@@ -17,14 +17,19 @@
  *
  */
 
-package com.java2html.internal;
+package com.java2html.java_parser;
 
-import com.java2html.*;
-import com.java2html.internal.*;
-import com.java2html.parser.*;
+import com.java2html.internal.HTMLFileWriter;
+import com.java2html.internal.Helper;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
 
 public class JavaSource {
 

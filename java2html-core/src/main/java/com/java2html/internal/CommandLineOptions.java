@@ -79,7 +79,7 @@ public class CommandLineOptions {
         String[] values = line.getOptionValues("jd");
         List<Link> links = new ArrayList<Link>();
         if (values != null) for (String value : values) {
-            links.add(new Link().setUrl(value));
+            links.add(new Link(value));
         }
 
         return Collections.unmodifiableList(links);

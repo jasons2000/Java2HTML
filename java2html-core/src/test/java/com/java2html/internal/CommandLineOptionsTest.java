@@ -80,7 +80,7 @@ public class CommandLineOptionsTest {
 
 
         List<String> expectedSources = Arrays.asList("a/b/c","a","b","c");
-        List<Link> expectedJavaDoc = Arrays.asList(new Link().setUrl("e"),new Link().setUrl("f"));
+        List<Link> expectedJavaDoc = Arrays.asList(new Link("e"),new Link("f"));
         checkValues("-js a/b/c a b c", Options.create(".",expectedSources, EMPTY,0,4));
 
         checkValues("-js a/b/c a b c -jd e f", Options.create(".",expectedSources, expectedJavaDoc,0,4));

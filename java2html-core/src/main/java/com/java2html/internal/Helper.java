@@ -22,14 +22,13 @@ package com.java2html.internal;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import java.io.*;
-import java.util.List;
 import java.util.Map;
 
 public class Helper {
 
-    static String lineSep = System.getProperty("line.separator");
+    public static String lineSep = System.getProperty("line.separator");
 
-    static final String webSep = "/";
+    public static final String webSep = "/";
 
     private final StrSubstitutor substitutor;
 
@@ -122,17 +121,61 @@ public class Helper {
         }
     }
 
+        // top left
+    final static String getPreIndex(String title) {
+        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
+            lineSep +
+            "<HTML>" + lineSep +
+            "<HEAD>" + lineSep +
+            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
+            lineSep +
+            "<TITLE>" + title + " (Java2HTML)" + lineSep +
+            "</TITLE>" + lineSep +
+            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+            lineSep +
+            "</HEAD>" + lineSep +
+            "<BODY>" + lineSep +
+            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\"><A HREF=\"front.html\" TARGET=\"SourceFrame\">" +
+            title + "</A></FONT>" + lineSep +
+            "<BR> <FONT CLASS=\"FrameItemFont\"><A HREF=\"AllClasses.html\" TARGET=\"packageFrame\">All Classes</A></FONT>" +
+            lineSep +
+            "<BR> <FONT size=\"+1\" CLASS=\"FrameHeadingFont\">Packages</FONT>" +
+            lineSep;
+    }
+
+    // Bottom Left (Package Index)
+    final static String getClassesFrame(String packageName) {
+        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
+            lineSep +
+            "<HTML>" + lineSep +
+            "<HEAD>" + lineSep +
+            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
+            lineSep +
+            "<TITLE>" + packageName + " (Java2HTML)</TITLE>" + lineSep +
+            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+            lineSep +
+            "</HEAD>" + lineSep +
+            "<BODY>" + lineSep +
+            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\">" + packageName +
+            "</FONT>" + lineSep;
+    }
+
+    private static final String postIndex = "</BODY>" + lineSep +
+        "</HTML>" + lineSep;
+
+
+
     /**
      * replaces "." with web delimeter c
      */
-    static String convertDots(String webRef, char c) {
+    public static String convertDots(String webRef, char c) {
         return webRef.replace('.', c);
     }
 
     /**
      * replaces "\" with web delimeter
      */
-    static String convert(String webRef) {
+    public static String convert(String webRef) {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
 

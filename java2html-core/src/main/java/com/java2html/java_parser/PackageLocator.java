@@ -17,7 +17,7 @@
  *
  */
 
-package com.java2html.internal;
+package com.java2html.java_parser;
 
 import java.io.BufferedReader;
 import java.io.File;

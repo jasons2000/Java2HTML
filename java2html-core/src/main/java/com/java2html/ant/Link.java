@@ -4,6 +4,10 @@ public class Link {
 
     private String url;
 
+    public Link(String url) {
+        this.url = url;
+    }
+
     public Link() {
     }
 
@@ -11,9 +15,8 @@ public class Link {
         return url;
     }
 
-    public Link setUrl(String url) {
+    public void setUrl(String url) {
         this.url = url;
-        return this;
     }
 
     @Override

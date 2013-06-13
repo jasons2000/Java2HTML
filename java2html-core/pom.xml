@@ -18,6 +18,25 @@
         <!--<artifactId>slf4j-api</artifactId>-->
         <!--<version>1.7.5</version>-->
         <!--</dependency>-->
+        <dependency>
+            <artifactId>java2html-java-parser</artifactId>
+            <groupId>com.java2html</groupId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
+
+        <!--<dependency>-->
+        <!--<artifactId>java2html-parser-core</artifactId>-->
+        <!--<groupId>com.java2html</groupId>-->
+        <!--<version>1.6-SNAPSHOT</version>-->
+        <!--</dependency>-->
+
+        <dependency>
+            <artifactId>java2html-java-parser</artifactId>
+            <groupId>com.java2html</groupId>
+            <version>1.6-SNAPSHOT</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -75,39 +94,39 @@
         </dependency>
 
     </dependencies>
-
     <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>javacc-maven-plugin</artifactId>
+                    <dependencies>
+                        <!-- doesnt work with javac greater than this version, we need to upgrade-->
+                        <dependency>
+                            <groupId>net.java.dev.javacc</groupId>
+                            <artifactId>javacc</artifactId>
+                            <version>4.0</version>
+                        </dependency>
+                    </dependencies>
+                    <version>2.6</version>
+                    <executions>
+                        <execution>
+                            <id>javacc</id>
+                            <goals>
+                                <goal>jjtree-javacc</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
 
-        <plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-            </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9</version>
+                </plugin>
+            </plugins>
+        </build>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javacc-maven-plugin</artifactId>
-                <dependencies>
-                    <!-- doesnt work with javac greater than this version, we need to upgrade-->
-                    <dependency>
-                        <groupId>net.java.dev.javacc</groupId>
-                        <artifactId>javacc</artifactId>
-                        <version>4.0</version>
-                    </dependency>
-                </dependencies>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>javacc</id>
-                        <goals>
-                            <goal>jjtree-javacc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
 
-        </plugins>
-    </build>
+
 </project>

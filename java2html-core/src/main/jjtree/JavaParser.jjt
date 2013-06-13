@@ -38,7 +38,7 @@ options {
 }
 
 PARSER_BEGIN(JavaParser)
-package com.java2html.parser;
+package com.java2html.java_parser;
 
 import com.java2html.*;
 import com.java2html.internal.*;

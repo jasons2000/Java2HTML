@@ -17,7 +17,7 @@
  *
  */
 
-package com.java2html.internal;
+package com.java2html.java_parser;
 
 import com.java2html.ant.Link;
 import org.jsoup.Connection;

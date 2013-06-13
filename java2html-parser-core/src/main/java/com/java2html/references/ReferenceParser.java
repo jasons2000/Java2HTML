@@ -1,10 +1,10 @@
 package com.java2html.references;
 
-import java.io.InputStream;
+import java.io.Reader;
 
 public interface ReferenceParser {
 
     void parseReferences(ReferenceMapMutable referenceLookUp,
-                         InputStream inputStream);
+                         Reader reader);
 
 }

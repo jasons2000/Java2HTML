@@ -18,7 +18,7 @@
  *
  */
 
-package com.java2html.parser;
+package com.java2html.java_parser;
 
 /**
  * Describes the input token stream.
