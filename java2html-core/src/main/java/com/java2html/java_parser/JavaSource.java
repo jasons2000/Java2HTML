@@ -22,10 +22,7 @@ package com.java2html.java_parser;
 import com.java2html.internal.HTMLFileWriter;
 import com.java2html.internal.Helper;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -361,7 +358,9 @@ public class JavaSource {
         //int idx = base.length()+1;
         String href;
         try {
-            String packageLevel = mLocator.determinePackageName( fullPathfileName );
+            final Reader lJavaSourceReader = new BufferedReader( new FileReader(fullPathfileName));
+
+            String packageLevel = mLocator.determinePackageName( lJavaSourceReader);
             // System.err.println( fullPathfileName + ": " + packageLevel );
             if (packageLevel == null || packageLevel.length() == 0) {
                 packageLevel = ""; //default package =""

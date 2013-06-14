@@ -37,40 +37,34 @@ import java.util.Properties;
  */
 public final class PackageLocator {
 
-
-    public PackageLocator() {
-    } // PackageLocator
-
+    // ----- members -----
+    private static final boolean DEBUG = false;
 
     public final synchronized String determinePackageName(
-            final String pJavaSourceFileName
+            final Reader reader
     ) throws IOException {
-        final FileReader lJavaSourceReader = new FileReader(pJavaSourceFileName);
+
         try {
-            mInput = new BufferedReader(lJavaSourceReader);
 
-            mPackageName.delete(0, mPackageName.length());
-            mbInSingleLineComment = false;
-            mbInMultiLineComment = false;
-            mbPackageKeywordFound = false;
+            return scan(reader);
 
-            scan();
-
-            final String lPackageName = mPackageName.toString();
-            mPackageName.delete(0, mPackageName.length());
-            return lPackageName;
         }
         finally {
-            mInput = null;
-            lJavaSourceReader.close();
+            reader.close();
         }
     } // determinePackageName
 
 
-    private void scan() throws IOException {
-        mCurToken.delete(0, mCurToken.length());
+    private String scan(Reader reader) throws IOException {
+
+        boolean mbInSingleLineComment =false;
+        boolean mbInMultiLineComment = false;
+        boolean mbPackageKeywordFound = false;
+        StringBuilder mCurToken = new StringBuilder();
+        StringBuilder packageName = new StringBuilder();
+
         int lnPrevChar = -1;
-        int lnCurChar = mInput.read();
+        int lnCurChar = reader.read();
         while (lnCurChar >= 0) {
             if (DEBUG) {
                 System.out.println("" +
@@ -81,7 +75,7 @@ public final class PackageLocator {
                         ", multi=" + mbInMultiLineComment +
                         ", pkg=" + mbPackageKeywordFound +
                         ", token='" + mCurToken + "'" +
-                        ", package='" + mPackageName + "'");
+                        ", package='" + packageName + "'");
             }
             switch (lnCurChar) {
                 case '\n':
@@ -118,7 +112,7 @@ public final class PackageLocator {
                 case ';':
                     if (!mbInSingleLineComment && !mbInMultiLineComment) {
                         if (mbPackageKeywordFound) {
-                            return;
+                            return packageName.toString();
                         }
                     }
                     break;
@@ -134,12 +128,12 @@ public final class PackageLocator {
                                 if (mCurToken.length() > 0 && !mbPackageKeywordFound) {
                                     // no non-comment/non-whitespace tokens before a package are allowed
                                     // (not even annotations: these need to be in a special file: 'package-info.java')
-                                    return;
+                                    return packageName.toString();
                                 }
                                 break;
                         }
                         if (mbPackageKeywordFound) {
-                            mPackageName.append((char) lnCurChar);
+                            packageName.append((char) lnCurChar);
                         }
                         else {
                             mCurToken.append((char) lnCurChar);
@@ -164,8 +158,9 @@ public final class PackageLocator {
       //*/
             }
             lnPrevChar = lnCurChar;
-            lnCurChar = mInput.read();
+            lnCurChar = reader.read();
         }
+        return  packageName.toString();
     } // scan
 
 
@@ -210,7 +205,7 @@ public final class PackageLocator {
                             if (DEBUG) {
                                 System.out.println("===========================================================");
                             }
-                            final String lPackageName = lLocator.determinePackageName(lTestFile.getAbsolutePath());
+                            final String lPackageName = lLocator.determinePackageName( new BufferedReader(new FileReader(lTestFile.getAbsolutePath())));
                             if (!lExpectedPackageName.equals(lPackageName)) {
                                 if (DEBUG) {
                                     System.out.println("--------------------------");
@@ -239,18 +234,5 @@ public final class PackageLocator {
     } // main
 
 
-    // ----- members -----
-    private static final boolean DEBUG = false;
-    private Reader mInput;
-    private boolean mbInSingleLineComment;
-    private boolean mbInMultiLineComment;
-    private boolean mbPackageKeywordFound;
-    private final StringBuilder mCurToken = new StringBuilder(64);
-    private final StringBuilder mPackageName = new StringBuilder(64);
-
 
 } // class PackageLocator
-// --------------------------------------------------------------------------
-
-
-// -- EOF -------------------------------------------------------------------
