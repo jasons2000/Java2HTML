@@ -122,7 +122,7 @@ public class Helper {
     }
 
         // top left
-    final static String getPreIndex(String title) {
+    public final static String getPreIndex(String title) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
             lineSep +
             "<HTML>" + lineSep +
@@ -144,7 +144,7 @@ public class Helper {
     }
 
     // Bottom Left (Package Index)
-    final static String getClassesFrame(String packageName) {
+    public final static String getClassesFrame(String packageName) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
             lineSep +
             "<HTML>" + lineSep +
@@ -160,8 +160,10 @@ public class Helper {
             "</FONT>" + lineSep;
     }
 
-    private static final String postIndex = "</BODY>" + lineSep +
-        "</HTML>" + lineSep;
+
+    public static final String postIndex = "</BODY>" + Helper.lineSep +
+        "</HTML>" + Helper.lineSep;
+
 
 
 

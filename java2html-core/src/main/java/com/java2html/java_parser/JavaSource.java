@@ -76,47 +76,6 @@ public class JavaSource {
       this.quiet = quiet;
     } // setQuiet
 
-    // top left
-    final static String getPreIndex(String title) {
-        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
-            Helper.lineSep +
-            "<HTML>" + Helper.lineSep +
-            "<HEAD>" + Helper.lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
-            Helper.lineSep +
-            "<TITLE>" + title + " (Java2HTML)" + Helper.lineSep +
-            "</TITLE>" + Helper.lineSep +
-            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-            Helper.lineSep +
-            "</HEAD>" + Helper.lineSep +
-            "<BODY>" + Helper.lineSep +
-            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\"><A HREF=\"front.html\" TARGET=\"SourceFrame\">" +
-            title + "</A></FONT>" + Helper.lineSep +
-            "<BR> <FONT CLASS=\"FrameItemFont\"><A HREF=\"AllClasses.html\" TARGET=\"packageFrame\">All Classes</A></FONT>" +
-            Helper.lineSep +
-            "<BR> <FONT size=\"+1\" CLASS=\"FrameHeadingFont\">Packages</FONT>" +
-            Helper.lineSep;
-    }
-
-    // Bottom Left (Package Index)
-    final static String getClassesFrame(String packageName) {
-        return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
-            Helper.lineSep +
-            "<HTML>" + Helper.lineSep +
-            "<HEAD>" + Helper.lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
-            Helper.lineSep +
-            "<TITLE>" + packageName + " (Java2HTML)</TITLE>" + Helper.lineSep +
-            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-            Helper.lineSep +
-            "</HEAD>" + Helper.lineSep +
-            "<BODY>" + Helper.lineSep +
-            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\">" + packageName +
-            "</FONT>" + Helper.lineSep;
-    }
-
-    private static final String postIndex = "</BODY>" + Helper.lineSep +
-        "</HTML>" + Helper.lineSep;
 
     private String destination;
     private int marginSize;
@@ -172,7 +131,7 @@ public class JavaSource {
 
         FileWriter file = new FileWriter(dest + File.separator +
                                          "packages.html");
-        StringBuffer index = new StringBuffer(getPreIndex(title));
+        StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
 
         Enumeration e = classList.keys();
         Vector sortedVector = new Vector();
@@ -212,7 +171,7 @@ public class JavaSource {
                          "\" TARGET=\"packageFrame\">" + text + "</A></FONT>");
         }
 
-        index.append(postIndex);
+        index.append(Helper.postIndex);
         file.write(index.toString());
         file.close();
     }
@@ -274,7 +233,7 @@ public class JavaSource {
                        "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
                        "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // TAken out CR
         }
-        file.write(postIndex);
+        file.write(Helper.postIndex);
         file.close();
 
     }
@@ -286,10 +245,10 @@ public class JavaSource {
             ".index.html";
         FileWriter file = new FileWriter(dest + File.separatorChar + href2);
         if (packageString.equals("")) {
-            file.write(getClassesFrame("Package Default"));
+            file.write(Helper.getClassesFrame("Package Default"));
         }
         else {
-            file.write(getClassesFrame("Package " + packageString));
+            file.write(Helper.getClassesFrame("Package " + packageString));
         }
 
         Hashtable ht = (Hashtable) classList.get(packageString);
@@ -325,7 +284,7 @@ public class JavaSource {
                        "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
                        "\" TARGET=\"SourceFrame\">" + text + "</A></FONT>");
         }
-        file.write(postIndex);
+        file.write(Helper.postIndex);
         file.close();
         return href2;
     }
