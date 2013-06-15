@@ -20,10 +20,11 @@
 package com.java2html.internal;
 
 import com.java2html.*;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
 
-public class HTMLFileWriter extends FileWriter {
+public class HTMLFileWriter extends BufferedWriter {
     private boolean htmlMode = false;
     private int lineCount = 0;
     final private int convertTabsToSpacesCount;
@@ -44,7 +45,7 @@ public class HTMLFileWriter extends FileWriter {
      */
     // todo consider capturing these IlleglArgumentExceptions
     public HTMLFileWriter(String s, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
-        super(s);
+        super(new FileWriter(s));
         if (lineNumberMargin > 64) {
             throw new IllegalArgumentException("Margin too Large");
         }
@@ -65,9 +66,6 @@ public class HTMLFileWriter extends FileWriter {
         this.convertTabsToSpacesCount = convertTabsToSpacesCount;
     }
 
-    public void write(StringBuffer str) {
-        write(str.toString());
-    }
 
     public void write(String str) {
         try {
@@ -149,7 +147,9 @@ public class HTMLFileWriter extends FileWriter {
     private int charCount = 0;
 
     private String getHTMLParsedText(String str) {
-        int cnt = 0, x = 0;
+//        return StringEscapeUtils.escapeHtml(str);
+        int cnt = 0;
+        int x;
         StringBuffer s = new StringBuffer();
         final int len = str.length();
         int c;

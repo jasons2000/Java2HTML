@@ -23,16 +23,14 @@ import com.java2html.internal.HTMLFileWriter;
 import com.java2html.internal.Helper;
 
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 public class JavaSource {
 
 
-    public Hashtable classList = new Hashtable();
-    public  Hashtable packageList = new Hashtable(); // TODO Make Private
-    public Hashtable directoryToPackage = new Hashtable();
+    public Map<String, Map<String,String>> classList = new HashMap<String, Map<String,String>>();
+    public Map<String, String> packageList = new HashMap<String, String>(); // TODO Make Private
+    public Map<String, Package> directoryToPackage = new HashMap<String, Package>();
 
     private boolean quiet = false;
     private final PackageLocator mLocator = new PackageLocator();
@@ -52,11 +50,6 @@ public class JavaSource {
         String className;
     }
 
-    //private static Vector fileList = new Vector(); // Stored list of Files
-
-    public Hashtable getFileList() {
-        return directoryToPackage;
-    }
 
     public final boolean isQuiet() {
       return quiet;
@@ -98,12 +91,12 @@ public class JavaSource {
         String packageName = text.substring(0, x);
         String className = text.substring(x + 1, text.length());
         //System.out.println("****Cn="+className+", packagName="+packageName);
-        Hashtable ht = (Hashtable) classList.get(packageName);
+        Map<String,String> ht = classList.get(packageName);
         if (ht == null) {
             return null;
         }
         //System.out.println("Match ClassName="+className+", packagName="+packageName);
-        return (String) ht.get(className);
+        return ht.get(className);
     }
 
     public static void main(String[] args) throws IOException {
@@ -120,9 +113,9 @@ public class JavaSource {
 
     public void print() {
         String pl, className, href = null;
-        Enumeration en = classList.keys();
-        while (en.hasMoreElements()) {
-            pl = (String) en.nextElement();
+        Iterator<String> en = classList.keySet().iterator();
+        while (en.hasNext()) {
+            pl = en.next();
             Hashtable ht = (Hashtable) classList.get(pl);
             Enumeration en1 = ht.keys();
             while (en1.hasMoreElements()) {
@@ -148,7 +141,7 @@ public class JavaSource {
         try {
             final Reader lJavaSourceReader = new BufferedReader( new FileReader(fullPathfileName));
 
-            String packageLevel = mLocator.determinePackageName( lJavaSourceReader);
+            String packageLevel = PackageLocator.scan( lJavaSourceReader);
             // System.err.println( fullPathfileName + ": " + packageLevel );
             if (packageLevel == null || packageLevel.length() == 0) {
                 packageLevel = ""; //default package =""
@@ -195,16 +188,11 @@ public class JavaSource {
      */
     public void generateJava2HTML() throws IOException {
 
-        Hashtable filelist = getFileList();
-        Enumeration keys = filelist.keys();
 
-        String fileName;
-        Package aPackage;
+        for (Map.Entry<String, Package> entry : directoryToPackage.entrySet() ) {
 
-        while (keys.hasMoreElements()) {
-
-            fileName = (String) keys.nextElement();
-            aPackage = (Package) filelist.get(fileName);
+            String fileName = entry.getKey();
+            Package aPackage =  entry.getValue();
 
             if ( "package-info.java".equalsIgnoreCase( new File( fileName ).getName() ) ) {
               // skip the replacement (as of JDK 1.5) for package.html
@@ -218,7 +206,7 @@ public class JavaSource {
                 s += File.separator; // if not ending with \ add a \
             }
             String destFileName;
-            if (aPackage.packageLevel.equals("")) {
+            if (aPackage.packageLevel.isEmpty()) {
                 destFileName = s + aPackage.className + ".java.html";
             }
             else {
@@ -240,7 +228,7 @@ public class JavaSource {
             dest.setHTMLMode(false);
 
             String dot = ".";
-            if (aPackage.packageLevel.length() == 0) {
+            if (aPackage.packageLevel.isEmpty()) {
                 dot = ""; // If no package then remove the dot
 
             }

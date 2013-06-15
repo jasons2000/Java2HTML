@@ -19,13 +19,10 @@
 
 package com.java2html.internal;
 
-import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.io.*;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 public class Helper {
 
@@ -184,40 +181,21 @@ public class Helper {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
 
-    public static void createPackageIndex(String dest, String title, Hashtable classList,Hashtable packageList) throws
+    public static void createPackageIndex(String dest, String title, Map<String, Map<String,String>> classList, Map<String,String> packageList) throws
             IOException {
 
             FileWriter file = new FileWriter(dest + File.separator +
                                              "packages.html");
             StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
 
-            Enumeration e = classList.keys();
-            Vector sortedVector = new Vector();
-            String text;
+        List<String> sortedList = new ArrayList<String>();
+        sortedList.addAll(classList.keySet());
+        Collections.sort(sortedList);
 
-            createAllClassIndex(dest, classList);
+        createAllClassIndex(dest, classList);
 
-            while (e.hasMoreElements()) {
-
-                text = (String) e.nextElement();
-                int c = sortedVector.size();
-
-                while (c > 0) {
-                    if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
-                        break;
-                    }
-                    c--;
-                }
-                sortedVector.insertElementAt(text, c);
-            }
-
-            e = sortedVector.elements();
-            text = null;
-            String href = null;
-
-            while (e.hasMoreElements()) {
-                text = (String) e.nextElement();
-                href = createClassIndex(dest, text, classList);
+            for (String text : sortedList) {
+                String href = createClassIndex(dest, text, classList.get(text));
 
                 //System.out.println("text="+text+" href=" + href);
                 packageList.put(text, href);
@@ -234,7 +212,7 @@ public class Helper {
             file.close();
         }
 
-    static String createClassIndex(String dest, String packageString, Hashtable classList) throws
+    static String createClassIndex(String dest, String packageString, Map<String, String> classListInPackage) throws
            IOException {
 
            String href2 = (packageString.equals("") ? "default" : packageString) +
@@ -247,34 +225,14 @@ public class Helper {
                file.write(Helper.getClassesFrame("Package " + packageString));
            }
 
-           Hashtable ht = (Hashtable) classList.get(packageString);
-           Enumeration e = ht.keys();
 
-           Vector sortedVector = new Vector();
-           String text = null;
+           List<String>  sortedClasses = new ArrayList<String>();
+           sortedClasses.addAll(classListInPackage.keySet());
+           Collections.sort( sortedClasses);
 
-           while (e.hasMoreElements()) {
+           for (String text : sortedClasses) {
 
-               text = (String) e.nextElement();
-               int c = sortedVector.size();
-
-               while (c > 0) {
-                   if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
-                       break;
-                   }
-                   c--;
-               }
-               sortedVector.insertElementAt(text, c);
-           }
-
-           text = null;
-           String href;
-
-           e = sortedVector.elements();
-           while (e.hasMoreElements()) {
-
-               text = (String) e.nextElement();
-               href = (String) ht.get(text);
+               String href = classListInPackage.get(text);
 
                file.write("<BR>" + Helper.lineSep +
                           "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
@@ -286,7 +244,7 @@ public class Helper {
        }
 
 
-    private static class Pair {
+    private static class Pair implements Comparable<Pair>{
 
         Pair(String text, String ref) {
             this.text = text;
@@ -295,11 +253,17 @@ public class Helper {
 
         String text;
         String ref;
+
+
+        @Override
+        public int compareTo(Pair o) {
+            return text.compareTo(o.text);
+        }
     }
 
 
 
-    static void createAllClassIndex(String dest, Hashtable classList) throws IOException {
+    static void createAllClassIndex(String dest, Map<String, Map<String,String>> classList) throws IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
                                          "AllClasses.html");
@@ -318,51 +282,25 @@ public class Helper {
                    //"<FONT size=+1>"+
                    "All Classes</FONT>" + Helper.lineSep);
 
-        Vector sortedVector = new Vector();
-        Enumeration e = classList.elements();
-        Enumeration ef;
-        String text;
-        Pair p;
-
-        while (e.hasMoreElements()) {
-
-            Hashtable ht = (Hashtable) e.nextElement();
-            ef = ht.keys();
-
-            while (ef.hasMoreElements()) {
-
-                text = (String) ef.nextElement();
-                int c = sortedVector.size();
-
-                while (c > 0) {
-
-                    String str = ( (Pair) sortedVector.elementAt(c - 1)).text;
-                    if (text.compareTo(str) > 0) {
-                        break;
-                    }
-                    c--;
-                }
-                p = new Pair(text, (String) ht.get(text));
-                sortedVector.insertElementAt(p, c);
+        List<Pair> pairs = new ArrayList<Pair>();
+        for (Map<String,String> maps : classList.values()) {
+            for (Map.Entry<String, String> entry : maps.entrySet()) {
+                pairs.add(new Pair(entry.getKey(), entry.getValue()));
             }
         }
+        Collections.sort(pairs);
 
-        e = sortedVector.elements();
+        for (Pair p : pairs) {
 
-        while (e.hasMoreElements()) {
 
-            p = (Pair) e.nextElement();
             file.write("<BR>" + Helper.lineSep +
                        "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
-                       "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // TAken out CR
+                       "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // Taken out CR
         }
         file.write(Helper.postIndex);
         file.close();
 
     }
-
-
-
 
 
 }

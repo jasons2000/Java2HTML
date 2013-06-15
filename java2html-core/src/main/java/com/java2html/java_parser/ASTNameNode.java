@@ -62,7 +62,7 @@ public class ASTNameNode
     private String getRefNoDots(String text) {
 
         String href = null;
-        String s = null;
+        String s;
 
         // prepending a dot to the given name to prevent matching on imports which
         // accidentially end with the given text but aren't what we're looking for:
@@ -104,12 +104,12 @@ public class ASTNameNode
         printSpecial(t.specialToken, ostr);
         //System.out.println("TEXT="+text);
 
-        String href = null;
+        String href;
         String extra = "";
 
         if (isPackage) {
 
-            href = (String) parser.javaSource.packageList.get(text);
+            href = parser.javaSource.packageList.get(text);
             if (href != null) {
                 href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
@@ -119,8 +119,7 @@ public class ASTNameNode
         else if (text.endsWith(".*")) {
             //System.out.println("************************text"+text);
 
-            href = (String) parser.javaSource.packageList.get(text.substring(0,
-                text.length() - 2));
+            href = parser.javaSource.packageList.get(text.substring(0,text.length() - 2));
             if (href != null) {
                 href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";

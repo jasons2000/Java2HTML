@@ -29,14 +29,13 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 // TODO :Does this deal with the import AClass; scenario, probabaly not
 
 public class JavaDocManager {
 
-    private final Map<String, String> classList = new Hashtable<String, String>();
+    private final Map<String, String> classList = new HashMap<String, String>();
     private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
     public JavaDocManager(Link... urls) throws IOException {
