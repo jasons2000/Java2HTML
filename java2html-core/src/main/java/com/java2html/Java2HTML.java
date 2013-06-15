@@ -159,7 +159,7 @@ public class Java2HTML {
         // Performs first parse
         JavaSource javaSource = new JavaSource(javaSourceFileList, destination, marginSize,
                                     tabSize, header, footer, javaDoc);
-        if (!simple) javaSource.createPackageIndex(destination, title);
+        if (!simple) Helper.createPackageIndex(destination, title, javaSource.classList, javaSource.packageList);
         javaSource.setQuiet( quiet );
 
         javaSource.generateJava2HTML();

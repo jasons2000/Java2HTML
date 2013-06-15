@@ -22,7 +22,10 @@ package com.java2html.internal;
 import org.apache.commons.lang.text.StrSubstitutor;
 
 import java.io.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Map;
+import java.util.Vector;
 
 public class Helper {
 
@@ -180,6 +183,185 @@ public class Helper {
     public static String convert(String webRef) {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
+
+    public static void createPackageIndex(String dest, String title, Hashtable classList,Hashtable packageList) throws
+            IOException {
+
+            FileWriter file = new FileWriter(dest + File.separator +
+                                             "packages.html");
+            StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
+
+            Enumeration e = classList.keys();
+            Vector sortedVector = new Vector();
+            String text;
+
+            createAllClassIndex(dest, classList);
+
+            while (e.hasMoreElements()) {
+
+                text = (String) e.nextElement();
+                int c = sortedVector.size();
+
+                while (c > 0) {
+                    if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
+                        break;
+                    }
+                    c--;
+                }
+                sortedVector.insertElementAt(text, c);
+            }
+
+            e = sortedVector.elements();
+            text = null;
+            String href = null;
+
+            while (e.hasMoreElements()) {
+                text = (String) e.nextElement();
+                href = createClassIndex(dest, text, classList);
+
+                //System.out.println("text="+text+" href=" + href);
+                packageList.put(text, href);
+                if (text.equals("")) {
+                    text = "[DEFAULT]";
+                }
+                index.append("<BR>" + Helper.lineSep +
+                             "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
+                             "\" TARGET=\"packageFrame\">" + text + "</A></FONT>");
+            }
+
+            index.append(Helper.postIndex);
+            file.write(index.toString());
+            file.close();
+        }
+
+    static String createClassIndex(String dest, String packageString, Hashtable classList) throws
+           IOException {
+
+           String href2 = (packageString.equals("") ? "default" : packageString) +
+               ".index.html";
+           FileWriter file = new FileWriter(dest + File.separatorChar + href2);
+           if (packageString.equals("")) {
+               file.write(Helper.getClassesFrame("Package Default"));
+           }
+           else {
+               file.write(Helper.getClassesFrame("Package " + packageString));
+           }
+
+           Hashtable ht = (Hashtable) classList.get(packageString);
+           Enumeration e = ht.keys();
+
+           Vector sortedVector = new Vector();
+           String text = null;
+
+           while (e.hasMoreElements()) {
+
+               text = (String) e.nextElement();
+               int c = sortedVector.size();
+
+               while (c > 0) {
+                   if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
+                       break;
+                   }
+                   c--;
+               }
+               sortedVector.insertElementAt(text, c);
+           }
+
+           text = null;
+           String href;
+
+           e = sortedVector.elements();
+           while (e.hasMoreElements()) {
+
+               text = (String) e.nextElement();
+               href = (String) ht.get(text);
+
+               file.write("<BR>" + Helper.lineSep +
+                          "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
+                          "\" TARGET=\"SourceFrame\">" + text + "</A></FONT>");
+           }
+           file.write(Helper.postIndex);
+           file.close();
+           return href2;
+       }
+
+
+    private static class Pair {
+
+        Pair(String text, String ref) {
+            this.text = text;
+            this.ref = ref;
+        }
+
+        String text;
+        String ref;
+    }
+
+
+
+    static void createAllClassIndex(String dest, Hashtable classList) throws IOException {
+
+        FileWriter file = new FileWriter(dest + File.separator +
+                                         "AllClasses.html");
+        file.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">"
+                   + Helper.lineSep + "<HTML>"
+                   + Helper.lineSep + "<HEAD>"
+                   + Helper.lineSep + "<META NAME=\"GENERATOR\" CONTENT=\"" +
+                   Helper.version + "\">" + Helper.lineSep +
+                   "<TITLE>All Classes (Java2HTML)</TITLE>" + Helper.lineSep +
+                   "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+                   Helper.lineSep +
+                   "</HEAD>" + Helper.lineSep +
+                   "<BODY BGCOLOR=\"white\">" + Helper.lineSep +
+                   "<FONT CLASS=\"FrameHeadingFont\" size=\"+1\">" +
+                   Helper.lineSep +
+                   //"<FONT size=+1>"+
+                   "All Classes</FONT>" + Helper.lineSep);
+
+        Vector sortedVector = new Vector();
+        Enumeration e = classList.elements();
+        Enumeration ef;
+        String text;
+        Pair p;
+
+        while (e.hasMoreElements()) {
+
+            Hashtable ht = (Hashtable) e.nextElement();
+            ef = ht.keys();
+
+            while (ef.hasMoreElements()) {
+
+                text = (String) ef.nextElement();
+                int c = sortedVector.size();
+
+                while (c > 0) {
+
+                    String str = ( (Pair) sortedVector.elementAt(c - 1)).text;
+                    if (text.compareTo(str) > 0) {
+                        break;
+                    }
+                    c--;
+                }
+                p = new Pair(text, (String) ht.get(text));
+                sortedVector.insertElementAt(p, c);
+            }
+        }
+
+        e = sortedVector.elements();
+
+        while (e.hasMoreElements()) {
+
+            p = (Pair) e.nextElement();
+            file.write("<BR>" + Helper.lineSep +
+                       "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
+                       "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // TAken out CR
+        }
+        file.write(Helper.postIndex);
+        file.close();
+
+    }
+
+
 
 
 

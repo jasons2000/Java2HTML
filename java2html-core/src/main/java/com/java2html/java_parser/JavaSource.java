@@ -26,9 +26,13 @@ import java.io.*;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 public class JavaSource {
+
+
+    public Hashtable classList = new Hashtable();
+    public  Hashtable packageList = new Hashtable(); // TODO Make Private
+    public Hashtable directoryToPackage = new Hashtable();
 
     private boolean quiet = false;
     private final PackageLocator mLocator = new PackageLocator();
@@ -36,17 +40,6 @@ public class JavaSource {
     private JavaParser parser = new JavaParser(System.in); // Todo: System.in not required
 
     private JavaDocManager javaDoc;
-
-    private static class Pair {
-
-        Pair(String text, String ref) {
-            this.text = text;
-            this.ref = ref;
-        }
-
-        String text;
-        String ref;
-    }
 
     private class Package {
 
@@ -58,10 +51,6 @@ public class JavaSource {
         String packageLevel;
         String className;
     }
-
-    private Hashtable classList = new Hashtable();
-    public  Hashtable packageList = new Hashtable(); // TODO Make Private
-    private Hashtable directoryToPackage = new Hashtable();
 
     //private static Vector fileList = new Vector(); // Stored list of Files
 
@@ -126,168 +115,8 @@ public class JavaSource {
 //        createPackageIndex(args[1], js, "Title Goes Here");
     }
 
-    public void createPackageIndex(String dest, String title) throws
-        IOException {
 
-        FileWriter file = new FileWriter(dest + File.separator +
-                                         "packages.html");
-        StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
 
-        Enumeration e = classList.keys();
-        Vector sortedVector = new Vector();
-        String text;
-
-        createAllClassIndex(dest);
-
-        while (e.hasMoreElements()) {
-
-            text = (String) e.nextElement();
-            int c = sortedVector.size();
-
-            while (c > 0) {
-                if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
-                    break;
-                }
-                c--;
-            }
-            sortedVector.insertElementAt(text, c);
-        }
-
-        e = sortedVector.elements();
-        text = null;
-        String href = null;
-
-        while (e.hasMoreElements()) {
-            text = (String) e.nextElement();
-            href = createClassIndex(dest, text);
-
-            //System.out.println("text="+text+" href=" + href);
-            packageList.put(text, href);
-            if (text.equals("")) {
-                text = "[DEFAULT]";
-            }
-            index.append("<BR>" + Helper.lineSep +
-                         "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
-                         "\" TARGET=\"packageFrame\">" + text + "</A></FONT>");
-        }
-
-        index.append(Helper.postIndex);
-        file.write(index.toString());
-        file.close();
-    }
-
-    void createAllClassIndex(String dest) throws IOException {
-
-        FileWriter file = new FileWriter(dest + File.separator +
-                                         "AllClasses.html");
-        file.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">"
-                   + Helper.lineSep + "<HTML>"
-                   + Helper.lineSep + "<HEAD>"
-                   + Helper.lineSep + "<META NAME=\"GENERATOR\" CONTENT=\"" +
-                   Helper.version + "\">" + Helper.lineSep +
-                   "<TITLE>All Classes (Java2HTML)</TITLE>" + Helper.lineSep +
-                   "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-                   Helper.lineSep +
-                   "</HEAD>" + Helper.lineSep +
-                   "<BODY BGCOLOR=\"white\">" + Helper.lineSep +
-                   "<FONT CLASS=\"FrameHeadingFont\" size=\"+1\">" +
-                   Helper.lineSep +
-                   //"<FONT size=+1>"+
-                   "All Classes</FONT>" + Helper.lineSep);
-
-        Vector sortedVector = new Vector();
-        Enumeration e = classList.elements();
-        Enumeration ef;
-        String text;
-        Pair p;
-
-        while (e.hasMoreElements()) {
-
-            Hashtable ht = (Hashtable) e.nextElement();
-            ef = ht.keys();
-
-            while (ef.hasMoreElements()) {
-
-                text = (String) ef.nextElement();
-                int c = sortedVector.size();
-
-                while (c > 0) {
-
-                    String str = ( (Pair) sortedVector.elementAt(c - 1)).text;
-                    if (text.compareTo(str) > 0) {
-                        break;
-                    }
-                    c--;
-                }
-                p = new Pair(text, (String) ht.get(text));
-                sortedVector.insertElementAt(p, c);
-            }
-        }
-
-        e = sortedVector.elements();
-
-        while (e.hasMoreElements()) {
-
-            p = (Pair) e.nextElement();
-            file.write("<BR>" + Helper.lineSep +
-                       "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
-                       "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // TAken out CR
-        }
-        file.write(Helper.postIndex);
-        file.close();
-
-    }
-
-    String createClassIndex(String dest, String packageString) throws
-        IOException {
-
-        String href2 = (packageString.equals("") ? "default" : packageString) +
-            ".index.html";
-        FileWriter file = new FileWriter(dest + File.separatorChar + href2);
-        if (packageString.equals("")) {
-            file.write(Helper.getClassesFrame("Package Default"));
-        }
-        else {
-            file.write(Helper.getClassesFrame("Package " + packageString));
-        }
-
-        Hashtable ht = (Hashtable) classList.get(packageString);
-        Enumeration e = ht.keys();
-
-        Vector sortedVector = new Vector();
-        String text = null;
-
-        while (e.hasMoreElements()) {
-
-            text = (String) e.nextElement();
-            int c = sortedVector.size();
-
-            while (c > 0) {
-                if (text.compareTo( (String) sortedVector.elementAt(c - 1)) > 0) {
-                    break;
-                }
-                c--;
-            }
-            sortedVector.insertElementAt(text, c);
-        }
-
-        text = null;
-        String href;
-
-        e = sortedVector.elements();
-        while (e.hasMoreElements()) {
-
-            text = (String) e.nextElement();
-            href = (String) ht.get(text);
-
-            file.write("<BR>" + Helper.lineSep +
-                       "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
-                       "\" TARGET=\"SourceFrame\">" + text + "</A></FONT>");
-        }
-        file.write(Helper.postIndex);
-        file.close();
-        return href2;
-    }
 
     public void print() {
         String pl, className, href = null;
@@ -369,8 +198,8 @@ public class JavaSource {
         Hashtable filelist = getFileList();
         Enumeration keys = filelist.keys();
 
-        String fileName = null;
-        Package aPackage = null;
+        String fileName;
+        Package aPackage;
 
         while (keys.hasMoreElements()) {
 
@@ -388,7 +217,7 @@ public class JavaSource {
             if (!s.endsWith(File.separator)) {
                 s += File.separator; // if not ending with \ add a \
             }
-            String destFileName = null;
+            String destFileName;
             if (aPackage.packageLevel.equals("")) {
                 destFileName = s + aPackage.className + ".java.html";
             }
@@ -469,7 +298,7 @@ public class JavaSource {
         }
         StringBuffer s = new StringBuffer("../");
 
-        int prev = 0, index = 0;
+        int index = 0;
 
         while (true) {
             index = aPackage.indexOf('.', index);
