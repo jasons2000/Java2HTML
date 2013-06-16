@@ -33,7 +33,6 @@ public class JavaSource {
     public Map<String, Package> directoryToPackage = new HashMap<String, Package>();
 
     private boolean quiet = false;
-    private final PackageLocator mLocator = new PackageLocator();
 
     private JavaParser parser = new JavaParser(System.in); // Todo: System.in not required
 
@@ -188,11 +187,10 @@ public class JavaSource {
      */
     public void generateJava2HTML() throws IOException {
 
-
         for (Map.Entry<String, Package> entry : directoryToPackage.entrySet() ) {
 
             String fileName = entry.getKey();
-            Package aPackage =  entry.getValue();
+            Package aPackage = entry.getValue();
 
             if ( "package-info.java".equalsIgnoreCase( new File( fileName ).getName() ) ) {
               // skip the replacement (as of JDK 1.5) for package.html
