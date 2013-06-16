@@ -1,9 +1,11 @@
 public class European {
 
-	// Some umlats α ι   \u0003
-	// Some more  αινσϊ
+	// Some umlats οΏ½ οΏ½   \u0003
+	// Some more  οΏ½οΏ½οΏ½οΏ½οΏ½    ΓΊΓΊΓΊΓΊ  Γ‘ Γ©
 
 	public static void main(String[] args) {
+
+
 		
 	}
 }

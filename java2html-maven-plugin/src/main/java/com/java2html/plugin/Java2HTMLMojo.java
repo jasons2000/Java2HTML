@@ -54,6 +54,11 @@ public class Java2HTMLMojo extends AbstractMojo {
             java2HTML.setJavaDirectorySource(project.getCompileSourceRoots());
             java2HTML.setDestination(project.getBuild().getDirectory() + File.separator + "java2html-output");
             java2HTML.setTitle(title);
+            java2HTML.setQuiet(quite);
+            if (marginSize != null) java2HTML.setMarginSize(marginSize);
+            if (tabSize != null) java2HTML.setTabSize(tabSize);
+            java2HTML.setJavaDocLinks(links);
+
             java2HTML.buildJava2HTML();
         }
         catch (Exception e) {

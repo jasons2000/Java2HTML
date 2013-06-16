@@ -50,8 +50,9 @@
                 <configuration>
                     <title>Mojo Integration Test</title>
                     <simple>false</simple>
+                    <!--<quite></quite>-->               <!--We' testing null here-->
                     <marginSize>4</marginSize>
-                    <tabSize>4</tabSize>
+                    <!--<tabSize>4</tabSize>-->    <!-- We' testing null here-->
                     <links>
                         <link>
                         <url>http://docs.oracle.com/javase/6/docs/api/</url>
