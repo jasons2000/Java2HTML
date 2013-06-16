@@ -1,6 +1,5 @@
 package com.java2html.internal;
 
-import com.java2html.ant.Link;
 import com.java2html.java_parser.JavaDocManager;
 import com.java2html.testingtools.WebServer;
 import org.junit.Test;

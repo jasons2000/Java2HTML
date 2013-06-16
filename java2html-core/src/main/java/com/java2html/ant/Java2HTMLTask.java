@@ -8,6 +8,7 @@
 package com.java2html.ant;
 
 import com.java2html.Java2HTML;
+import com.java2html.internal.Link;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;

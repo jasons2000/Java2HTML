@@ -1,4 +1,4 @@
-package com.java2html.ant;
+package com.java2html.internal;
 
 public class Link {
 

@@ -2,7 +2,6 @@ package com.java2html.internal;
 
 import com.java2html.BadOptionException;
 import com.java2html.Java2HTML;
-import com.java2html.ant.Link;
 import org.apache.commons.cli.*;
 
 import java.util.ArrayList;

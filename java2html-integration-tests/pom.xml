@@ -42,16 +42,28 @@
     <build>
 
         <plugins>
-            <!-- test for Mojo (aka Maven Plugin)-->
+            <!-- test for Mojo (aka Maven Plugin), maven needs to be ran twice to pick this up-->
             <plugin>
                 <groupId>com.java2html</groupId>
                 <artifactId>java2html-maven-plugin</artifactId>
                 <version>1.6-SNAPSHOT</version>
+                <configuration>
+                    <title>Mojo Integration Test</title>
+                    <simple>false</simple>
+                    <marginSize>4</marginSize>
+                    <tabSize>4</tabSize>
+                    <links>
+                        <link>
+                        <url>http://docs.oracle.com/javase/6/docs/api/</url>
+                        </link>
+                    </links>
+
+                </configuration>
                 <executions>
                     <execution>
                         <phase>generate-resources</phase>
                         <goals>
-                            <goal>sayhi</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -68,7 +80,7 @@
                             <target>
                                 <taskdef name="java2html" classname="com.java2html.ant.Java2HTMLTask"
                                          classpathref="maven.plugin.classpath"/>
-                                <java2html title="Java2HTML Ant Task Test"
+                                <java2html title="Ant Task Integration Test"
                                            simple="no"
                                            tabsize="4"
                                            marginsize="4"

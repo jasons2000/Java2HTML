@@ -19,7 +19,7 @@
 
 package com.java2html.java_parser;
 
-import com.java2html.ant.Link;
+import com.java2html.internal.Link;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

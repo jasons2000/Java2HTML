@@ -1,7 +1,6 @@
 package com.java2html.internal;
 
 
-import com.java2html.ant.Link;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 

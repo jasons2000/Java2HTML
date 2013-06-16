@@ -50,7 +50,7 @@
  */
 package com.java2html;
 
-import com.java2html.ant.Link;
+import com.java2html.internal.Link;
 import com.java2html.internal.CommandLineOptions;
 import com.java2html.internal.Helper;
 import com.java2html.java_parser.JavaDocManager;
