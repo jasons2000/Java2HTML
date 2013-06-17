@@ -28,22 +28,9 @@ import java.util.*;
 
 public class JavaSource {
 
-    public Map<String, String> packageList = new HashMap<String, String>(); // TODO Make Private
-
     private boolean quiet = false;
 
     private JavaParser parser = new JavaParser(System.in); // Todo: System.in not required
-
-   public static class PackageH {
-
-        public PackageH(String packageLevel, String className) {
-            this.packageLevel = packageLevel;
-            this.className = className;
-        }
-
-        public String packageLevel;
-        public String className;
-    }
 
 
     public final boolean isQuiet() {
@@ -54,48 +41,11 @@ public class JavaSource {
     } // setQuiet
 
 
-    private String destination;
-    private int marginSize;
-    private int tabSize;
-    private boolean header;
-    private boolean footer;
-
-
-    public JavaSource(String destination,
-                      int marginSize,
-                      int tabSize,
-                      boolean header,
-                      boolean footer) {
-
-        this.destination = destination;
-        this.marginSize = marginSize;
-        this.tabSize = tabSize;
-        this.header = header;
-        this.footer = footer;
-    }
-
-    public String getClassHRef(String text) {
-        //System.out.println("Text="+text);
-        int x = text.lastIndexOf(".");
-        String packageName = text.substring(0, x);
-        String className = text.substring(x + 1, text.length());
-        //System.out.println("****Cn="+className+", packagName="+packageName);
-        Map<String,String> ht = classList.get(packageName);
-        if (ht == null) {
-            return null;
-        }
-        //System.out.println("Match ClassName="+className+", packagName="+packageName);
-        return ht.get(className);
-    }
-
-
-
-    public String processFile(Reader reader) throws IOException {
-
+    public String findReferences(Reader reader) throws IOException {
         return PackageLocator.scan( reader);
     }
 
-    public void parse(Reader source, HTMLFileWriter dest, String preDir, Java2HTML java2HTML, JavaDocManager javaDoc) throws ParseException,IOException {
+    public void toHtml(Reader source, HTMLFileWriter dest, String preDir, Java2HTML java2HTML, JavaDocManager javaDoc) throws ParseException,IOException {
         parser.parse(source,dest,preDir,java2HTML, javaDoc);
     }
 }

@@ -56,35 +56,18 @@ public class JavaParser {
     boolean defaultPackage;
 
     JavaDocManager javaDoc;
-    JavaSource javaSource;
+    Java2HTML javaSource;
     private final Hashtable unicodeRemappings = new Hashtable();
 
     String getUnicodeRemapping(final Position p) {
       return unicodeRemappings != null ? (String)unicodeRemappings.get(p) : null;
     }
 
-	public static void main(String args[]) throws Exception {
 
-		JavaParser parser = new JavaParser(new java.io.FileInputStream(args[0]));
-
-		FileReader source = new FileReader(args[0]);
-		HTMLFileWriter dest = new HTMLFileWriter(args[1],4,4);
-
-		dest.write(Helper.getPreText("stylesheet.css",args[0]));
-		dest.write(Helper.getHeader(args[0],"20 Jul 1999", false));
-		dest.write(dest.getFirstLineNumber());
-		dest.setHTMLMode(true);
-//		parser.parse(source,dest,"");
-		dest.setHTMLMode(false);
-		dest.write(Helper.getFooter(args[0],"20 Jul 1999", false));
-		dest.write(Helper.getPostText());
-		dest.close();
-	}
-
-	public void parse(FileReader source, HTMLFileWriter dest, String prePath, JavaSource javaSource, JavaDocManager javaDoc)
+	public void parse(Reader source, HTMLFileWriter dest, String prePath, Java2HTML java2HTML, JavaDocManager javaDoc)
 	throws ParseException,IOException {
 
-         this.javaSource = javaSource;
+         this.javaSource = java2HTML;
          this.javaDoc = javaDoc;
 
 	  	  this.prePath = prePath;

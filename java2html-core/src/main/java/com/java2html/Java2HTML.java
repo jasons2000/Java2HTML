@@ -22,8 +22,6 @@
  * run peformace  analyzer
  * JavaDoc should be able to scan http:// refrences for JavaDoc doco
  * Tidy up option - ie check before commencing processing
- * Add SQL support ( all possible versions)
- * C++/ C++ etc..
  * change title default colour to line nuber colour
  * Specifi Properites files with default that are overidden by commandlines
  * link instances to declaration
@@ -56,6 +54,7 @@ import com.java2html.internal.Helper;
 import com.java2html.internal.Link;
 import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
+import com.java2html.java_parser.PackageH;
 import com.java2html.java_parser.ParseException;
 import org.apache.commons.io.FileUtils;
 
@@ -106,6 +105,7 @@ public class Java2HTML {
 
     private String title = "Java Source";
 
+    public Map<String, String> packageList = new HashMap<String, String>();
     private List<String> javaSourceFileList = null;
 
     private List<Link> javaDocOptionLinks = Collections.emptyList();
@@ -114,7 +114,7 @@ public class Java2HTML {
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
     public Map<String, Map<String,String>> classList = new HashMap<String, Map<String,String>>();
-    public Map<String, JavaSource.PackageH> directoryToPackage = new HashMap<String, JavaSource.PackageH>();
+    public Map<String, PackageH> directoryToPackage = new HashMap<String, PackageH>();
 
 
     /**
@@ -163,32 +163,31 @@ public class Java2HTML {
         }
         // Performs first parse
 
-        JavaSource javaSource = new JavaSource(destination, marginSize,
-                                    tabSize, header, footer);
-        if (!simple) Helper.createPackageIndex(destination, title, classList, javaSource.packageList);
+        JavaSource javaSource = new JavaSource();
+        if (!simple) Helper.createPackageIndex(destination, title, classList, packageList);
         javaSource.setQuiet( quiet );
 
         for (String sourceDir : javaSourceFileList) {
              Reader reader = new BufferedReader( new FileReader(sourceDir));
-            String packageLevel = javaSource.processFile(reader);
+            String packageLevel = javaSource.findReferences(reader);
             fn(sourceDir, packageLevel);
         }
 
         // Generate files - 2nd parse
-        for (Map.Entry<String, JavaSource.PackageH> entry : directoryToPackage.entrySet()) {
+        for (Map.Entry<String, PackageH> entry : directoryToPackage.entrySet()) {
             String fileName = entry.getKey();
-            JavaSource.PackageH aPackage = entry.getValue();
+            PackageH aPackage = entry.getValue();
             // skip the replacement (as of JDK 1.5) for package.html
             if (!"package-info.java".equalsIgnoreCase(new File(fileName).getName())) {
 
-                g(javaSource, javaDoc, fileName, aPackage);
+                fn2(javaSource, javaDoc, fileName, aPackage);
             }
         }
 
         return true;
     }
 
-    private void g(JavaSource javaSource, JavaDocManager javaDoc, String fileName, JavaSource.PackageH aPackage) throws IOException {
+    private void fn2(JavaSource javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage) throws IOException {
 
         // Create directories
         File temp = new File(destination); // this code deals with the c: or c:\ problem
@@ -214,7 +213,7 @@ public class Java2HTML {
         //File f = new File(destFileName);
         //System.out.println("temp"+temp);
 
-        HTMLFileWriter dest = new HTMLFileWriter(destFileName, marginSize, tabSize);
+        HTMLFileWriter dest = new HTMLFileWriter(new BufferedWriter(new FileWriter(destFileName)), marginSize, tabSize);
         FileReader source = new FileReader(fileName);
         dest.setHTMLMode(false);
 
@@ -235,7 +234,7 @@ public class Java2HTML {
         //System.out.print("Reading: "+fileName); // TODO check
 
         try {
-            javaSource.parse(source, dest, preDir, this, javaDoc);
+            javaSource.toHtml(source, dest, preDir, this, javaDoc);
             dest.setHTMLMode(false);
         }
         catch (ParseException e) {
@@ -254,6 +253,7 @@ public class Java2HTML {
             try {
                 dest.write(Helper.getFooter(aPackage.className, "", footer)); //TODO: add date string
                 dest.write(Helper.getPostText());
+                dest.flush();
                 dest.close();
             }
             catch (IOException e2) {
@@ -297,7 +297,7 @@ public class Java2HTML {
 
                    // put the packagename into hashtable to cross reference filename with packageName on second parse
 
-                   directoryToPackage.put(fullPathfileName, new JavaSource.PackageH(packageLevel, classString));
+                   directoryToPackage.put(fullPathfileName, new PackageH(packageLevel, classString));
 
                    // put the package + className into hashtable to determin class refercnes
                    Hashtable pl = (Hashtable) classList.get(packageLevel);
@@ -520,6 +520,21 @@ public class Java2HTML {
         }
         return s.toString();
     }
+
+
+    public String getClassHRef(String text) {
+           //System.out.println("Text="+text);
+           int x = text.lastIndexOf(".");
+           String packageName = text.substring(0, x);
+           String className = text.substring(x + 1, text.length());
+           //System.out.println("****Cn="+className+", packagName="+packageName);
+           Map<String,String> ht = classList.get(packageName);
+           if (ht == null) {
+               return null;
+           }
+           //System.out.println("Match ClassName="+className+", packagName="+packageName);
+           return ht.get(className);
+       }
 //    private void loadParsers() {
 //        List<ReferenceParser> referenceParsers = locateAllReferenceParsers();
 //

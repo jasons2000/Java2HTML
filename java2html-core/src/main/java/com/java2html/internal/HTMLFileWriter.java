@@ -24,7 +24,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.*;
 
-public class HTMLFileWriter extends BufferedWriter {
+public class HTMLFileWriter extends Writer {
+
+    private final Writer wrappedWriter;
+
     private boolean htmlMode = false;
     private int lineCount = 0;
     final private int convertTabsToSpacesCount;
@@ -40,12 +43,10 @@ public class HTMLFileWriter extends BufferedWriter {
         this.htmlMode = htmlMode;
     }
 
-    /**
-     *
-     */
-    // todo consider capturing these IlleglArgumentExceptions
-    public HTMLFileWriter(String s, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
-        super(new FileWriter(s));
+
+    public HTMLFileWriter(Writer wrappedWriter, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
+        this.wrappedWriter = wrappedWriter;
+
         if (lineNumberMargin > 64) {
             throw new IllegalArgumentException("Margin too Large");
         }
@@ -67,18 +68,35 @@ public class HTMLFileWriter extends BufferedWriter {
     }
 
 
-    public void write(String str) {
+    @Override
+    public void write(char[] cbuf, int off, int len) throws IOException {
+
+
+    }
+
+    public void write(String str)  {
+
         try {
             if (htmlMode) {
-                super.write(getHTMLParsedText(str));
+                wrappedWriter.write(getHTMLParsedText(str));
             }
             else {
-                super.write(str);
+                wrappedWriter.write(str);
             }
         }
         catch (IOException e) {
-            //todo whats this?
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    @Override
+    public void flush() throws IOException {
+        wrappedWriter.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+        wrappedWriter.close();
     }
 
     /**
@@ -213,13 +231,15 @@ public class HTMLFileWriter extends BufferedWriter {
     /* TODO: added conversion of tabs to spaces */
 
     public static void main(String[] args) throws IOException {
-        HTMLFileWriter fw = new HTMLFileWriter("test.html", 4, 4);
+        HTMLFileWriter fw = new HTMLFileWriter(new StringWriter(), 4, 4);
         fw.setHTMLMode(true);
         fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
                  Helper.lineSep);
         fw.setHTMLMode(false);
         fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
                  Helper.lineSep);
+
+
         fw.close();
 
     }
