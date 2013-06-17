@@ -50,15 +50,16 @@
  */
 package com.java2html;
 
-import com.java2html.internal.Link;
 import com.java2html.internal.CommandLineOptions;
+import com.java2html.internal.HTMLFileWriter;
 import com.java2html.internal.Helper;
+import com.java2html.internal.Link;
 import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
+import com.java2html.java_parser.ParseException;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DateFormat;
 import java.util.*;
 
@@ -112,6 +113,10 @@ public class Java2HTML {
     private String destination = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
+    public Map<String, Map<String,String>> classList = new HashMap<String, Map<String,String>>();
+    public Map<String, JavaSource.PackageH> directoryToPackage = new HashMap<String, JavaSource.PackageH>();
+
+
     /**
      * Called by Command Line Wrappers
      *
@@ -157,14 +162,164 @@ public class Java2HTML {
             setJavaDirectorySource(Arrays.asList("."));
         }
         // Performs first parse
-        JavaSource javaSource = new JavaSource(javaSourceFileList, destination, marginSize,
-                                    tabSize, header, footer, javaDoc);
-        if (!simple) Helper.createPackageIndex(destination, title, javaSource.classList, javaSource.packageList);
+
+        JavaSource javaSource = new JavaSource(destination, marginSize,
+                                    tabSize, header, footer);
+        if (!simple) Helper.createPackageIndex(destination, title, classList, javaSource.packageList);
         javaSource.setQuiet( quiet );
 
-        javaSource.generateJava2HTML();
+        for (String sourceDir : javaSourceFileList) {
+             Reader reader = new BufferedReader( new FileReader(sourceDir));
+            String packageLevel = javaSource.processFile(reader);
+            fn(sourceDir, packageLevel);
+        }
+
+        // Generate files - 2nd parse
+        for (Map.Entry<String, JavaSource.PackageH> entry : directoryToPackage.entrySet()) {
+            String fileName = entry.getKey();
+            JavaSource.PackageH aPackage = entry.getValue();
+            // skip the replacement (as of JDK 1.5) for package.html
+            if (!"package-info.java".equalsIgnoreCase(new File(fileName).getName())) {
+
+                g(javaSource, javaDoc, fileName, aPackage);
+            }
+        }
 
         return true;
+    }
+
+    private void g(JavaSource javaSource, JavaDocManager javaDoc, String fileName, JavaSource.PackageH aPackage) throws IOException {
+
+        // Create directories
+        File temp = new File(destination); // this code deals with the c: or c:\ problem
+        String s = temp.getAbsolutePath();
+        if (!s.endsWith(File.separator)) {
+            s += File.separator; // if not ending with \ add a \
+        }
+        String destFileName;
+        if (aPackage.packageLevel.isEmpty()) {
+            destFileName = s + aPackage.className + ".java.html";
+        }
+        else {
+            destFileName = s +
+                    Helper.convertDots(aPackage.packageLevel,
+                            File.separatorChar) + File.separatorChar +
+                    aPackage.className + ".java.html";
+        }
+
+        // Make directory (seperate from file portion)
+        File dir = new File(s +
+                Helper.convertDots(aPackage.packageLevel, '/'));
+        dir.mkdirs();
+        //File f = new File(destFileName);
+        //System.out.println("temp"+temp);
+
+        HTMLFileWriter dest = new HTMLFileWriter(destFileName, marginSize, tabSize);
+        FileReader source = new FileReader(fileName);
+        dest.setHTMLMode(false);
+
+        String dot = ".";
+        if (aPackage.packageLevel.isEmpty()) {
+            dot = ""; // If no package then remove the dot
+
+        }
+        String packageLevel = Helper.convert(aPackage.packageLevel);
+        String preDir = getDotDotRootPathFromPackage(packageLevel);
+        dest.write(Helper.getPreText(preDir + "stylesheet.css",
+                aPackage.packageLevel + dot +
+                        aPackage.className)); // what is this doing ?
+        dest.write(Helper.getHeader(aPackage.className, "", header)); //TODO: add date string
+        dest.write(dest.getFirstLineNumber());
+        dest.setHTMLMode(true);
+        boolean error = false;
+        //System.out.print("Reading: "+fileName); // TODO check
+
+        try {
+            javaSource.parse(source, dest, preDir, this, javaDoc);
+            dest.setHTMLMode(false);
+        }
+        catch (ParseException e) {
+            // This should never happen
+            error = true;
+            //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
+            System.out.println(fileName + ": Parse Error, Non-Legal Java File: " + e.getMessage());
+            // e.printStackTrace();
+        }
+        catch (IOException e) {
+            error = true;
+            System.out.println("IO Error. (2nd Parse)");
+        }
+        finally {
+            // Clear up resources
+            try {
+                dest.write(Helper.getFooter(aPackage.className, "", footer)); //TODO: add date string
+                dest.write(Helper.getPostText());
+                dest.close();
+            }
+            catch (IOException e2) {
+            }
+
+            try {
+                source.close();
+            }
+            catch (IOException e2) {
+            }
+        }
+        if (error == false) {
+            if (!quiet) System.out.println("Created: " + destFileName);
+        }
+
+    }
+
+    private void fn(String fullPathfileName, String packageLevel) throws FileNotFoundException {
+
+
+        int i = fullPathfileName.lastIndexOf(File.separator);
+        String fileName = fullPathfileName.substring(i+1, fullPathfileName.length());
+        //SCANS Java files, will need to add other types here perhaps if we want referenceing for thos other types
+
+        // TODO: lep: this approach has problems with nested/inner/non-public classes
+        // -> these have a class name possibly (most probably) different from the base file name.
+        // -> won't be cross referenced afterwards in second parse run
+        String classString = fileName.substring(0,  fileName.lastIndexOf('.'));
+                //int idx = base.length()+1;
+        String href;
+                   // System.err.println( fullPathfileName + ": " + packageLevel );
+                   if (packageLevel == null || packageLevel.length() == 0) {
+                       packageLevel = ""; //default package =""
+                       href = classString + ".html";
+                   }
+                   else {
+                       href = Helper.convertDots(packageLevel, '/') +
+                       Helper.webSep + classString + ".html";
+                   }
+                   //System.out.println("Package 1st Parsed="+packageLevel);
+
+                   // put the packagename into hashtable to cross reference filename with packageName on second parse
+
+                   directoryToPackage.put(fullPathfileName, new JavaSource.PackageH(packageLevel, classString));
+
+                   // put the package + className into hashtable to determin class refercnes
+                   Hashtable pl = (Hashtable) classList.get(packageLevel);
+                   if (pl != null) {
+                       pl.put(classString, href);
+                   }
+                   else {
+                       Hashtable ht2 = new Hashtable();
+                       ht2.put(classString, href);
+                       classList.put(packageLevel, ht2);
+                   }
+//               }
+//               catch (IOException e) {
+//                   System.err.println("IO error for file [" +
+//                                      fullPathfileName + "] " +
+//                                      e.getMessage());
+//               }
+//               catch (Error e) {
+//                   System.err.println("Problem encountered with file [" +
+//                                      fullPathfileName+ "] " +
+//                                      e.getMessage());
+//               }
     }
 
     private void createSupportingFiles() throws IOException {
@@ -343,6 +498,28 @@ public class Java2HTML {
         this.destination = destination;
     }
 
+
+
+    private String getDotDotRootPathFromPackage(String aPackage) {
+
+        int length = aPackage.length();
+        if (length == 0) {
+            return "";
+        }
+        StringBuffer s = new StringBuffer("../");
+
+        int index = 0;
+
+        while (true) {
+            index = aPackage.indexOf('.', index);
+            if (index == -1) {
+                break;
+            }
+            s.append("../");
+            index++;
+        }
+        return s.toString();
+    }
 //    private void loadParsers() {
 //        List<ReferenceParser> referenceParsers = locateAllReferenceParsers();
 //
