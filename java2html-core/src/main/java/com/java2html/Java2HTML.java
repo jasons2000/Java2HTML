@@ -64,29 +64,26 @@ import java.util.*;
 
 /**
  * Generates Java2HTML output
- *
+ * <p/>
  * TODO
  * Hi
- *  property expansion
- *  fix umlat and foreign chars problem
- *  create test java which use javadoc sample package and class
- *  write unit test case which tests javadoc links using webunit or jsoup
- *  create ITCase for general results,
- *     test each frame
- *     link to full
- *     ant test
- *     mojo test
- *
+ * property expansion
+ * fix umlat and foreign chars problem
+ * create test java which use javadoc sample package and class
+ * write unit test case which tests javadoc links using webunit or jsoup
+ * create ITCase for general results,
+ * test each frame
+ * link to full
+ * ant test
+ * mojo test
+ * <p/>
  * Low
- *   support other languages,
- *      reorg for dir for src2html - maintain old class, and ant task integration
- *       abstract reference lookup with Type and matching String
- *       0th parse detects sources
- *       1st parse build up all com.java2html.references
- *       2nd parse detectect com.java2html.references
- *
- *
- *
+ * support other languages,
+ * reorg for dir for src2html - maintain old class, and ant task integration
+ * abstract reference lookup with Type and matching String
+ * 0th parse detects sources
+ * 1st parse build up all com.java2html.references
+ * 2nd parse detectect com.java2html.references
  */
 
 public class Java2HTML {
@@ -98,7 +95,7 @@ public class Java2HTML {
     private boolean header = true;
     private boolean footer = true;
     private boolean simple = false;
-    private boolean quiet  = false;
+    private boolean quiet = false;
 
 //    private List<ReferenceParser> referenceParsers = new ArrayList<ReferenceParser>();
 //    private List<SourceParser> sourceParsers = new ArrayList<SourceParser>();
@@ -106,14 +103,14 @@ public class Java2HTML {
     private String title = "Java Source";
 
     public Map<String, String> packageList = new HashMap<String, String>();
-    private List<String> javaSourceFileList = null;
+    private List<String> javaSourceFileNameList = null;
 
     private List<Link> javaDocOptionLinks = Collections.emptyList();
 
     private String destination = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
-    public Map<String, Map<String,String>> classList = new HashMap<String, Map<String,String>>();
+    public Map<String, Map<String, String>> allClassesHRefByPackage = new HashMap<String, Map<String, String>>();
     public Map<String, PackageH> directoryToPackage = new HashMap<String, PackageH>();
 
 
@@ -140,16 +137,16 @@ public class Java2HTML {
         }
         catch (Exception e) {
             final String msg = e.getMessage();
-            System.err.print( msg != null ? msg : e.toString() );
+            System.err.print(msg != null ? msg : e.toString());
             success = 1;
-             e.printStackTrace();
+            e.printStackTrace();
         }
         System.exit(success);
     }
 
     /**
      * Builds the Java2HTML
-     *
+     * <p/>
      * returns false if any failures were detected
      */
     public boolean buildJava2HTML() throws IOException, BadOptionException {
@@ -158,19 +155,19 @@ public class Java2HTML {
 
         JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
 
-        if (javaSourceFileList == null) {
+        if (javaSourceFileNameList == null) {
             setJavaDirectorySource(Arrays.asList("."));
         }
         // Performs first parse
 
         JavaSource javaSource = new JavaSource();
-        if (!simple) Helper.createPackageIndex(destination, title, classList, packageList);
-        javaSource.setQuiet( quiet );
+        if (!simple) Helper.createPackageIndex(destination, title, allClassesHRefByPackage, packageList);
+        javaSource.setQuiet(quiet);
 
-        for (String sourceDir : javaSourceFileList) {
-             Reader reader = new BufferedReader( new FileReader(sourceDir));
-            String packageLevel = javaSource.findReferences(reader);
-            fn(sourceDir, packageLevel);
+        for (String fullPathFileName : javaSourceFileNameList) {
+            Reader reader = new BufferedReader(new FileReader(fullPathFileName));
+            String packageLevel = javaSource.findReferences(fullPathFileName, reader);
+            fn(fullPathFileName, packageLevel);
         }
 
         // Generate files - 2nd parse
@@ -275,40 +272,37 @@ public class Java2HTML {
 
 
         int i = fullPathfileName.lastIndexOf(File.separator);
-        String fileName = fullPathfileName.substring(i+1, fullPathfileName.length());
+        String fileName = fullPathfileName.substring(i + 1, fullPathfileName.length());
         //SCANS Java files, will need to add other types here perhaps if we want referenceing for thos other types
 
         // TODO: lep: this approach has problems with nested/inner/non-public classes
         // -> these have a class name possibly (most probably) different from the base file name.
         // -> won't be cross referenced afterwards in second parse run
-        String classString = fileName.substring(0,  fileName.lastIndexOf('.'));
-                //int idx = base.length()+1;
+        String classString = fileName.substring(0, fileName.lastIndexOf('.'));
+        //int idx = base.length()+1;
         String href;
-                   // System.err.println( fullPathfileName + ": " + packageLevel );
-                   if (packageLevel == null || packageLevel.length() == 0) {
-                       packageLevel = ""; //default package =""
-                       href = classString + ".html";
-                   }
-                   else {
-                       href = Helper.convertDots(packageLevel, '/') +
-                       Helper.webSep + classString + ".html";
-                   }
-                   //System.out.println("Package 1st Parsed="+packageLevel);
+        // System.err.println( fullPathfileName + ": " + packageLevel );
+        if (packageLevel == null || packageLevel.length() == 0) {
+            packageLevel = ""; //default package =""
+            href = classString + ".html";
+        }
+        else {
+            href = Helper.convertDots(packageLevel, '/') +
+                    Helper.webSep + classString + ".html";
+        }
+        //System.out.println("Package 1st Parsed="+packageLevel);
 
-                   // put the packagename into hashtable to cross reference filename with packageName on second parse
+        // put the packagename into hashtable to cross reference filename with packageName on second parse
 
-                   directoryToPackage.put(fullPathfileName, new PackageH(packageLevel, classString));
+        directoryToPackage.put(fullPathfileName, new PackageH(packageLevel, classString));
 
-                   // put the package + className into hashtable to determin class refercnes
-                   Hashtable pl = (Hashtable) classList.get(packageLevel);
-                   if (pl != null) {
-                       pl.put(classString, href);
-                   }
-                   else {
-                       Hashtable ht2 = new Hashtable();
-                       ht2.put(classString, href);
-                       classList.put(packageLevel, ht2);
-                   }
+        // put the package + className into hashtable to determin class refercnes
+        Map<String, String> hrefByClassName = allClassesHRefByPackage.get(packageLevel);
+        if (hrefByClassName == null) {
+            hrefByClassName = new HashMap<String, String>();
+            allClassesHRefByPackage.put(packageLevel, hrefByClassName);
+        }
+        hrefByClassName.put(classString, href);
 //               }
 //               catch (IOException e) {
 //                   System.err.println("IO error for file [" +
@@ -325,9 +319,9 @@ public class Java2HTML {
     private void createSupportingFiles() throws IOException {
 
         DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-                        DateFormat.SHORT);
+                DateFormat.SHORT);
 
-        HashMap<String,String> subs= new HashMap<String,String>();
+        HashMap<String, String> subs = new HashMap<String, String>();
         subs.put("date", df.format(new Date()));
         subs.put("version", "1.0");
         subs.put("title", title);
@@ -340,7 +334,7 @@ public class Java2HTML {
         FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
 
-        if ( !quiet ) System.out.println("Created: " + f.getAbsolutePath());
+        if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
 
         // Check File.Separator
 
@@ -383,6 +377,7 @@ public class Java2HTML {
     public void setHeader(boolean header) {
         this.header = header;
     }
+
     /**
      * Determines if only the java source and stylesheet files will be output
      *
@@ -416,34 +411,35 @@ public class Java2HTML {
      *
      * @param quiet true to be quiet, false to be verbose. default is verbose.
      */
-    public final void setQuiet( final boolean quiet ) {
+    public final void setQuiet(final boolean quiet) {
         this.quiet = quiet;
     } // setQuiet
+
     public final boolean isQuiet() {
         return quiet;
     } // isQuiet
 
     /**
      * Set the Java Source directories that will be converted into HTML.
-     *
+     * <p/>
      * This has replaced setJavaSorce(String[])
-     *
+     * <p/>
      * Overwrite any setting used by setJavaFileSource
      *
-     * @param directories List of Java Source Directories
+     * @param rootDirectories List of Java Source Directories
      */
-    public void setJavaDirectorySource(List<String> directories) throws BadOptionException {
+    public void setJavaDirectorySource(List<String> rootDirectories) throws BadOptionException {
 
         // Validate that all sources are directories
-        for (String directory : directories)  {
+        for (String directory : rootDirectories) {
             File file = new File(directory);
             if (!file.isDirectory()) throw new BadOptionException(directory + " is not a directory");
         }
 
         // Convert directory to String[] of file names
-        javaSourceFileList = new ArrayList<String>();
-        for (String directory :directories) {
-            getFileListFromDirectory(directory, javaSourceFileList);
+        javaSourceFileNameList = new ArrayList<String>();
+        for (String directory : rootDirectories) {
+            getFileListFromDirectory(directory, javaSourceFileNameList);
         }
 
 
@@ -451,43 +447,42 @@ public class Java2HTML {
 
     private static void getFileListFromDirectory(String directory, List<String> files) {
 
-          File directoryFile = new File(directory);
-          String[] list = directoryFile.list();
-          if (list == null) return;
+        File directoryFile = new File(directory);
+        String[] list = directoryFile.list();
+        if (list == null) return;
 
-          for (String file : list) {
+        for (String file : list) {
 
-              String fileName = directory + File.separatorChar + file;
+            String fileName = directory + File.separatorChar + file;
 
-              if (new File(fileName).isFile()) {
-                  if (fileName.endsWith(".java")) files.add(fileName);
-              }
-              else {
-                  getFileListFromDirectory(fileName, files);
-              }
-          }
-      }
+            if (new File(fileName).isFile()) {
+                if (fileName.endsWith(".java")) files.add(fileName);
+            }
+            else {
+                getFileListFromDirectory(fileName, files);
+            }
+        }
+    }
 
     /**
      * Sets a list of java source files that will be converted into HTML.
-     *
+     * <p/>
      * Use instead of setJavaDirectorySource() if a file lisy is availabe
-     *
      *
      * @param files List of Java Files
      */
     public void setJavaFileSource(List<String> files) {
-        javaSourceFileList = files;
+        javaSourceFileNameList = files;
     }
 
     /**
-         * Set the Java Doc directories.
-         *
-         * @param javaDocLinks List of JavaDocOptions
-         */
-        public void setJavaDocLinks(List<Link> javaDocLinks) {
-            javaDocOptionLinks = javaDocLinks;
-        }
+     * Set the Java Doc directories.
+     *
+     * @param javaDocLinks List of JavaDocOptions
+     */
+    public void setJavaDocLinks(List<Link> javaDocLinks) {
+        javaDocOptionLinks = javaDocLinks;
+    }
 
     /**
      * Sets the output directory that the generated HTML will be placed into.
@@ -497,7 +492,6 @@ public class Java2HTML {
     public void setDestination(String destination) {
         this.destination = destination;
     }
-
 
 
     private String getDotDotRootPathFromPackage(String aPackage) {
@@ -523,18 +517,18 @@ public class Java2HTML {
 
 
     public String getClassHRef(String text) {
-           //System.out.println("Text="+text);
-           int x = text.lastIndexOf(".");
-           String packageName = text.substring(0, x);
-           String className = text.substring(x + 1, text.length());
-           //System.out.println("****Cn="+className+", packagName="+packageName);
-           Map<String,String> ht = classList.get(packageName);
-           if (ht == null) {
-               return null;
-           }
-           //System.out.println("Match ClassName="+className+", packagName="+packageName);
-           return ht.get(className);
-       }
+        //System.out.println("Text="+text);
+        int x = text.lastIndexOf(".");
+        String packageName = text.substring(0, x);
+        String className = text.substring(x + 1, text.length());
+        //System.out.println("****Cn="+className+", packagName="+packageName);
+        Map<String, String> ht = allClassesHRefByPackage.get(packageName);
+        if (ht == null) {
+            return null;
+        }
+        //System.out.println("Match ClassName="+className+", packagName="+packageName);
+        return ht.get(className);
+    }
 //    private void loadParsers() {
 //        List<ReferenceParser> referenceParsers = locateAllReferenceParsers();
 //

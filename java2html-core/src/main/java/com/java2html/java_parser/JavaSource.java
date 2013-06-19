@@ -21,10 +21,9 @@ package com.java2html.java_parser;
 
 import com.java2html.Java2HTML;
 import com.java2html.internal.HTMLFileWriter;
-import com.java2html.internal.Helper;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
 
 public class JavaSource {
 
@@ -41,8 +40,8 @@ public class JavaSource {
     } // setQuiet
 
 
-    public String findReferences(Reader reader) throws IOException {
-        return PackageLocator.scan( reader);
+    public String findReferences(String fullPathFilename, Reader reader) throws IOException {
+        return PackageLocator.scan(reader);
     }
 
     public void toHtml(Reader source, HTMLFileWriter dest, String preDir, Java2HTML java2HTML, JavaDocManager javaDoc) throws ParseException,IOException {

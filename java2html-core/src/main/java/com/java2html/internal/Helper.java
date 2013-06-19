@@ -181,7 +181,7 @@ public class Helper {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
 
-    public static void createPackageIndex(String dest, String title, Map<String, Map<String,String>> classList, Map<String,String> packageList) throws
+    public static void createPackageIndex(String dest, String title, Map<String, Map<String,String>> allClassRefs, Map<String,String> packageList) throws
             IOException {
 
             FileWriter file = new FileWriter(dest + File.separator +
@@ -189,13 +189,13 @@ public class Helper {
             StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
 
         List<String> sortedList = new ArrayList<String>();
-        sortedList.addAll(classList.keySet());
+        sortedList.addAll(allClassRefs.keySet());
         Collections.sort(sortedList);
 
-        createAllClassIndex(dest, classList);
+        createAllClassIndex(dest, allClassRefs);
 
             for (String text : sortedList) {
-                String href = createClassIndex(dest, text, classList.get(text));
+                String href = createClassIndex(dest, text, allClassRefs.get(text));
 
                 //System.out.println("text="+text+" href=" + href);
                 packageList.put(text, href);
