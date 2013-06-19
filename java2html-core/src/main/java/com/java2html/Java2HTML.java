@@ -56,6 +56,8 @@ import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
 import com.java2html.java_parser.PackageH;
 import com.java2html.java_parser.ParseException;
+import de.schlichtherle.truezip.file.TFile;
+import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -161,21 +163,23 @@ public class Java2HTML {
         // Performs first parse
 
         JavaSource javaSource = new JavaSource();
-        if (!simple) Helper.createPackageIndex(destination, title, allClassesHRefByPackage, packageList);
         javaSource.setQuiet(quiet);
 
         for (String fullPathFileName : javaSourceFileNameList) {
-            Reader reader = new BufferedReader(new FileReader(fullPathFileName));
+            Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
             String packageLevel = javaSource.findReferences(fullPathFileName, reader);
             fn(fullPathFileName, packageLevel);
         }
+
+        if (!simple) Helper.createPackageIndex(destination, title, allClassesHRefByPackage, packageList);
+
 
         // Generate files - 2nd parse
         for (Map.Entry<String, PackageH> entry : directoryToPackage.entrySet()) {
             String fileName = entry.getKey();
             PackageH aPackage = entry.getValue();
             // skip the replacement (as of JDK 1.5) for package.html
-            if (!"package-info.java".equalsIgnoreCase(new File(fileName).getName())) {
+            if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 
                 fn2(javaSource, javaDoc, fileName, aPackage);
             }
@@ -284,11 +288,11 @@ public class Java2HTML {
         // System.err.println( fullPathfileName + ": " + packageLevel );
         if (packageLevel == null || packageLevel.length() == 0) {
             packageLevel = ""; //default package =""
-            href = classString + ".html";
+            href = fileName + ".html";
         }
         else {
             href = Helper.convertDots(packageLevel, '/') +
-                    Helper.webSep + classString + ".html";
+                    Helper.webSep + fileName + ".html";
         }
         //System.out.println("Package 1st Parsed="+packageLevel);
 
@@ -432,8 +436,8 @@ public class Java2HTML {
 
         // Validate that all sources are directories
         for (String directory : rootDirectories) {
-            File file = new File(directory);
-            if (!file.isDirectory()) throw new BadOptionException(directory + " is not a directory");
+            TFile file = new TFile(directory);
+            if (!file.isDirectory() && !file.isArchive()) throw new BadOptionException(directory + " is not a directory");
         }
 
         // Convert directory to String[] of file names
@@ -447,7 +451,7 @@ public class Java2HTML {
 
     private static void getFileListFromDirectory(String directory, List<String> files) {
 
-        File directoryFile = new File(directory);
+        TFile directoryFile = new TFile(directory);
         String[] list = directoryFile.list();
         if (list == null) return;
 
@@ -455,7 +459,7 @@ public class Java2HTML {
 
             String fileName = directory + File.separatorChar + file;
 
-            if (new File(fileName).isFile()) {
+            if (new TFile(fileName).isFile()) {
                 if (fileName.endsWith(".java")) files.add(fileName);
             }
             else {

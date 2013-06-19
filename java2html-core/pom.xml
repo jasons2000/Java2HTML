@@ -25,6 +25,7 @@
         </dependency>
 
 
+
         <!--<dependency>-->
         <!--<artifactId>java2html-parser-core</artifactId>-->
         <!--<groupId>com.java2html</groupId>-->
@@ -37,6 +38,17 @@
             <version>1.7.5</version>
         </dependency>
 
+        <dependency>
+        	<groupId>de.schlichtherle.truezip</groupId>
+        	<artifactId>truezip-file</artifactId>
+        	<version>7.7.2</version>
+        </dependency>
+
+        <dependency>
+              	<groupId>de.schlichtherle.truezip</groupId>
+              	<artifactId>truezip-driver-zip</artifactId>
+              	<version>7.7.2</version>
+         </dependency>
 
         <dependency>
        	    <groupId>org.apache.commons</groupId>

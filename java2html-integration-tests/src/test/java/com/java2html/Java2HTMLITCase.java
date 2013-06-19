@@ -5,9 +5,12 @@ import org.junit.Test;
 
 public class Java2HTMLITCase {
 
-    private final static String TEST_SOURCE = "./java2html-core/src/test/sample_java/testSource";
+//    private final static String TEST_SOURCE = "./java2html-core/src/test/sample_java/testSource";
 
-    private final static String TEST_OUTPUT = "./java2html-core/target/itcase";
+    private final static String TEST_SOURCE = "C:\\PROGRA~1\\Java\\jdk1.6.0_39\\src.zip";
+
+
+    private final static String TEST_OUTPUT = "./java2html-integration-tests/target/itcase";
 
 
     @Test
