@@ -215,7 +215,7 @@ public class Java2HTML {
         //System.out.println("temp"+temp);
 
         HTMLFileWriter dest = new HTMLFileWriter(new BufferedWriter(new FileWriter(destFileName)), marginSize, tabSize);
-        FileReader source = new FileReader(fileName);
+        TFileReader source = new TFileReader(new TFile(fileName));
         dest.setHTMLMode(false);
 
         String dot = ".";
