@@ -20,10 +20,12 @@
 package com.java2html.internal;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.StringTokenizer;
 
 public class HTMLFileWriter extends Writer {
 
@@ -103,7 +105,7 @@ public class HTMLFileWriter extends Writer {
     /**
      * writes a line number if option is turned on
      */
-    private void writeLineNumber(StringBuffer s) {
+    private void writeLineNumber(StringBuilder s) {
 
         s.append(Helper.lineSep);
         lineCount++;
@@ -144,7 +146,7 @@ public class HTMLFileWriter extends Writer {
      */
     public String getFirstLineNumber() {
 
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         lineCount++;
 
         if (useLineNumbers) {
@@ -169,7 +171,7 @@ public class HTMLFileWriter extends Writer {
 //        return StringEscapeUtils.escapeHtml(str);
         int cnt = 0;
         int x;
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         final int len = str.length();
         int c;
         while (cnt < len) {

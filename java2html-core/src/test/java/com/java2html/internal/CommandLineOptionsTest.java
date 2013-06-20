@@ -13,7 +13,7 @@ import static junit.framework.Assert.assertEquals;
 public class CommandLineOptionsTest {
 
     private static final List<String> DEFAULT = Arrays.asList(".");
-    private static final List<Link> EMPTY = Collections.EMPTY_LIST;
+    private static final List<Link> EMPTY = Collections.emptyList();
 
     static class Options {
         boolean noHeader;
