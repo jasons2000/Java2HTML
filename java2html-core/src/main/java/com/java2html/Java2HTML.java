@@ -59,6 +59,7 @@ import com.java2html.java_parser.ParseException;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -198,14 +199,14 @@ public class Java2HTML {
         }
         String destFileName;
         if (aPackage.packageLevel.isEmpty()) {
-            destFileName = s + aPackage.className + ".java.html";
+            destFileName = s;
         }
         else {
             destFileName = s +
-                    Helper.convertDots(aPackage.packageLevel,
-                            File.separatorChar) + File.separatorChar +
-                    aPackage.className + ".java.html";
+                Helper.convertDots(aPackage.packageLevel, File.separatorChar) + File.separatorChar;
         }
+        destFileName =  destFileName + aPackage.className + ".java.html";
+
 
         // Make directory (seperate from file portion)
         File dir = new File(s +
@@ -251,23 +252,19 @@ public class Java2HTML {
         }
         finally {
             // Clear up resources
-            try {
+//            try {
                 dest.write(Helper.getFooter(aPackage.className, "", footer)); //TODO: add date string
                 dest.write(Helper.getPostText());
                 dest.flush();
                 dest.close();
-            }
-            catch (IOException e2) {
-            }
+//            }
+//            catch (IOException e2) {
+//            }
+            IOUtils.closeQuietly(source);
 
-            try {
-                source.close();
-            }
-            catch (IOException e2) {
-            }
         }
-        if (error == false) {
-            if (!quiet) System.out.println("Created: " + destFileName);
+        if (!error  && !quiet) {
+            System.out.println("Created: " + destFileName);
         }
 
     }

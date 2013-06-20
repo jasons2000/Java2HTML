@@ -19,10 +19,11 @@
 
 package com.java2html.internal;
 
-import com.java2html.*;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 
 public class HTMLFileWriter extends Writer {
 
@@ -95,8 +96,8 @@ public class HTMLFileWriter extends Writer {
     }
 
     @Override
-    public void close() throws IOException {
-        wrappedWriter.close();
+    public void close() {
+        IOUtils.closeQuietly(wrappedWriter);
     }
 
     /**
