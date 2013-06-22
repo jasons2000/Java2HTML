@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.StringTokenizer;
 
 public class HTMLFileWriter extends Writer {
 
@@ -172,63 +171,121 @@ public class HTMLFileWriter extends Writer {
         int cnt = 0;
         int x;
         StringBuilder s = new StringBuilder();
-        final int len = str.length();
-        int c;
-        while (cnt < len) {
-            c = str.charAt(cnt);
-            switch (c) {
-                case '&':
-                    s.append("&amp;");
-                    charCount++;
-                    break;
+        int i = 0;
 
-                case '<':
-                    s.append("&lt;");
-                    charCount++;
-                    break;
+        while (true) {
+            i = getTranChar(str, i);
 
-                case '>':
-                    s.append("&gt;");
-                    charCount++;
-                    break;
-
-                case '\r':
-                    charCount = 0;
-                    writeLineNumber(s);
-                    skipNewLineCharacter = 2;
-
-                    break;
-
-                case '\n':
-                    charCount = 0;
-                    if (skipNewLineCharacter == 0) {
-                        writeLineNumber(s);
-                    }
-                    break;
-
-                case '\t':
-                    x = convertTabsToSpacesCount -
-                        charCount % convertTabsToSpacesCount;
-                    while (x > 0) {
-                        s.append(' ');
-                        x--;
-                        charCount++;
-                    }
-
-                    break;
-
-                default:
-                    s.append( (char) c);
-                    charCount++;
-                    break;
+            if ((i == -1)) {
+                s.append(StringEscapeUtils.escapeHtml3(str));
+                break;
             }
-            cnt++;
+            else {
+                s.append(StringEscapeUtils.escapeHtml3(str.substring(0, i)));
+                char c = str.charAt(i);
+                switch (c) {
+                    case '\r':
+//                        charCount = 0;
+                        writeLineNumber(s);
+                        skipNewLineCharacter = 2;
 
-            if (skipNewLineCharacter > 0) {
-                skipNewLineCharacter--;
+                        break;
+
+                    case '\n':
+//                        charCount = 0;
+                        if (skipNewLineCharacter == 0) {
+                            writeLineNumber(s);
+                        }
+                        break;
+
+//                    case '\t':
+//                        x = convertTabsToSpacesCount -
+//                                charCount % convertTabsToSpacesCount;
+//                        while (x > 0) {
+//                            s.append(' ');
+//                            x--;
+//                            charCount++;
+//                        }
+//
+//                        break;
+
+
+                }
             }
         }
+//        final int len = str.length();
+//        int c;
+//        while (cnt < len) {
+//            c = str.charAt(cnt);
+//            switch (c) {
+//                case '&':
+//                    s.append("&amp;");
+//                    charCount++;
+//                    break;
+//
+//                case '<':
+//                    s.append("&lt;");
+//                    charCount++;
+//                    break;
+//
+//                case '>':
+//                    s.append("&gt;");
+//                    charCount++;
+//                    break;
+//
+//                case '\r':
+//                    charCount = 0;
+//                    writeLineNumber(s);
+//                    skipNewLineCharacter = 2;
+//
+//                    break;
+//
+//                case '\n':
+//                    charCount = 0;
+//                    if (skipNewLineCharacter == 0) {
+//                        writeLineNumber(s);
+//                    }
+//                    break;
+//
+//                case '\t':
+//                    x = convertTabsToSpacesCount -
+//                        charCount % convertTabsToSpacesCount;
+//                    while (x > 0) {
+//                        s.append(' ');
+//                        x--;
+//                        charCount++;
+//                    }
+//
+//                    break;
+//
+//                default:
+//                    s.append( (char) c);
+//                    charCount++;
+//                    break;
+//            }
+//            cnt++;
+//
+//            if (skipNewLineCharacter > 0) {
+//                skipNewLineCharacter--;
+//            }
+//        }
         return s.toString();
+    }
+
+    private int getTranChar(String str, int i) {
+        int ind1 = str.indexOf('\r');
+        int ind2 = str.indexOf('\n');
+        int res;
+        if (ind1 == -1 ) {
+            res = ind2;
+        }
+        else if (ind2 == -1){
+            res = ind1;
+        }
+        else {
+            res= Math.min(ind1, ind2);
+        }
+        return res;
     }
 
     /* TODO: added conversion of tabs to spaces */
