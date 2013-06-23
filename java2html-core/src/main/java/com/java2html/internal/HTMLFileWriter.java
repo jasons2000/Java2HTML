@@ -20,26 +20,26 @@
 package com.java2html.internal;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 public class HTMLFileWriter extends Writer {
 
     private final Writer wrappedWriter;
+    private final LineNumberReader lineNumberReader;
+    private final PipedWriter pipedWriter;
 
     private boolean htmlMode = false;
     private int lineCount = 0;
     final private int convertTabsToSpacesCount;
-    private int skipNewLineCharacter = 0;
+    private boolean wasCR = false;
     private boolean useLineNumbers = true;
 
     /**
      * Margin Size (only used if using Line Numbers)
      */
     final private int lineNumberMargin;
+    private int skipNewLineCharacter;
 
     public void setHTMLMode(boolean htmlMode) {
         this.htmlMode = htmlMode;
@@ -48,6 +48,10 @@ public class HTMLFileWriter extends Writer {
 
     public HTMLFileWriter(Writer wrappedWriter, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
         this.wrappedWriter = wrappedWriter;
+
+        pipedWriter = new PipedWriter();
+
+        this.lineNumberReader = new LineNumberReader(new PipedReader(pipedWriter));
 
         if (lineNumberMargin > 64) {
             throw new IllegalArgumentException("Margin too Large");
@@ -72,11 +76,12 @@ public class HTMLFileWriter extends Writer {
 
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
+        throw new UnsupportedOperationException();
 
 
     }
 
-    public void write(String str)  {
+    public void write(String str) {
 
         try {
             if (htmlMode) {
@@ -166,127 +171,71 @@ public class HTMLFileWriter extends Writer {
 
     private int charCount = 0;
 
-    private String getHTMLParsedText(String str) {
-//        return StringEscapeUtils.escapeHtml(str);
+    private String getHTMLParsedText(String str) throws IOException {
+        //        return StringEscapeUtils.escapeHtml(str);
         int cnt = 0;
         int x;
         StringBuilder s = new StringBuilder();
-        int i = 0;
+        final int len = str.length();
+        int c;
+        while (cnt < len) {
+            c = str.charAt(cnt);
+            switch (c) {
+                case '&':
+                    s.append("&amp;");
+                    charCount++;
+                    break;
 
-        while (true) {
-            i = getTranChar(str, i);
+                case '<':
+                    s.append("&lt;");
+                    charCount++;
+                    break;
 
-            if ((i == -1)) {
-                s.append(StringEscapeUtils.escapeHtml3(str));
-                break;
-            }
-            else {
-                s.append(StringEscapeUtils.escapeHtml3(str.substring(0, i)));
-                char c = str.charAt(i);
-                switch (c) {
-                    case '\r':
-//                        charCount = 0;
+                case '>':
+                    s.append("&gt;");
+                    charCount++;
+                    break;
+
+                case '\r':
+                    charCount = 0;
+                    writeLineNumber(s);
+                    skipNewLineCharacter = 2;
+
+                    break;
+
+                case '\n':
+                    charCount = 0;
+                    if (skipNewLineCharacter == 0) {
                         writeLineNumber(s);
-                        skipNewLineCharacter = 2;
+                    }
+                    break;
 
-                        break;
+                case '\t':
+                    x = convertTabsToSpacesCount -
+                            charCount % convertTabsToSpacesCount;
+                    while (x > 0) {
+                        s.append(' ');
+                        x--;
+                        charCount++;
+                    }
 
-                    case '\n':
-//                        charCount = 0;
-                        if (skipNewLineCharacter == 0) {
-                            writeLineNumber(s);
-                        }
-                        break;
+                    break;
 
-//                    case '\t':
-//                        x = convertTabsToSpacesCount -
-//                                charCount % convertTabsToSpacesCount;
-//                        while (x > 0) {
-//                            s.append(' ');
-//                            x--;
-//                            charCount++;
-//                        }
-//
-//                        break;
+                default:
+                    s.append((char) c);
+                    charCount++;
+                    break;
+            }
+            cnt++;
 
-
-                }
+            if (skipNewLineCharacter > 0) {
+                skipNewLineCharacter--;
             }
         }
-//        final int len = str.length();
-//        int c;
-//        while (cnt < len) {
-//            c = str.charAt(cnt);
-//            switch (c) {
-//                case '&':
-//                    s.append("&amp;");
-//                    charCount++;
-//                    break;
-//
-//                case '<':
-//                    s.append("&lt;");
-//                    charCount++;
-//                    break;
-//
-//                case '>':
-//                    s.append("&gt;");
-//                    charCount++;
-//                    break;
-//
-//                case '\r':
-//                    charCount = 0;
-//                    writeLineNumber(s);
-//                    skipNewLineCharacter = 2;
-//
-//                    break;
-//
-//                case '\n':
-//                    charCount = 0;
-//                    if (skipNewLineCharacter == 0) {
-//                        writeLineNumber(s);
-//                    }
-//                    break;
-//
-//                case '\t':
-//                    x = convertTabsToSpacesCount -
-//                        charCount % convertTabsToSpacesCount;
-//                    while (x > 0) {
-//                        s.append(' ');
-//                        x--;
-//                        charCount++;
-//                    }
-//
-//                    break;
-//
-//                default:
-//                    s.append( (char) c);
-//                    charCount++;
-//                    break;
-//            }
-//            cnt++;
-//
-//            if (skipNewLineCharacter > 0) {
-//                skipNewLineCharacter--;
-//            }
-//        }
         return s.toString();
+
     }
 
-    private int getTranChar(String str, int i) {
-        int ind1 = str.indexOf('\r');
-        int ind2 = str.indexOf('\n');
-        int res;
-        if (ind1 == -1 ) {
-            res = ind2;
-        }
-        else if (ind2 == -1){
-            res = ind1;
-        }
-        else {
-            res= Math.min(ind1, ind2);
-        }
-        return res;
-    }
 
     /* TODO: added conversion of tabs to spaces */
 
@@ -294,10 +243,10 @@ public class HTMLFileWriter extends Writer {
         HTMLFileWriter fw = new HTMLFileWriter(new StringWriter(), 4, 4);
         fw.setHTMLMode(true);
         fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
-                 Helper.lineSep);
+                Helper.lineSep);
         fw.setHTMLMode(false);
         fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
-                 Helper.lineSep);
+                Helper.lineSep);
 
 
         fw.close();
