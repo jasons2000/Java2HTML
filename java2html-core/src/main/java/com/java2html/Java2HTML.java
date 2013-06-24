@@ -70,6 +70,8 @@ import java.util.*;
  * <p/>
  * TODO
  * Hi
+ * margin should be boolean amd word itself out(Line Number Size)
+ * probabbly use junit Markers to identify types of tests
  * property expansion
  * fix umlat and foreign chars problem
  * create test java which use javadoc sample package and class
@@ -169,6 +171,7 @@ public class Java2HTML {
         for (String fullPathFileName : javaSourceFileNameList) {
             Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
             String packageLevel = javaSource.findReferences(fullPathFileName, reader);
+            reader.close();
             fn(fullPathFileName, packageLevel);
         }
 

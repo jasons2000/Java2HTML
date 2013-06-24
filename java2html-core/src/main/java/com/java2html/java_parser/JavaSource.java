@@ -23,6 +23,7 @@ import com.java2html.Java2HTML;
 import com.java2html.internal.HTMLFileWriter;
 
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.Reader;
 
 public class JavaSource {
@@ -41,7 +42,14 @@ public class JavaSource {
 
 
     public String findReferences(String fullPathFilename, Reader reader) throws IOException {
-        return PackageLocator.scan(reader);
+        LineNumberReader lineNumberReader = new LineNumberReader(reader);
+        String packageName = PackageLocator.scan(lineNumberReader);
+        while (lineNumberReader.readLine() != null) {
+
+        }
+        System.out.println("*** LN=" +lineNumberReader.getLineNumber());
+
+        return packageName;
     }
 
     public void toHtml(Reader source, HTMLFileWriter dest, String preDir, Java2HTML java2HTML, JavaDocManager javaDoc) throws ParseException,IOException {

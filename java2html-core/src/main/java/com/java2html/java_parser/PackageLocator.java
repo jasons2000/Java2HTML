@@ -36,116 +36,112 @@ public final class PackageLocator {
     private static final boolean DEBUG = false;
 
     public static String scan(Reader reader) throws IOException {
-        try {
 
-            boolean mbInSingleLineComment = false;
-            boolean mbInMultiLineComment = false;
-            boolean mbPackageKeywordFound = false;
-            StringBuilder mCurToken = new StringBuilder();
-            StringBuilder packageName = new StringBuilder();
+        boolean mbInSingleLineComment = false;
+        boolean mbInMultiLineComment = false;
+        boolean mbPackageKeywordFound = false;
+        StringBuilder mCurToken = new StringBuilder();
+        StringBuilder packageName = new StringBuilder();
 
-            int lnPrevChar = -1;
-            int lnCurChar = reader.read();
-            while (lnCurChar >= 0) {
-                if (DEBUG) {
-                    System.out.println("" +
-                            (lnCurChar < 0x20 ?
-                                    "0x" + Integer.toHexString(lnCurChar) :
-                                    "'" + (char) lnCurChar + "'") +
-                            ": single=" + mbInSingleLineComment +
-                            ", multi=" + mbInMultiLineComment +
-                            ", pkg=" + mbPackageKeywordFound +
-                            ", token='" + mCurToken + "'" +
-                            ", package='" + packageName + "'");
-                }
-                switch (lnCurChar) {
-                    case '\n':
-                    case '\r':
-                        mbInSingleLineComment = false;
-                        break;
+        int lnPrevChar = -1;
+        int lnCurChar = reader.read();
+        while (lnCurChar >= 0) {
+            if (DEBUG) {
+                System.out.println("" +
+                        (lnCurChar < 0x20 ?
+                                "0x" + Integer.toHexString(lnCurChar) :
+                                "'" + (char) lnCurChar + "'") +
+                        ": single=" + mbInSingleLineComment +
+                        ", multi=" + mbInMultiLineComment +
+                        ", pkg=" + mbPackageKeywordFound +
+                        ", token='" + mCurToken + "'" +
+                        ", package='" + packageName + "'");
+            }
+            switch (lnCurChar) {
+                case '\n':
+                case '\r':
+                    mbInSingleLineComment = false;
+                    break;
 
-                    case ' ':
-                    case '\f':
-                    case '\t':
-                        break;
+                case ' ':
+                case '\f':
+                case '\t':
+                    break;
 
-                    case '/':
+                case '/':
+                    switch (lnPrevChar) {
+                        case '/':
+                            mbInSingleLineComment = true;
+                            break;
+                        case '*':
+                            if (mbInMultiLineComment) {
+                                mbInMultiLineComment = false;
+                            }
+                            break;
+                    }
+                    break;
+
+                case '*':
+                    switch (lnPrevChar) {
+                        case '/':
+                            mbInMultiLineComment = true;
+                            break;
+                    }
+                    break;
+
+                case ';':
+                    if (!mbInSingleLineComment && !mbInMultiLineComment) {
+                        if (mbPackageKeywordFound) {
+                            return packageName.toString();
+                        }
+                    }
+                    break;
+
+                default:
+                    if (!mbInSingleLineComment && !mbInMultiLineComment) {
                         switch (lnPrevChar) {
-                            case '/':
-                                mbInSingleLineComment = true;
-                                break;
-                            case '*':
-                                if (mbInMultiLineComment) {
-                                    mbInMultiLineComment = false;
+                            case ' ':
+                            case '\f':
+                            case '\t':
+                            case '\n':
+                            case '\r':
+                                if (mCurToken.length() > 0 && !mbPackageKeywordFound) {
+                                    // no non-comment/non-whitespace tokens before a package are allowed
+                                    // (not even annotations: these need to be in a special file: 'package-info.java')
+                                    return packageName.toString();
                                 }
                                 break;
                         }
-                        break;
-
-                    case '*':
-                        switch (lnPrevChar) {
-                            case '/':
-                                mbInMultiLineComment = true;
-                                break;
+                        if (mbPackageKeywordFound) {
+                            packageName.append((char) lnCurChar);
                         }
-                        break;
-
-                    case ';':
-                        if (!mbInSingleLineComment && !mbInMultiLineComment) {
-                            if (mbPackageKeywordFound) {
-                                return packageName.toString();
-                            }
+                        else {
+                            mCurToken.append((char) lnCurChar);
                         }
-                        break;
-
-                    default:
-                        if (!mbInSingleLineComment && !mbInMultiLineComment) {
-                            switch (lnPrevChar) {
-                                case ' ':
-                                case '\f':
-                                case '\t':
-                                case '\n':
-                                case '\r':
-                                    if (mCurToken.length() > 0 && !mbPackageKeywordFound) {
-                                        // no non-comment/non-whitespace tokens before a package are allowed
-                                        // (not even annotations: these need to be in a special file: 'package-info.java')
-                                        return packageName.toString();
-                                    }
-                                    break;
-                            }
-                            if (mbPackageKeywordFound) {
-                                packageName.append((char) lnCurChar);
-                            }
-                            else {
-                                mCurToken.append((char) lnCurChar);
-                            }
-                        }
-                        break;
-                }
-                if (mCurToken.length() > 0) {
-                    mbPackageKeywordFound = "package".equals(mCurToken.toString());
-                }
-                if (DEBUG) {
-                  /*
-                  System.out.println( "" +
-                    ( lnCurChar < 0x20 ?
-                      "0x" + Integer.toHexString( lnCurChar ) :
-                      "'" + (char)lnCurChar + "'" ) +
-                    ": single=" + mbInSingleLineComment +
-                    ", multi=" + mbInMultiLineComment +
-                    ", pkg=" + mbPackageKeywordFound +
-                    ", token='" + mCurToken + "'" +
-                    ", package='" + mPackageName + "'" );
-                  //*/
-                }
-                lnPrevChar = lnCurChar;
-                lnCurChar = reader.read();
+                    }
+                    break;
             }
-            return packageName.toString();
+            if (mCurToken.length() > 0) {
+                mbPackageKeywordFound = "package".equals(mCurToken.toString());
+            }
+            if (DEBUG) {
+              /*
+              System.out.println( "" +
+                ( lnCurChar < 0x20 ?
+                  "0x" + Integer.toHexString( lnCurChar ) :
+                  "'" + (char)lnCurChar + "'" ) +
+                ": single=" + mbInSingleLineComment +
+                ", multi=" + mbInMultiLineComment +
+                ", pkg=" + mbPackageKeywordFound +
+                ", token='" + mCurToken + "'" +
+                ", package='" + mPackageName + "'" );
+              //*/
+            }
+            lnPrevChar = lnCurChar;
+            lnCurChar = reader.read();
         }
-        finally {
-            reader.close();
-        }
+        return packageName.toString();
+
     } // scan
 
 

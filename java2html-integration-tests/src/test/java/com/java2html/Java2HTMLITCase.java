@@ -16,12 +16,12 @@ public class Java2HTMLITCase {
     @Test
     public void testSampleSourceWithJavaDoc() throws Exception {
 
-        runMain("-js %JAVA2HTML_HOME%\\src\\tests\\testSource -d ..\\..\\..\\JAVA_1_6_0_doc  -n Tests -m 4");
+        runMainSplit("-js %JAVA2HTML_HOME%\\src\\tests\\testSource -d ..\\..\\..\\JAVA_1_6_0_doc  -n Tests -m 4");
     }
 
     @Test
     public void testSampleJava() throws Exception {
-        runMain(  "-js " + TEST_SOURCE + " -d " + TEST_OUTPUT +" -n test_Source -t 4 -m 4");
+        runMain( "-js ", TEST_SOURCE , "-d" , TEST_OUTPUT ,"-n", "test_Source", "-t", "4", "-m", "4");
     }
 
     @Test
@@ -32,11 +32,21 @@ public class Java2HTMLITCase {
 
     @Test
     public void testJava6Source() throws Exception {
-        runMain("j2h -js C:\\J2sdK1.4.0\\src");
+        runMainSplit("j2h -js C:\\J2sdK1.4.0\\src");
+
     }
 
-    private static void runMain(String args) {
+    @Test
+     public void testJava7Source() throws Exception {
+        runMainSplit("j2h -js C:\\J2sdK1.4.0\\src");
+     }
+
+    private static void runMainSplit(String args) {
         Java2HTML.main(args.split(" "));
     }
+
+    private static void runMain(String... args) {
+          Java2HTML.main(args);
+      }
 
 }
