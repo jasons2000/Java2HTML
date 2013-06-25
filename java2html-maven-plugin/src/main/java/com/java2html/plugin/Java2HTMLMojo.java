@@ -34,7 +34,7 @@ public class Java2HTMLMojo extends AbstractMojo {
     private boolean quite;
 
     @Parameter
-    private Integer marginSize;
+    private boolean showLineNumbers;
 
     @Parameter
     private Integer tabSize;
@@ -52,10 +52,10 @@ public class Java2HTMLMojo extends AbstractMojo {
         try {
             // todo have 1 set sourceMethod which can  work out dir/file/zips
             java2HTML.setJavaDirectorySource(project.getCompileSourceRoots());
-            java2HTML.setDestination(project.getBuild().getDirectory() + File.separator + "java2html-output");
+            java2HTML.setDestinationDir(project.getBuild().getDirectory() + File.separator + "java2html-output");
             java2HTML.setTitle(title);
             java2HTML.setQuiet(quite);
-            if (marginSize != null) java2HTML.setMarginSize(marginSize);
+            java2HTML.setShowLineNumbers(showLineNumbers);
             if (tabSize != null) java2HTML.setTabSize(tabSize);
             java2HTML.setJavaDocLinks(links);
 

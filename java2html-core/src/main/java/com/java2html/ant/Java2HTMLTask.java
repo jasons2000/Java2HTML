@@ -42,10 +42,10 @@ public class Java2HTMLTask extends Task {
       /**
      * Set the margin size that should be generated when buildJava2HTML() is called.
      *
-     * @param marginSize Margin Size
+     * @param showLineNumbers Show Line Numbers
      */
-    public void setMarginSize(int marginSize) {
-        java2HTML.setMarginSize(marginSize);
+    public void setShowLineNumbers(boolean showLineNumbers) {
+        java2HTML.setShowLineNumbers(showLineNumbers);
     }
 
     /**
@@ -162,7 +162,7 @@ public class Java2HTMLTask extends Task {
      */
     public void setDestination(File destination) {
         if ( !java2HTML.isQuiet() ) System.out.println(destination.getAbsolutePath());
-        java2HTML.setDestination(destination.getAbsolutePath());
+        java2HTML.setDestinationDir(destination.getAbsolutePath());
     }
 
 

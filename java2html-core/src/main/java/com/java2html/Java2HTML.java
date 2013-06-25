@@ -94,7 +94,7 @@ import java.util.*;
 public class Java2HTML {
 
     // Options
-    private int marginSize = 0;
+    private boolean showLineNumbers = false;
     private int tabSize = 4;
 
     private boolean header = true;
@@ -112,7 +112,7 @@ public class Java2HTML {
 
     private List<Link> javaDocOptionLinks = Collections.emptyList();
 
-    private String destination = "output";
+    private String destinationDir = "output";
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
     public Map<String, Map<String, String>> allClassesHRefByPackage = new HashMap<String, Map<String, String>>();
@@ -167,15 +167,22 @@ public class Java2HTML {
 
         JavaSource javaSource = new JavaSource();
         javaSource.setQuiet(quiet);
+        int marginSize = 0;
 
         for (String fullPathFileName : javaSourceFileNameList) {
             Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
-            String packageLevel = javaSource.findReferences(fullPathFileName, reader);
+
+            LineNumberReader lineNumberReader = new LineNumberReader(reader);
+            String packageLevel = javaSource.findReferences(fullPathFileName, lineNumberReader);
+            // count lines
+            marginSize = getMarginSize(lineNumberReader);
+
+
             reader.close();
             fn(fullPathFileName, packageLevel);
         }
 
-        if (!simple) Helper.createPackageIndex(destination, title, allClassesHRefByPackage, packageList);
+        if (!simple) Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
 
 
         // Generate files - 2nd parse
@@ -185,17 +192,25 @@ public class Java2HTML {
             // skip the replacement (as of JDK 1.5) for package.html
             if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 
-                fn2(javaSource, javaDoc, fileName, aPackage);
+                fn2(javaSource, javaDoc, fileName, aPackage, marginSize);
             }
         }
 
         return true;
     }
 
-    private void fn2(JavaSource javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage) throws IOException {
+    private int getMarginSize(LineNumberReader lineNumberReader) throws IOException {
+        while (lineNumberReader.readLine() != null) {
+        }
+        return showLineNumbers ? ("" + lineNumberReader.getLineNumber()).length() : 0;
+
+
+    }
+
+    private void fn2(JavaSource javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize ) throws IOException {
 
         // Create directories
-        File temp = new File(destination); // this code deals with the c: or c:\ problem
+        File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
         String s = temp.getAbsolutePath();
         if (!s.endsWith(File.separator)) {
             s += File.separator; // if not ending with \ add a \
@@ -331,10 +346,10 @@ public class Java2HTML {
         subs.put("title", title);
 
 
-        Helper helper = new Helper(destination, subs, quiet);
+        Helper helper = new Helper(destinationDir, subs, quiet);
 
         //Create StyleSheet
-        File f = new File(destination + "/stylesheet.css");
+        File f = new File(destinationDir + "/stylesheet.css");
         FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
 
@@ -357,10 +372,10 @@ public class Java2HTML {
     /**
      * Set the margin size that should be generated when buildJava2HTML() is called.
      *
-     * @param marginSize Margin Size
+     * @param showLineNumbers show line numbers
      */
-    public void setMarginSize(int marginSize) {
-        this.marginSize = marginSize;
+    public void setShowLineNumbers(boolean showLineNumbers) {
+        this.showLineNumbers = showLineNumbers;
     }
 
     /**
@@ -491,10 +506,10 @@ public class Java2HTML {
     /**
      * Sets the output directory that the generated HTML will be placed into.
      *
-     * @param destination Directory where output will be directed to
+     * @param destinationDir Directory where output will be directed to
      */
-    public void setDestination(String destination) {
-        this.destination = destination;
+    public void setDestinationDir(String destinationDir) {
+        this.destinationDir = destinationDir;
     }
 
 

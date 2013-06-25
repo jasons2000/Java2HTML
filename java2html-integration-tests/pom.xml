@@ -51,7 +51,7 @@
                     <title>Mojo Integration Test</title>
                     <simple>false</simple>
                     <!--<quite></quite>-->               <!--We' testing null here-->
-                    <marginSize>4</marginSize>
+                    <showLineNumbers>4</showLineNumbers>
                     <!--<tabSize>4</tabSize>-->    <!-- We' testing null here-->
                     <links>
                         <link>
@@ -84,7 +84,7 @@
                                 <java2html title="Ant Task Integration Test"
                                            simple="no"
                                            tabsize="4"
-                                           marginsize="4"
+                                           showLinenumbers="yes"
                                            destination="${project.build.directory}/integration-tests-ant-output">
                                     <fileset dir=".">
                                         <include name="**/*.java"/>

@@ -20,6 +20,7 @@ public class CommandLineOptions {
         options.addOption("nh", "noheader", false, "prevents header from being displayed");
         options.addOption("nf", "nofooter", false, "prevents footer from being displayed");
         options.addOption("q", "quite", false, "be extra quite");
+        options.addOption("l", "linenumbers", false, "show line numbers");
         options.addOption("s", "simple", false, "Simple output, just include the Java source and stylesheet.css files");
 
         options.addOption(OptionBuilder.
@@ -33,12 +34,6 @@ public class CommandLineOptions {
                 .hasArg()
                 .withDescription("Title")
                 .create("n"));
-
-        options.addOption(OptionBuilder.withLongOpt("margin")
-                .hasArg()
-                .withType(Number.class)
-                .withDescription("Margin Size (with Line Numbers)")
-                .create("m"));
 
         options.addOption(OptionBuilder.withLongOpt("tabs")
                 .hasArg()
@@ -88,12 +83,8 @@ public class CommandLineOptions {
         return line.getOptionValue("d", ".");
     }
 
-    public int getMarginSize() throws ParseException {
-        Long margin = (Long) line.getParsedOptionValue("m");
-        if (margin == null) {
-            margin = 0l;
-        }
-        return margin.intValue();
+    public boolean isShowLineNumbers() {
+        return line.hasOption("l");
     }
 
     public int getTabCount() throws ParseException {
@@ -151,11 +142,11 @@ public class CommandLineOptions {
 
             java2HTML.setQuiet(isQuite());
 
-            java2HTML.setMarginSize(getMarginSize());
+            java2HTML.setShowLineNumbers(isShowLineNumbers());
 
             java2HTML.setTabSize(getTabCount());
 
-            java2HTML.setDestination(getDestination());
+            java2HTML.setDestinationDir(getDestination());
 
             java2HTML.setJavaDirectorySource(getSourceFiles());
 

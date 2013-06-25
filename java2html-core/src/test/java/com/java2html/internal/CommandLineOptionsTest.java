@@ -24,15 +24,15 @@ public class CommandLineOptionsTest {
         List<String> javaSource;
         String destination;
         int tabSize;
-        int margin;
+        boolean showLineNumbers;
 
-        Options(String destination, List<String> javaSource, List<Link> javaDoc, int margin, int tabSize, boolean noHeader, boolean noFooter, boolean simple, boolean quite) {
+        Options(String destination, List<String> javaSource, List<Link> javaDoc, boolean showLineNumbers, int tabSize, boolean noHeader, boolean noFooter, boolean simple, boolean quite) {
             this.destination = destination;
             isQuite = quite;
             isSimple = simple;
             this.javaDoc = javaDoc;
             this.javaSource = javaSource;
-            this.margin = margin;
+            this.showLineNumbers = showLineNumbers;
             this.noFooter = noFooter;
             this.noHeader = noHeader;
             this.tabSize = tabSize;
@@ -41,22 +41,22 @@ public class CommandLineOptionsTest {
         static Options create(String destination,
                                       List<String> javaSource,
                                       List<Link> javaDoc,
-                                      int margin,
+                                      boolean showLineNumbers,
                                       int tabSize) {
-            return new Options(destination, javaSource, javaDoc, margin, tabSize, false, false, false, false);
+            return new Options(destination, javaSource, javaDoc, showLineNumbers, tabSize, false, false, false, false);
         }
 
         static Options create(String destination,
                               List<String> javaSource,
                               List<Link> javaDoc,
-                              int margin,
+                              boolean showLineNumbers,
                               int tabSize,
                               boolean noHeader,
                               boolean noFooter,
                               boolean isSimple,
                               boolean isQuite
         ) {
-            return new Options(destination, javaSource, javaDoc, margin, tabSize, noHeader, noFooter, isSimple, isQuite);
+            return new Options(destination, javaSource, javaDoc, showLineNumbers, tabSize, noHeader, noFooter, isSimple, isQuite);
 
         }
     }
@@ -65,31 +65,31 @@ public class CommandLineOptionsTest {
     @Test
     public void test() throws ParseException {
 
-        checkValues("", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, false, false));
+        checkValues("", Options.create(".", DEFAULT, EMPTY, false, 4, false, false, false, false));
 
-        checkValues("-s", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, true, false));
+        checkValues("-s", Options.create(".", DEFAULT, EMPTY, false, 4, false, false, true, false));
 
-        checkValues("-q", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, false, true));
+        checkValues("-q", Options.create(".", DEFAULT, EMPTY, false, 4, false, false, false, true));
 
-        checkValues("-sq", Options.create(".", DEFAULT, EMPTY, 0, 4, false, false, true, true));
+        checkValues("-sq", Options.create(".", DEFAULT, EMPTY, false, 4, false, false, true, true));
 
-        checkValues("-nh", Options.create(".", DEFAULT, EMPTY, 0, 4, true, false, false, false));
+        checkValues("-nh", Options.create(".", DEFAULT, EMPTY, false, 4, true, false, false, false));
 
-        checkValues("-nf", Options.create(".", DEFAULT, EMPTY, 0, 4, false, true, false, false));
+        checkValues("-nf", Options.create(".", DEFAULT, EMPTY, false, 4, false, true, false, false));
 
 
         List<String> expectedSources = Arrays.asList("a/b/c","a","b","c");
         List<Link> expectedJavaDoc = Arrays.asList(new Link("e"),new Link("f"));
-        checkValues("-js a/b/c a b c", Options.create(".",expectedSources, EMPTY,0,4));
+        checkValues("-js a/b/c a b c", Options.create(".",expectedSources, EMPTY,false,4));
 
-        checkValues("-js a/b/c a b c -jd e f", Options.create(".",expectedSources, expectedJavaDoc,0,4));
+        checkValues("-js a/b/c a b c -jd e f", Options.create(".",expectedSources, expectedJavaDoc,false,4));
 
         List<String> expectedSourcesWithTwoSets = Arrays.asList("a/b/c","a","b","c", "g", "h");
-        checkValues("-js a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,0,4));
+        checkValues("-js a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,false,4));
 
-        checkValues("-javasource a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,0,4));
+        checkValues("-javasource a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,false,4));
 
-        checkValues("-javasource a/b/c a b c -m 8 -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,8,4));
+        checkValues("-javasource a/b/c a b c -l -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,true,4));
 
 
     }
@@ -106,7 +106,7 @@ public class CommandLineOptionsTest {
         assertEquals("", options.javaDoc, clo.getJavaDocUrls());
         assertEquals("", options.javaSource, clo.getSourceFiles());
         assertEquals("", options.tabSize, clo.getTabCount());
-        assertEquals("", options.margin, clo.getMarginSize());
+        assertEquals("", options.showLineNumbers, clo.isShowLineNumbers());
     }
 
 
