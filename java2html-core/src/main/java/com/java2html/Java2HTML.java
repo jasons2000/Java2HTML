@@ -70,7 +70,6 @@ import java.util.*;
  * <p/>
  * TODO
  * Hi
- * margin should be boolean amd word itself out(Line Number Size)
  * probabbly use junit Markers to identify types of tests
  * property expansion
  * fix umlat and foreign chars problem
@@ -79,8 +78,6 @@ import java.util.*;
  * create ITCase for general results,
  * test each frame
  * link to full
- * ant test
- * mojo test
  * <p/>
  * Low
  * support other languages,
