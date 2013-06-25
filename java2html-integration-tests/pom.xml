@@ -51,7 +51,7 @@
                     <title>Mojo Integration Test</title>
                     <simple>false</simple>
                     <!--<quite></quite>-->               <!--We' testing null here-->
-                    <showLineNumbers>4</showLineNumbers>
+                    <showLineNumbers>true</showLineNumbers>
                     <!--<tabSize>4</tabSize>-->    <!-- We' testing null here-->
                     <links>
                         <link>
