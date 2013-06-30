@@ -23,7 +23,30 @@
         <module>java2html-parser-core</module>
     </modules>
 
+    <licenses>
+          <license>
+              <name>LGPL v3</name>
+              <url>http://www.gnu.org/licenses/lgpl.txt</url>
+              <distribution>repo</distribution>
+          </license>
+      </licenses>
+      <name>Java2HTML</name>
+      <organization>
+          <name>com.java2html</name>
+          <url>http://www.java2html.com</url>
+      </organization>
+      <scm>
+          <url>https://svn.code.sf.net/p/java2html/code2/</url>
+      </scm>
+      <developers>
+          <developer>
+              <id>jasons_2000</id>
+              <name>Jason Shattu</name>
+          </developer>
+      </developers>
+
     <dependencies>
+
         <dependency>
         	<groupId>junit</groupId>
         	<artifactId>junit</artifactId>

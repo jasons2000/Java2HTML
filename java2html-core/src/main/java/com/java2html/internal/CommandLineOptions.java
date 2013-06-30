@@ -4,6 +4,8 @@ import com.java2html.BadOptionException;
 import com.java2html.Java2HTML;
 import org.apache.commons.cli.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,7 +23,7 @@ public class CommandLineOptions {
         options.addOption("nf", "nofooter", false, "prevents footer from being displayed");
         options.addOption("q", "quite", false, "be extra quite");
         options.addOption("l", "linenumbers", false, "show line numbers");
-        options.addOption("s", "simple", false, "Simple output, just include the Java source and stylesheet.css files");
+        options.addOption("s", "simple", false, "Simple output, will include the Java source and stylesheet.css files");
 
         options.addOption(OptionBuilder.
                 withLongOpt("destination")
@@ -115,6 +117,21 @@ public class CommandLineOptions {
         return line.getOptionValue("n");
     }
 
+    public String getUsage() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("j2h", options);
+        return null;
+    }
+
+    public String getHelp() {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp( "j2h", options);
+        return null;
+    }
+
 
     /**
      * @return false if just Help was requested
@@ -128,7 +145,7 @@ public class CommandLineOptions {
             if (line.hasOption("h")) {
                 // automatically generate the help statement
                 HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("ant", options);
+                formatter.printHelp("j2h", options);
                 return false;
             }
 

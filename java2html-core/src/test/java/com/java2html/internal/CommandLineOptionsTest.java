@@ -1,6 +1,8 @@
 package com.java2html.internal;
 
 
+import com.java2html.BadOptionException;
+import com.java2html.Java2HTML;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
@@ -90,7 +92,12 @@ public class CommandLineOptionsTest {
         checkValues("-javasource a/b/c a b c -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,false,4));
 
         checkValues("-javasource a/b/c a b c -l -jd e f -js g h", Options.create(".",expectedSourcesWithTwoSets, expectedJavaDoc,true,4));
+    }
 
+    @Test
+    public void testUsage() throws ParseException, BadOptionException {
+        CommandLineOptions clo = new CommandLineOptions(new String[]{ "-h"});
+        clo.setOptionsFromCommandLine(new Java2HTML());
 
     }
 
