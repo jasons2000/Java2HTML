@@ -2,12 +2,10 @@ package com.java2html;
 
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(IntegrationTests.class)
 public class Java2HTMLITCase {
-
-//    private final static String TEST_SOURCE = "./java2html-core/src/test/sample_java/testSource";
-
-
 
 
     @Test
@@ -17,35 +15,34 @@ public class Java2HTMLITCase {
     }
 
     @Test
-    public void testFullJavaSource() throws Exception {
-        String source6 = "C:\\PROGRA~1\\Java\\jdk1.6.0_43\\src.zip" ;
-        String source7 = "C:\\PROGRA~1\\Java\\jdk1.7.0_17\\src.zip" ;
-        runMain( "-js", source7, "-d" , "./java2html-integration-tests/target/itcase" ,"-n", "test_Source", "-t", "4", "-l", "-q");
+    @Category(IntegrationTestsWithExternalDependencies.class)
+    public void testFullJavaSource6() throws Exception {
+
+        runMain("-js", "C:\\PROGRA~1\\Java\\jdk1.6.0_43\\src.zip", "-d", "./java2html-integration-tests/target/itcase6", "-n", "test_JavaSource_6", "-t", "4", "-l", "-q");
+    }
+
+
+    @Test
+    @Category(IntegrationTestsWithExternalDependencies.class)
+    public void testFullJavaSource7() throws Exception {
+        runMain("-js", "C:\\PROGRA~1\\Java\\jdk1.7.0_17\\src.zip", "-d", "./java2html-integration-tests/target/itcase7", "-n", "test_JavaSource_7", "-t", "4", "-l", "-q");
     }
 
     @Test
+
     public void testThisSourceWithJavaDoc() throws Exception {
 
 //        runMain("-js " + js +" -jd http://docs.oracle.com/javase/6/docs/api -n The_Java2HTML_Source -t 4 -m 4");
     }
 
-    @Test
-    public void testJava6Source() throws Exception {
-        runMainSplit("j2h -js C:\\J2sdK1.4.0\\src");
 
-    }
-
-    @Test
-     public void testJava7Source() throws Exception {
-        runMainSplit("j2h -js C:\\J2sdK1.4.0\\src");
-     }
 
     private static void runMainSplit(String args) {
         Java2HTML.main(args.split(" "));
     }
 
     private static void runMain(String... args) {
-          Java2HTML.main(args);
-      }
+        Java2HTML.main(args);
+    }
 
 }
