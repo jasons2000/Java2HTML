@@ -25,6 +25,10 @@
  *
  * modified by Jason Shattu for Java2HTHML
  * extended by Leon Poyyayil to support JDK 1.5 features (generics, enum & annotations)
+ * extended by pilcrow to support Java 7 language features (binary literals, 
+ *   underscores in all numeric literals,
+ *   diamond operator, try-with-resources, catching multiple exceptions):
+ *   - see http://docs.oracle.com/javase/7/docs/technotes/guides/language/enhancements.html
  */
 
 options {
@@ -235,15 +239,30 @@ TOKEN :
 {
   < INTEGER_LITERAL:
         <DECIMAL_LITERAL> (["l","L"])?
+      | <BINARY_LITERAL> (["l","L"])?
       | <HEX_LITERAL> (["l","L"])?
       | <OCTAL_LITERAL> (["l","L"])?
   >
 |
-  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: 
+        ["1"-"9"] (["0"-"9"])* 
+      | ["1"-"9"] (["_","0"-"9"])* ["0"-"9"]
+  >
 |
-  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+  < #BINARY_LITERAL: 
+        "0" ["b","B"] ["0","1"] (["0","1"])*
+      | "0" ["b","B"] (["0","1","_"])* ["0","1"]
+  >
 |
-  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+  < #HEX_LITERAL: 
+        "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ 
+      | "0" ["x","X"] ["0"-"9","a"-"f","A"-"F"] (["0"-"9","a"-"f","A"-"F","_"])* (["0"-"9","a"-"f","A"-"F"])
+  >
+|
+  < #OCTAL_LITERAL: 
+        "0" (["0"-"7"])* 
+      | "0" (["0"-"7","_"])+ ["0"-"7"]
+  >
 |
   < FLOATING_POINT_LITERAL:
         <DECIMAL_FLOATING_POINT_LITERAL>
@@ -251,20 +270,39 @@ TOKEN :
   >
 |
   < #DECIMAL_FLOATING_POINT_LITERAL:
-        (["0"-"9"])+ "." (["0"-"9"])* (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
-      | "." (["0"-"9"])+ (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
-      | (["0"-"9"])+ <DECIMAL_EXPONENT> (["f","F","d","D"])?
-      | (["0"-"9"])+ (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
+        <PLUS_SIGNIFICAND> "." <AST_SIGNIFICAND> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." <PLUS_SIGNIFICAND> (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | "." ["0"-"9"] (["0"-"9","_"])* ["0"-"9"] (<DECIMAL_EXPONENT>)? (["f","F","d","D"])?
+      | <PLUS_SIGNIFICAND> <DECIMAL_EXPONENT> (["f","F","d","D"])?
+      | <PLUS_SIGNIFICAND> (<DECIMAL_EXPONENT>)? ["f","F","d","D"]
   >
 |
   < #DECIMAL_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
 |
-  < #HEXADECIMAL_FLOATING_POINT_LITERAL:
-        "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])+ (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
-      | "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+ <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  < #PLUS_SIGNIFICAND: 
+        (["0"-"9"])+
+      | ["0"-"9"] (["0"-"9","_"])* ["0"-"9"]
   >
 |
-  < #HEXADECIMAL_EXPONENT: ["p","P"] (["+","-"])? (["0"-"9"])+ >
+  < #AST_SIGNIFICAND: 
+        (["0"-"9"])*
+      | ["0"-"9"] (["0"-"9","_"])* ["0"-"9"]
+  >
+|
+  < #HEXADECIMAL_FLOATING_POINT_LITERAL:
+        "0" ["x", "X"] <HEX_SIGNIFICAND> (".")? <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+      | "0" ["x", "X"] (["0"-"9","a"-"f","A"-"F"])* "." <HEX_SIGNIFICAND> <HEXADECIMAL_EXPONENT> (["f","F","d","D"])?
+  >
+|
+  < # HEX_SIGNIFICAND:
+        (["0"-"9","a"-"f","A"-"F"])+
+      | ["0"-"9","a"-"f","A"-"F"] (["0"-"9","a"-"f","A"-"F","_"])* ["0"-"9","a"-"f","A"-"F"]
+  >
+|
+  < #HEXADECIMAL_EXPONENT: 
+        ["p","P"] (["+","-"])? (["0"-"9"])+ 
+      | ["p","P"] (["+","-"])? ["0"-"9"] (["0"-"9","_"])* ["0"-"9"]
+  >
 |
   < CHARACTER_LITERAL:
       "'"
@@ -1327,6 +1365,12 @@ void FormalParameter():
   Modifiers() Type() [ "..." ] VariableDeclaratorId()
 }
 
+void FormalParameterForCatch():
+{}
+{
+  Type() ("|" Type())* VariableDeclaratorId()
+}
+
 void ConstructorDeclaration():
 {}
 {
@@ -1393,6 +1437,8 @@ void TypeArguments():
 {}
 {
    "<" TypeArgument() ( "," TypeArgument() )* ">"
+   |
+   "<>"
 }
 
 void TypeArgument():
@@ -1974,10 +2020,23 @@ void TryStatement():
  */
 {}
 {
-  "try" Block()
-  ( "catch" "(" FormalParameter() ")" Block() )*
+  "try" ( "(" ResourceStatements() ")" )? Block()
+  ( "catch" "(" FormalParameterForCatch() ")" Block() )*
   [ "finally" Block() ]
 }
+
+void ResourceStatements():
+{}
+{
+    LocalVariableDeclaration() (";" LocalVariableDeclaration())*
+}
+
+void ResourceStatement():
+{}
+{ 
+    LocalVariableDeclaration()
+}
+
 
 /* We use productions to match >>>, >> and > so that we can keep the
  * type declaration syntax with generics clean

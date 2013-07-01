@@ -7,10 +7,7 @@ public class Java2HTMLITCase {
 
 //    private final static String TEST_SOURCE = "./java2html-core/src/test/sample_java/testSource";
 
-    private final static String TEST_SOURCE = "C:\\PROGRA~1\\Java\\jdk1.6.0_39\\src.zip";
 
-
-    private final static String TEST_OUTPUT = "./java2html-integration-tests/target/itcase";
 
 
     @Test
@@ -20,8 +17,10 @@ public class Java2HTMLITCase {
     }
 
     @Test
-    public void testSampleJava() throws Exception {
-        runMain( "-js ", TEST_SOURCE , "-d" , TEST_OUTPUT ,"-n", "test_Source", "-t", "4", "-m", "4");
+    public void testFullJavaSource() throws Exception {
+        String source6 = "C:\\PROGRA~1\\Java\\jdk1.6.0_43\\src.zip" ;
+        String source7 = "C:\\PROGRA~1\\Java\\jdk1.7.0_17\\src.zip" ;
+        runMain( "-js", source7, "-d" , "./java2html-integration-tests/target/itcase" ,"-n", "test_Source", "-t", "4", "-l", "-q");
     }
 
     @Test
