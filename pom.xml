@@ -24,33 +24,43 @@
     </modules>
 
     <licenses>
-          <license>
-              <name>LGPL v3</name>
-              <url>http://www.gnu.org/licenses/lgpl.txt</url>
-              <distribution>repo</distribution>
-          </license>
-      </licenses>
-      <name>Java2HTML</name>
-      <organization>
-          <name>com.java2html</name>
-          <url>http://www.java2html.com</url>
-      </organization>
-      <scm>
-          <url>https://svn.code.sf.net/p/java2html/code2/</url>
-      </scm>
-      <developers>
-          <developer>
-              <id>jasons_2000</id>
-              <name>Jason Shattu</name>
-          </developer>
-      </developers>
+        <license>
+            <name>LGPL v3</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Java2HTML</name>
+    <organization>
+        <name>com.java2html</name>
+        <url>http://www.java2html.com</url>
+    </organization>
+    <scm>
+        <url>https://svn.code.sf.net/p/java2html/code2/</url>
+    </scm>
+    <developers>
+        <developer>
+            <id>jasons_2000</id>
+            <name>Jason Shattu</name>
+        </developer>
+        <developer>
+            <id>pilcrow</id>
+            <organization>sourceforge</organization>
+        </developer>
+        <developer>
+            <name>Leon Poyyayil</name>
+            <organization>sourceforge</organization>
+        </developer>
+
+
+    </developers>
 
     <dependencies>
 
         <dependency>
-        	<groupId>junit</groupId>
-        	<artifactId>junit</artifactId>
-        	<version>4.11</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
             <scope>test</scope>
         </dependency>
 
