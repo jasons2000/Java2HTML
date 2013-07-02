@@ -497,7 +497,9 @@ public class Java2HTML {
      * @param javaDocLinks List of JavaDocOptions
      */
     public void setJavaDocLinks(List<Link> javaDocLinks) {
-        javaDocOptionLinks = javaDocLinks;
+        if (javaDocLinks != null) {
+            javaDocOptionLinks = javaDocLinks;
+        }
     }
 
     /**

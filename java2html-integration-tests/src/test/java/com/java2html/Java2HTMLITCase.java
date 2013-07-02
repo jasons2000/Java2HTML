@@ -1,7 +1,6 @@
 package com.java2html;
 
 
-import com.java2html.categories.IntegrationTests;
 import com.java2html.testingtools.WebServer;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +8,8 @@ import org.junit.experimental.categories.Category;
 
 import static net.sourceforge.jwebunit.junit.JWebUnit.*;
 
-@Category(IntegrationTests.class)
-public class Java2HTMLITCase extends BaseJava2HTMLTest {
+
+public class Java2HTMLITCase  {
 
     private WebServer webServer;
 
@@ -42,6 +41,14 @@ public class Java2HTMLITCase extends BaseJava2HTMLTest {
     public void testThisSourceWithJavaDoc() throws Exception {
 
 //        runMain("-js " + js +" -jd http://docs.oracle.com/javase/6/docs/api -n The_Java2HTML_Source -t 4 -m 4");
+    }
+
+    private static void runMainSplit(String args) {
+        Java2HTML.main(args.split(" "));
+    }
+
+    private static void runMain(String... args) {
+        Java2HTML.main(args);
     }
 
 }

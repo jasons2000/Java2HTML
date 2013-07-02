@@ -13,39 +13,86 @@
 
     <build>
 
-          <plugins>
+        <plugins>
 
-              <plugin>
-                  <artifactId>maven-assembly-plugin</artifactId>
-                  <!--<configuration>-->
-                      <!--<archive>-->
-                          <!--<manifest>-->
-                              <!--<mainClass>com.java2html.Java2HTML</mainClass>-->
-                         <!--</manifest>-->
-                      <!--</archive>-->
-                      <!--<descriptorRefs>-->
-                          <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
-                      <!--</descriptorRefs>-->
-                      <!--<filters>-->
-                          <!--<filter>src/assemble/filter.properties</filter>-->
-                      <!--</filters>-->
-                      <!--<descriptors>-->
-                          <!--<descriptor>src/assemble/distribution.xml</descriptor>-->
-                      <!--</descriptors>-->
-                  <!--</configuration>-->
-                  <!--<executions>-->
-                      <!--<execution>-->
-                          <!--<id>make-my-jar-with-dependencies</id>-->
-                          <!--<phase>package</phase>-->
-                          <!--<goals>-->
-                              <!--<goal>single</goal>-->
-                          <!--</goals>-->
-                      <!--</execution>-->
-                  <!--</executions>-->
+            <plugin>
+                <groupId>com.java2html</groupId>
+                <artifactId>java2html-maven-plugin</artifactId>
+                <version>1.6-SNAPSHOT</version>
+                <configuration>
+                    <title>Java 6 Source</title>
+                    <showLineNumbers>true</showLineNumbers>
+                    <javaSources>
+                        <param>C:\\Program Files\\Java\\jdk1.6.0_43\\src.zip</param>
+                    </javaSources>
+                    <destination>${project.build.directory}/java6</destination>
 
-              </plugin>
-          </plugins>
-      </build>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.java2html</groupId>
+                <artifactId>java2html-maven-plugin</artifactId>
+                <version>1.6-SNAPSHOT</version>
+                <configuration>
+                    <title>Java 7 Source</title>
+                    <showLineNumbers>true</showLineNumbers>
+                    <javaSources>
+                        <param>C:\PROGRA~1\Java\jdk1.7.0_17\src.zip</param>
+                    </javaSources>
+                    <destination>${project.build.directory}/java7</destination>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <!--<configuration>-->
+                <!--<archive>-->
+                <!--<manifest>-->
+                <!--<mainClass>com.java2html.Java2HTML</mainClass>-->
+                <!--</manifest>-->
+                <!--</archive>-->
+                <!--<descriptorRefs>-->
+                <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                <!--</descriptorRefs>-->
+                <!--<filters>-->
+                <!--<filter>src/assemble/filter.properties</filter>-->
+                <!--</filters>-->
+                <!--<descriptors>-->
+                <!--<descriptor>src/assemble/distribution.xml</descriptor>-->
+                <!--</descriptors>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                <!--<execution>-->
+                <!--<id>make-my-jar-with-dependencies</id>-->
+                <!--<phase>package</phase>-->
+                <!--<goals>-->
+                <!--<goal>single</goal>-->
+                <!--</goals>-->
+                <!--</execution>-->
+                <!--</executions>-->
+
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>

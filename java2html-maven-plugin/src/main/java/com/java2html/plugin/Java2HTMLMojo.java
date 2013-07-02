@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * generate Java2HTML
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.GENERATE_RESOURCES)
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class Java2HTMLMojo extends AbstractMojo {
 
     @Component
@@ -42,6 +42,12 @@ public class Java2HTMLMojo extends AbstractMojo {
     @Parameter
     private List<Link> links;
 
+    @Parameter
+    private List<String> javaSources;
+
+    @Parameter
+    private String destination;
+
 
     public void execute() throws MojoExecutionException {
 
@@ -50,9 +56,15 @@ public class Java2HTMLMojo extends AbstractMojo {
         Java2HTML java2HTML = new Java2HTML();
 
         try {
-            // todo have 1 set sourceMethod which can  work out dir/file/zips
-            java2HTML.setJavaDirectorySource(project.getCompileSourceRoots());
-            java2HTML.setDestinationDir(project.getBuild().getDirectory() + File.separator + "java2html-output");
+            if (javaSources == null || javaSources.isEmpty()) {
+                java2HTML.setJavaDirectorySource(project.getCompileSourceRoots());
+            }
+            else {
+                java2HTML.setJavaDirectorySource(javaSources);
+            }
+
+            java2HTML.setDestinationDir(destination != null ? destination: project.getBuild().getDirectory() + File.separator + "java2html-output");
+
             java2HTML.setTitle(title);
             java2HTML.setQuiet(quite);
             java2HTML.setShowLineNumbers(showLineNumbers);
