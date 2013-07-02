@@ -21,7 +21,7 @@
                       <!--<archive>-->
                           <!--<manifest>-->
                               <!--<mainClass>com.java2html.Java2HTML</mainClass>-->
-                          <!--</manifest>-->
+                         <!--</manifest>-->
                       <!--</archive>-->
                       <!--<descriptorRefs>-->
                           <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->

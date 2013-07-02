@@ -20,7 +20,6 @@
 /*
  * BIG TODO - In order of priorty
  * run peformace  analyzer
- * JavaDoc should be able to scan http:// refrences for JavaDoc doco
  * Tidy up option - ie check before commencing processing
  * change title default colour to line nuber colour
  * Specifi Properites files with default that are overidden by commandlines
