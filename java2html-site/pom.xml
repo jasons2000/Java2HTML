@@ -15,6 +15,7 @@
 
         <plugins>
 
+            <!-- Java 6 Example -->
             <plugin>
                 <groupId>com.java2html</groupId>
                 <artifactId>java2html-maven-plugin</artifactId>
@@ -23,7 +24,7 @@
                     <title>Java 6 Source</title>
                     <showLineNumbers>true</showLineNumbers>
                     <javaSources>
-                        <param>C:\\Program Files\\Java\\jdk1.6.0_43\\src.zip</param>
+                        <param>C:\Program Files\Java\jdk1.6.0_43\src.zip</param>
                     </javaSources>
                     <destination>${project.build.directory}/java6</destination>
 
@@ -38,6 +39,7 @@
                 </executions>
             </plugin>
 
+            <!-- Java 7 Example -->
             <plugin>
                 <groupId>com.java2html</groupId>
                 <artifactId>java2html-maven-plugin</artifactId>
@@ -46,7 +48,7 @@
                     <title>Java 7 Source</title>
                     <showLineNumbers>true</showLineNumbers>
                     <javaSources>
-                        <param>C:\PROGRA~1\Java\jdk1.7.0_17\src.zip</param>
+                        <param>C:\Program Files\Java\jdk1.7.0_17\src.zip</param>
                     </javaSources>
                     <destination>${project.build.directory}/java7</destination>
 
