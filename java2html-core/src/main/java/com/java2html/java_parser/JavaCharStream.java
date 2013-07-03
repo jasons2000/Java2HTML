@@ -335,10 +335,11 @@ public class JavaCharStream
         try
         {
            // Modified by JS - BEGIN
-           final char c0 = ReadByte();
-           while ((c = c0) == 'u')
+            while ((c = ReadByte()) == 'u') {
               ++column;
+            }
 
+            char c0 = c;
            final char c1 = ReadByte();
            final char c2 = ReadByte();
            final char c3 = ReadByte();
@@ -348,13 +349,13 @@ public class JavaCharStream
                                        hexval(c2) << 4 |
                                        hexval(c3));
 
-           column += 4;
-
+            column += 4;
            // remember the positon & string of a /u9999 type character
-           if ( unicodeRemappings != null ) {
+//           if ( unicodeRemappings != null ) {
              // System.out.println( "adding unicode remapping: \\u" + c0 + c1 + c2 + c3 );
              unicodeRemappings.put(new Position(column, line), "" + c0 + c1 + c2 + c3);
-           }
+//           }
+
            // Modified by JS - END
         }
         catch(java.io.IOException e)

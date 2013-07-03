@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -17,8 +18,7 @@ import java.io.StringWriter;
 public class JavaSourceTest {
 
     private WebServer webServer;
-    private JavaDocManager jdm ;
-
+    private JavaDocManager jdm;
 
 
     @Before
@@ -37,14 +37,28 @@ public class JavaSourceTest {
     @Test
     public void testParse() throws Exception {
 
-        JavaSource  javaSource = new JavaSource();
+        JavaSource javaSource = new JavaSource();
 
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream("/javasrc_sample/SampleInputSource.java"));
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream("/javasrc_sample/SampleInputSource.java"));
 
         StringWriter writer = new StringWriter();
 
         javaSource.toHtml(reader, new HTMLFileWriter(writer, 4, 4), ".", new Java2HTML(), jdm);
 
         System.out.println(writer);
+    }
+
+    @Test
+    public void testLoopIndefinitely() throws IOException, ParseException {
+        JavaSource javaSource = new JavaSource();
+
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream("/javasrc_sample/LoopIndefinitelyBug.java"));
+
+        StringWriter writer = new StringWriter();
+
+        javaSource.toHtml(reader, new HTMLFileWriter(writer, 4, 4), ".", new Java2HTML(), jdm);
+
+        System.out.println(writer);
+
     }
 }
