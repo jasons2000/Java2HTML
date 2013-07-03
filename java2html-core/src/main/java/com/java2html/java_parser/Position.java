@@ -21,32 +21,32 @@ package com.java2html.java_parser;
 
 public class Position {
 
+    public int column;
+    public int line;
+
     public Position(int column, int line) {
         this.column = column;
         this.line = line;
     }
 
+    @Override
     public boolean equals(Object o) {
-        Position p = (Position) o;
-        return ( (p.column == column) && (p.line == line));
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Position position = (Position) o;
+
+        if (column != position.column) return false;
+        if (line != position.line) return false;
+
+        return true;
     }
 
+    @Override
     public int hashCode() {
-        //TODO improve hash code
-        return line * 128 + column;
+        int result = column;
+        result = 31 * result + line;
+        return result;
     }
 
-    public int column = 0;
-    public int line = 0;
-
-    /*public static void main(String[] args)
-      {
-     Position p = new Position(5,5);
-     System.out.println ( p.equals(new Position(5,5)));
-     System.out.println ( new Position(5,4).equals(new Position(5,5)));
-     Hashtable s = new Hashtable();
-     s.put(p,"Got IT");
-     //System.out.println(s.get(new Position(5,5)));
-     System.out.println(s.get(p));
-      }*/
 }

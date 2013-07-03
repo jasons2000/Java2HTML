@@ -101,6 +101,7 @@ public class JavaCharStream
 
   // Modified by JS - BEGIN
   Map<Position, String> unicodeRemappings;
+  private final StringBuilder sb =new StringBuilder("0000");; ///we reuse this for performance
   // Modified by JS - END
 
   protected void setTabSize(int i) { tabSize = i; }
@@ -351,10 +352,13 @@ public class JavaCharStream
 
             column += 4;
            // remember the positon & string of a /u9999 type character
-//           if ( unicodeRemappings != null ) {
              // System.out.println( "adding unicode remapping: \\u" + c0 + c1 + c2 + c3 );
-             unicodeRemappings.put(new Position(column, line), "" + c0 + c1 + c2 + c3);
-//           }
+
+            sb.setCharAt(0, c0);
+            sb.setCharAt(1, c1);
+            sb.setCharAt(2, c2);
+            sb.setCharAt(3, c3);
+             unicodeRemappings.put(new Position(column, line), sb.toString());
 
            // Modified by JS - END
         }

@@ -14,13 +14,13 @@
     <packaging>pom</packaging>
     <modules>
         <module>java2html-core</module>
+        <module>java2html-parser-core</module>
         <module>java2html-java-parser</module>
+        <module>java2html-java-parser2</module>
         <module>java2html-maven-plugin</module>
-        <module>java2html-site</module>
         <module>java2html-testing-tools</module>
         <module>java2html-integration-tests</module>
-        <module>java2html-java-parser2</module>
-        <module>java2html-parser-core</module>
+        <module>java2html-site</module>
     </modules>
 
     <licenses>

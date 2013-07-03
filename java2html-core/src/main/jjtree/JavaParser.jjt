@@ -66,7 +66,7 @@ public class JavaParser {
     private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
     String getUnicodeRemapping(final Position p) {
-      return unicodeRemappings != null ? unicodeRemappings.get(p) : null;
+      return unicodeRemappings.get(p);
     }
 
 

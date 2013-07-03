@@ -1,12 +1,10 @@
 // $Header$
 // copyright � 1997 - 2002 tangro software components gmbh - all rights reserved.
 
-package sample_java.testSource;
-
 /**
   * @todo class docu
   */
-public class ForceLexicalError {
+public class BadChar {
      /** CVS $Revision$ */
      public static final String versId = "$Revision$";
 
@@ -18,9 +16,9 @@ public class ForceLexicalError {
          }
 
          �all = 47;
-         int \u0000VALUE = 99;
+         �VALUE = 99;
          System.out.println(�all + �VALUE);
-         ForceLexicalError.�VALUE = 1;
+         BadChar.�VALUE = 1;
      }
 
      private int �inst = 0;
