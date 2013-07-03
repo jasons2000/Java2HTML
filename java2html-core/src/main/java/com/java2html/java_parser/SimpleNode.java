@@ -354,7 +354,7 @@ public class SimpleNode
     // not sure why one would do this ??
     private String addUnicodeEscapes(String str, Position p) {
         //  return str;// added by JS
-        final StringBuffer retval = new StringBuffer();
+        final StringBuilder retval = new StringBuilder();
         char ch;
         p.column = p.column + 5;
         //System.out.println("addUni column="+p.column+",line"+p.line);
@@ -371,7 +371,6 @@ public class SimpleNode
                 p.column = p.column + 5;
             }
             else {
-                    /*TODO this can be improved in performance by using stringbuffer*/
                 retval.append( ch );
             }
         }

@@ -1,7 +1,6 @@
 public class European {
 
-	// Some umlats � �   \u0003
-	// Some more  �����    úúúú  á é
+    // Some umlats áéú  \u0003\u1234
 
 	public static void main(String[] args) {
 

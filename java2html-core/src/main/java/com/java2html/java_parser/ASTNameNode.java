@@ -23,8 +23,6 @@ package com.java2html.java_parser;
 
 import com.java2html.internal.HTMLFileWriter;
 
-import java.util.Enumeration;
-
 public class ASTNameNode
     extends SimpleNode {
 
@@ -62,16 +60,13 @@ public class ASTNameNode
     private String getRefNoDots(String text) {
 
         String href = null;
-        String s;
 
         // prepending a dot to the given name to prevent matching on imports which
         // accidentially end with the given text but aren't what we're looking for:
         // 'import com.foo.bar.FooBar;' shouldn't be matching when we're looking for 'Bar';
         final String qtext = "." + text;
 
-        Enumeration e = parser.importList.elements(); // get the list of imports for this file
-        while (e.hasMoreElements()) {
-            s = (String) e.nextElement();
+        for (String s : parser.importList) {
             if (s.endsWith(qtext)) { // is it in a non '.*' import
                 if (s.indexOf(".") == -1) { // TODO: this deals with import AClass;, need to look at
                     href = getRef("." + s);

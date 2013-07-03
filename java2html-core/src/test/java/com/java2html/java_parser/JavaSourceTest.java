@@ -46,6 +46,5 @@ public class JavaSourceTest {
         javaSource.toHtml(reader, new HTMLFileWriter(writer, 4, 4), ".", new Java2HTML(), jdm);
 
         System.out.println(writer);
-
     }
 }

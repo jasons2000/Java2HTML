@@ -13,6 +13,10 @@ public class SampleInputSource {
 
     private String aString = "Random String";
 
+    private String umlats = "áéú";
+    private String escapes = "\u1000\u2000";
+
+
     SampleInputSource(){
 
     }

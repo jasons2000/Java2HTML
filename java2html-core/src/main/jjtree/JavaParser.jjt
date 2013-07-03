@@ -48,23 +48,25 @@ import com.java2html.*;
 import com.java2html.internal.*;
 
 import java.io.*;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class JavaParser {
 
     HTMLFileWriter out = null;
 
-    Vector importList = new Vector();
+    List<String> importList = new ArrayList<String>();
     String prePath = "";
     boolean defaultPackage;
 
     JavaDocManager javaDoc;
     Java2HTML javaSource;
-    private final Hashtable unicodeRemappings = new Hashtable();
+    private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
     String getUnicodeRemapping(final Position p) {
-      return unicodeRemappings != null ? (String)unicodeRemappings.get(p) : null;
+      return unicodeRemappings != null ? unicodeRemappings.get(p) : null;
     }
 
 
@@ -79,14 +81,14 @@ public class JavaParser {
 
 	      ReInit(source);
         this.jj_input_stream.unicodeRemappings = this.unicodeRemappings;
-	      importList= new Vector();
-	      importList.addElement("java.lang.*"); // added default import
+	      importList= new ArrayList<String>();
+	      importList.add("java.lang.*"); // added default import
 	      out = dest;
 	      defaultPackage=true;
 	      try
 		  {
 			node=CompilationUnit();
-			if (defaultPackage) importList.addElement(".*");
+			if (defaultPackage) importList.add(".*");
 		    node.process(dest);
 		  }
 		  catch(ParseException e)
@@ -1101,7 +1103,7 @@ void PackageDeclaration():
   Modifiers() "package" n = Name() ";"
   {
     n.isPackage = true;
-    importList.addElement( n.text + ".*" );
+    importList.add( n.text + ".*" );
     defaultPackage=false;
   }
 }
@@ -1115,7 +1117,7 @@ void ImportDeclaration():
   "import" [ "static" ] n = Name() [ dot = "." "*" ] ";"
   {
     n.isImport = true;
-    importList.addElement( n.text + ( dot != null ? ".*" : "" ) );
+    importList.add( n.text + ( dot != null ? ".*" : "" ) );
   }
 }
 

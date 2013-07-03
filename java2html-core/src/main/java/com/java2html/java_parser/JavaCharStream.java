@@ -24,7 +24,8 @@ package com.java2html.java_parser;
  * An implementation of interface CharStream, where the stream is assumed to
  * contain only ASCII characters (with java-like unicode escape processing).
  */
-import java.util.Hashtable;
+
+import java.util.Map;
 
 public class JavaCharStream
 {
@@ -99,7 +100,7 @@ public class JavaCharStream
   protected int tabSize = 8;
 
   // Modified by JS - BEGIN
-  Hashtable unicodeRemappings;
+  Map<Position, String> unicodeRemappings;
   // Modified by JS - END
 
   protected void setTabSize(int i) { tabSize = i; }

@@ -80,6 +80,7 @@ public class Helper {
                 "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + styleSheetRef +
                 "\" TITLE=\"Style\">" + lineSep +
                 "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
+                "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep + /*required for umlats etc*/
                 "<TITLE>" + className + " (Java2HTML)</TITLE>" + lineSep +
                 "</HEAD>" + lineSep +
                 "<BODY>";
@@ -127,8 +128,8 @@ public class Helper {
             lineSep +
             "<HTML>" + lineSep +
             "<HEAD>" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
-            lineSep +
+            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" + lineSep +
+            "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep +
             "<TITLE>" + title + " (Java2HTML)" + lineSep +
             "</TITLE>" + lineSep +
             "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
