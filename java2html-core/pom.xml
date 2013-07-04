@@ -113,14 +113,6 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>javacc-maven-plugin</artifactId>
-                    <dependencies>
-                        <!-- doesnt work with javac greater than this version, we need to upgrade-->
-                        <dependency>
-                            <groupId>net.java.dev.javacc</groupId>
-                            <artifactId>javacc</artifactId>
-                            <version>4.0</version>
-                        </dependency>
-                    </dependencies>
                     <version>2.6</version>
                     <executions>
                         <execution>
@@ -132,7 +124,6 @@
                     </executions>
                 </plugin>
 
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
@@ -140,7 +131,4 @@
                 </plugin>
             </plugins>
         </build>
-
-
-
 </project>
