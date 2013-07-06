@@ -348,6 +348,10 @@ public class Java2HTML {
         File f = new File(destinationDir + "/stylesheet.css");
         FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
+        //Create Java StyleSheet
+        File javaCss = new File(destinationDir + "/java_stylesheet.css");
+        FileUtils.copyURLToFile(getClass().getResource("/java_stylesheet.css"), javaCss);
+
 
         if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
 

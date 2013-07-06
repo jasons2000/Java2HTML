@@ -67,18 +67,16 @@ public class Helper {
     }
 
 
-    public static String getStyleOption() {
-        String text = "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">";
-        return text.toString();
-
+    private static String getStyleOption(String languageSpecificStyleSheet) {
+        return "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + "stylesheet.css" + "\" TITLE=\"Style\">" + lineSep +
+               "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + languageSpecificStyleSheet + "\" TITLE=\"Style\">";
     }
 
     public static String getPreText(String styleSheetRef, String className) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" + lineSep +
                 "<HTML>" + lineSep +
                 "<HEAD>" + lineSep +
-                "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + "stylesheet.css" + "\" TITLE=\"Style\">" + lineSep +
-                "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + styleSheetRef + "\" TITLE=\"Style\">" + lineSep +
+                getStyleOption( styleSheetRef)+ lineSep +
                 "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
                 "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep + /*required for umlats etc*/
                 "<TITLE>" + className + " (Java2HTML)</TITLE>" + lineSep +
