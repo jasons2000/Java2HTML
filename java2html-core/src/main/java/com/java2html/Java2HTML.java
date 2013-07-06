@@ -240,7 +240,7 @@ public class Java2HTML {
         }
         String packageLevel = Helper.convert(aPackage.packageLevel);
         String preDir = getDotDotRootPathFromPackage(packageLevel);
-        dest.write(Helper.getPreText(preDir + "stylesheet.css",
+        dest.write(Helper.getPreText(preDir + "java_stylesheet.css",
                 aPackage.packageLevel + dot +
                         aPackage.className)); // what is this doing ?
         dest.write(Helper.getHeader(aPackage.className, "", header)); //TODO: add date string
