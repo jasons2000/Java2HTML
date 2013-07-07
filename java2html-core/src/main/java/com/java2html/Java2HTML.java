@@ -69,12 +69,15 @@ import java.util.*;
  * <p/>
  * TODO
  * Hi
- * probabbly use junit Markers to identify types of tests
+ * Use profile for owner specific site build
+ * SLF logging
+ * upgrade to maven  3.1
  * property expansion
  * options usage
+ * site release -
  * create test java which use javadoc sample package and class
  * write unit test case which tests javadoc links using webunit or jsoup
- * create ITCase for general results,
+
  * test each frame
  * link to full
  * <p/>
