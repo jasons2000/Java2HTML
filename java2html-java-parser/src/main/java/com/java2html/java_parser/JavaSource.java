@@ -19,13 +19,15 @@
 
 package com.java2html.java_parser;
 
-import com.java2html.Java2HTML;
 import com.java2html.internal.HTMLFileWriter;
+import com.java2html.references.ReferenceMap;
+import com.java2html.references.ReferenceMapMutable;
+import com.java2html.references.SourceParser;
 
 import java.io.IOException;
 import java.io.Reader;
 
-public class JavaSource {
+public class JavaSource implements SourceParser {
 
     private boolean quiet = false;
 
@@ -47,7 +49,21 @@ public class JavaSource {
         return packageName;
     }
 
-    public void toHtml(Reader source, HTMLFileWriter dest, String preDir, Java2HTML java2HTML, JavaDocManager javaDoc) throws ParseException,IOException {
-        parser.parse(source,dest,preDir,java2HTML, javaDoc);
+
+    @Override
+    public boolean isMatch(String fileName) {
+        return fileName.endsWith(".java");
+    }
+
+    @Override
+    public String toHtml(ReferenceMap referenceMap, HTMLFileWriter dest, Reader reader) {
+
+        return parser.parse(reader,dest,referenceMap);
+
+    }
+
+    @Override
+    public void parseReferences(ReferenceMapMutable referenceLookUp, Reader reader) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

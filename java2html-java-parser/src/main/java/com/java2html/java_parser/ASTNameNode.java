@@ -47,7 +47,7 @@ public class ASTNameNode
     } // getTokenClass
 
     private String getRef(String text) {
-        String href = parser.javaSource.getClassHRef(text);
+        String href = parser.referenceMap.getReference(text);
         if (href == null) {
             href = parser.javaDoc.getClassHRef(text);
         }

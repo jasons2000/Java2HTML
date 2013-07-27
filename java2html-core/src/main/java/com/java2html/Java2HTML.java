@@ -55,6 +55,7 @@ import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
 import com.java2html.java_parser.PackageH;
 import com.java2html.java_parser.ParseException;
+import com.java2html.references.SourceParser;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
@@ -91,6 +92,8 @@ import java.util.*;
  */
 
 public class Java2HTML {
+
+    private SourceParser javaSourceParser = new JavaSource();
 
     // Options
     private boolean showLineNumbers = false;
@@ -164,15 +167,15 @@ public class Java2HTML {
         }
         // Performs first parse
 
-        JavaSource javaSource = new JavaSource();
-        javaSource.setQuiet(quiet);
+
+       // javaSource.setQuiet(quiet);
         int marginSize = 0;
 
         for (String fullPathFileName : javaSourceFileNameList) {
             Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
 
             LineNumberReader lineNumberReader = new LineNumberReader(reader);
-            String packageLevel = javaSource.findReferences(fullPathFileName, lineNumberReader);
+            String packageLevel = javaSourceParser.findReferences(fullPathFileName, lineNumberReader);
             // count lines
             marginSize = getMarginSize(lineNumberReader);
 
@@ -191,7 +194,7 @@ public class Java2HTML {
             // skip the replacement (as of JDK 1.5) for package.html
             if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 
-                fn2(javaSource, javaDoc, fileName, aPackage, marginSize);
+                fn2(javaSourceParser, javaDoc, fileName, aPackage, marginSize);
             }
         }
 
@@ -206,7 +209,7 @@ public class Java2HTML {
 
     }
 
-    private void fn2(JavaSource javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize ) throws IOException {
+    private void fn2(SourceParser javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize ) throws IOException {
 
         // Create directories
         File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
@@ -286,11 +289,11 @@ public class Java2HTML {
 
     }
 
-    private void fn(String fullPathfileName, String packageLevel) throws FileNotFoundException {
+    private void fn(String fullPathFileName, String packageLevel) throws FileNotFoundException {
 
 
-        int i = fullPathfileName.lastIndexOf(File.separator);
-        String fileName = fullPathfileName.substring(i + 1, fullPathfileName.length());
+        int i = fullPathFileName.lastIndexOf(File.separator);
+        String fileName = fullPathFileName.substring(i + 1, fullPathFileName.length());
         //SCANS Java files, will need to add other types here perhaps if we want referenceing for thos other types
 
         // TODO: lep: this approach has problems with nested/inner/non-public classes
@@ -312,7 +315,7 @@ public class Java2HTML {
 
         // put the packagename into hashtable to cross reference filename with packageName on second parse
 
-        directoryToPackage.put(fullPathfileName, new PackageH(packageLevel, classString));
+        directoryToPackage.put(fullPathFileName, new PackageH(packageLevel, classString));
 
         // put the package + className into hashtable to determin class refercnes
         Map<String, String> hrefByClassName = allClassesHRefByPackage.get(packageLevel);
@@ -467,7 +470,7 @@ public class Java2HTML {
 
     }
 
-    private static void getFileListFromDirectory(String directory, List<String> files) {
+    private void getFileListFromDirectory(String directory, List<String> files) {
 
         TFile directoryFile = new TFile(directory);
         String[] list = directoryFile.list();
@@ -478,7 +481,7 @@ public class Java2HTML {
             String fileName = directory + File.separatorChar + file;
 
             if (new TFile(fileName).isFile()) {
-                if (fileName.endsWith(".java")) files.add(fileName);
+                if (javaSourceParser.isMatch(fileName)) files.add(fileName);
             }
             else {
                 getFileListFromDirectory(fileName, files);

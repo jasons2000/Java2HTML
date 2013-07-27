@@ -53,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
+import com.java2html.references.ReferenceMap;
 
 public class JavaParser {
 
@@ -62,8 +63,8 @@ public class JavaParser {
     String prePath = "";
     boolean defaultPackage;
 
-    JavaDocManager javaDoc;
-    Java2HTML javaSource;
+    ReferenceMap referenceMap;
+
     private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
     String getUnicodeRemapping(final Position p) {
@@ -71,13 +72,12 @@ public class JavaParser {
     }
 
 
-	public void parse(Reader source, HTMLFileWriter dest, String prePath, Java2HTML java2HTML, JavaDocManager javaDoc)
+	public void parse(Reader source, HTMLFileWriter dest, ReferenceMap referenceMap)
 	throws ParseException,IOException {
 
-         this.javaSource = java2HTML;
-         this.javaDoc = javaDoc;
+         this.referenceMap = referenceMap;
 
-	  	  this.prePath = prePath;
+	  	  this.prePath = referenceMap.getRoot();
 		  ASTCompilationUnit node;
 
 	      ReInit(source);

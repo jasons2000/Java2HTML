@@ -1,48 +1,90 @@
 package com.java2html.references;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReferenceId {
 
-    private String languageSourceId;
-    private String metaTypeId;
-    private String[] subIdentifiers;
+    private final String element; // null is root
+    private String href;
 
-    private ReferenceId(String languageSourceId, String metaTypeId,String[] subIdentifiers) {
-        this.languageSourceId = languageSourceId;
-        this.metaTypeId = metaTypeId;
-        this.subIdentifiers = subIdentifiers;
+    private Map<String, ReferenceId> children;
+
+    static public class Builder {
+        private String element; // null is root
+        private String href;
+        private List<String> descendents = new ArrayList<String>();
+
+        public Builder() {
+        }
+
+        public Builder(String element) {
+            this.element = element;
+        }
+
+        public Builder add(String element) {
+            descendents.add(element);
+            return this;
+
+        }
+
+
+          public Builder setHref(String href) {
+              this.href = href;
+              return this;
+          }
+
+        public ReferenceId build() {
+
+            ReferenceId referenceId = new ReferenceId(element);
+            for (String descendant : descendents) {
+
+            }
+
+            public ReferenceId add(String element) {
+
+                  if (children == null) {
+                      children = new LinkedHashMap<String, ReferenceId>();
+                  }
+                  children.put(element, referenceId);
+                  return referenceId;
+              }
+        }
+
     }
 
-    static ReferenceId create(String languageSourceId, String metaTypeId) {
-        return new ReferenceId(languageSourceId, metaTypeId, new String[0]);
+    // root
+    private ReferenceId() {
+        element = null;
     }
 
-    ReferenceId createSub(String subIdentifier) {
-        String[] newSubIdentifiers = Arrays.copyOf(subIdentifiers, subIdentifier.length() +1);
-
-        return new ReferenceId(languageSourceId,metaTypeId, newSubIdentifiers);
+    private ReferenceId(String element) {
+        this.element = element;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+//    private String languageSourceId;   // Java, C,, etc..
+//    private String metaTypeId;         //ClassFile,JavaDoc,
+//    private String[] subIdentifiers;
 
-        ReferenceId that = (ReferenceId) o;
-
-        if (!languageSourceId.equals(that.languageSourceId)) return false;
-        if (!metaTypeId.equals(that.metaTypeId)) return false;
-        if (!Arrays.equals(subIdentifiers, that.subIdentifiers)) return false;
-
-        return true;
+    public ReferenceId getReference(String... subChild) {
+        ReferenceId that = this;
+        for (String id : subChild) {
+            if (that.children == null) {
+                break;
+            }
+            else {
+                that = children.get(id);
+            }
+        }
+        return that;
     }
 
-    @Override
-    public int hashCode() {
-        int result = languageSourceId.hashCode();
-        result = 31 * result + metaTypeId.hashCode();
-        result = 31 * result + (subIdentifiers != null ? Arrays.hashCode(subIdentifiers) : 0);
-        return result;
+    public String getHref(String... subChild) {
+
+        ReferenceId that =  getReference(subChild);
+        if (that == null) return null;
+        return that.href;
     }
 }

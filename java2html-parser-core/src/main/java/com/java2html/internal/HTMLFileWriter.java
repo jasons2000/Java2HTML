@@ -1,27 +1,14 @@
+package com.java2html.internal;
+
 /*
- * Copyright (c) 1999-2007, Enterprise Solution Consultants Limited, All Rights Reserved.
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *
+ * Copyright (c) 2013. test license
  */
 
-package com.java2html.internal;
 
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+
 
 public class HTMLFileWriter extends Writer {
 
@@ -111,7 +98,7 @@ public class HTMLFileWriter extends Writer {
      */
     private void writeLineNumber(StringBuilder s) {
 
-        s.append(Helper.lineSep);
+        s.append(System.getProperty("line.separator"));
         lineCount++;
         if (useLineNumbers) {
             int c = lineCount;
@@ -233,23 +220,6 @@ public class HTMLFileWriter extends Writer {
             }
         }
         return s.toString();
-
-    }
-
-
-    /* TODO: added conversion of tabs to spaces */
-
-    public static void main(String[] args) throws IOException {
-        HTMLFileWriter fw = new HTMLFileWriter(new StringWriter(), 4, 4);
-        fw.setHTMLMode(true);
-        fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
-                Helper.lineSep);
-        fw.setHTMLMode(false);
-        fw.write("<PRE><H1> This is {@value}  an &amp; Test </TEST></H1>" +
-                Helper.lineSep);
-
-
-        fw.close();
 
     }
 }
