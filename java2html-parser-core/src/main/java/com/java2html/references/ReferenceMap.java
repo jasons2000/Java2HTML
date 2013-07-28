@@ -2,9 +2,8 @@ package com.java2html.references;
 
 public interface ReferenceMap {
 
-    String getPathRoot();
+    String getPathRoot(); //preDir ?
 
     String getReference(ReferenceId referenceId);
 
-    String getReference(String referenceId);
 }

@@ -1,6 +1,13 @@
 package com.java2html.references;
 
-public interface ReferenceMapMutable extends ReferenceMap {
+public class ReferenceMapMutable extends ReferenceMap {
+
+    private String root;
+
+    ReferenceMapMutable(String root) {
+        this.root = root;
+
+    }
 
     public void addReference(ReferenceId referenceId);
 }
