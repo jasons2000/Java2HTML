@@ -20,12 +20,14 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.HTMLFileWriter;
-import com.java2html.references.ReferenceMap;
-import com.java2html.references.ReferenceMapMutable;
+import com.java2html.internal.ParsingException;
+import com.java2html.references.ReferenceId;
+import com.java2html.references.ReferenceIdMutable;
 import com.java2html.references.SourceParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 
 public class JavaSource implements SourceParser {
 
@@ -42,28 +44,27 @@ public class JavaSource implements SourceParser {
     } // setQuiet
 
 
-    public String findReferences(String fullPathFilename, Reader reader) throws IOException {
-
-        String packageName = PackageLocator.scan(reader);
-
-        return packageName;
-    }
-
-
     @Override
     public boolean isMatch(String fileName) {
         return fileName.endsWith(".java");
     }
 
     @Override
-    public String toHtml(ReferenceMap referenceMap, HTMLFileWriter dest, Reader reader) {
+    public String toHtml(ReferenceId referenceMap, Reader reader) throws ParsingException {
+        StringWriter sw = new StringWriter();
+        HTMLFileWriter dest = new HTMLFileWriter(sw, 4,4); // todo make this HTML only, reworkout dependency
 
-        return parser.parse(reader,dest,referenceMap);
+        parser.parse(reader,dest,referenceMap);
+        dest.flush();
+        return sw.toString();
 
     }
 
     @Override
-    public void parseReferences(ReferenceMapMutable referenceLookUp, Reader reader) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void parseReferences(ReferenceIdMutable referenceLookUp, Reader reader) {
+        String packageName = PackageLocator.scan(reader);
+
+         return packageName;
+
     }
 }

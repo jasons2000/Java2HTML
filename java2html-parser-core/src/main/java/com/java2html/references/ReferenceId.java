@@ -1,15 +1,13 @@
 package com.java2html.references;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 public interface ReferenceId {
 
 
-    public ReferenceId getSubReference(String... subChild);
+    public ReferenceId getSub(String... subChild);
 
+    public String getHRef(String... subChild);
+
+    public String getHRef();
 
 
 //    private String languageSourceId;   // Java, C,, etc..

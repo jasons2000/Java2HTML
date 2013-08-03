@@ -53,7 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import com.java2html.references.ReferenceMap;
+import com.java2html.references.ReferenceId;
 
 public class JavaParser {
 
@@ -63,7 +63,8 @@ public class JavaParser {
     String prePath = "";
     boolean defaultPackage;
 
-    ReferenceMap referenceMap;
+    ReferenceId refSrc;
+    ReferenceId refJavaDoc;
 
     private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
@@ -72,10 +73,11 @@ public class JavaParser {
     }
 
 
-	public void parse(Reader source, HTMLFileWriter dest, ReferenceMap referenceMap)
-	throws ParseException,IOException {
+	public void parse(Reader source, HTMLFileWriter dest, ReferenceId referenceMap)
+	throws ParsingException {
 
-         this.referenceMap = referenceMap;
+         this.refSrc = referenceMap.getSub("java/src");
+         this.refJavaDoc = referenceMap.getSub("java/javadoc");
 
 	  	  this.prePath = referenceMap.getRoot();
 		  ASTCompilationUnit node;
@@ -92,8 +94,9 @@ public class JavaParser {
 			if (defaultPackage) importList.add(".*");
 		    node.process(dest);
 		  }
-		  catch(ParseException e)
+		  catch(Exception e)
 		  {
+		        throw new ParsingException(e);
 				dest.setHTMLMode(false);
 				dest.write("<BR><BR>");
 				dest.write("<FONT CLASS=\"ParseError\">");
@@ -104,6 +107,7 @@ public class JavaParser {
 		  }
 		  catch(TokenMgrError e)
 		  {
+
 				// For some reason an Error class is thrown with bad lexical sta
 		  		dest.setHTMLMode(false);
 				dest.write("(Non Legal Java File - Lexical Error)"); // need it here for some reason
@@ -1283,7 +1287,7 @@ void ClassOrInterfaceBodyDeclaration(boolean isInterface):
   Initializer()
   {
      if (isInterface)
-        throw new ParseException("An interface cannot have initializers");
+        throw new ParsingException("An interface cannot have initializers");
   }
 |
   modifiers = Modifiers() // Just get all the modifiers out of the way. If you want to do

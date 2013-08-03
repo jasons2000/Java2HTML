@@ -13,10 +13,9 @@ import java.io.*;
 public class HTMLFileWriter extends Writer {
 
     private final Writer wrappedWriter;
-    private final LineNumberReader lineNumberReader;
+    private final LineNumberReader lineNumberReader; //todo what does this do?
     private final PipedWriter pipedWriter;
 
-    private boolean htmlMode = false;
     private int lineCount = 0;
     final private int convertTabsToSpacesCount;
     private boolean wasCR = false;
@@ -28,9 +27,6 @@ public class HTMLFileWriter extends Writer {
     final private int lineNumberMargin;
     private int skipNewLineCharacter;
 
-    public void setHTMLMode(boolean htmlMode) {
-        this.htmlMode = htmlMode;
-    }
 
 
     public HTMLFileWriter(Writer wrappedWriter, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
@@ -64,19 +60,12 @@ public class HTMLFileWriter extends Writer {
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         throw new UnsupportedOperationException();
-
-
     }
 
     public void write(String str) {
 
         try {
-            if (htmlMode) {
                 wrappedWriter.write(getHTMLParsedText(str));
-            }
-            else {
-                wrappedWriter.write(str);
-            }
         }
         catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

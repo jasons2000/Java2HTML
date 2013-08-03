@@ -48,13 +48,13 @@
 package com.java2html;
 
 import com.java2html.internal.CommandLineOptions;
-import com.java2html.internal.HTMLFileWriter;
 import com.java2html.internal.Helper;
 import com.java2html.internal.Link;
+import com.java2html.internal.ParsingException;
 import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
 import com.java2html.java_parser.PackageH;
-import com.java2html.java_parser.ParseException;
+import com.java2html.references.ReferenceIdMutable;
 import com.java2html.references.SourceParser;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
@@ -160,7 +160,7 @@ public class Java2HTML {
 
         createSupportingFiles();
 
-        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
+        ReferenceIdMutable javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0])).getReferenceMapJavaDoc();
 
         if (javaSourceFileNameList == null) {
             setJavaDirectorySource(Arrays.asList("."));
@@ -175,7 +175,7 @@ public class Java2HTML {
             Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
 
             LineNumberReader lineNumberReader = new LineNumberReader(reader);
-            String packageLevel = javaSourceParser.findReferences(fullPathFileName, lineNumberReader);
+            String packageLevel = javaSourceParser.parseReferences(fullPathFileName, lineNumberReader);
             // count lines
             marginSize = getMarginSize(lineNumberReader);
 
@@ -194,7 +194,7 @@ public class Java2HTML {
             // skip the replacement (as of JDK 1.5) for package.html
             if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 
-                fn2(javaSourceParser, javaDoc, fileName, aPackage, marginSize);
+                createTargetFile(javaSourceParser, javaDoc, fileName, aPackage, marginSize);
             }
         }
 
@@ -209,7 +209,7 @@ public class Java2HTML {
 
     }
 
-    private void fn2(SourceParser javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize ) throws IOException {
+    private void createTargetFile(SourceParser javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize) throws IOException {
 
         // Create directories
         File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
@@ -235,9 +235,8 @@ public class Java2HTML {
         //File f = new File(destFileName);
         //System.out.println("temp"+temp);
 
-        HTMLFileWriter dest = new HTMLFileWriter(new BufferedWriter(new FileWriter(destFileName)), marginSize, tabSize);
+        BufferedWriter dest = new BufferedWriter(new FileWriter(destFileName));
         TFileReader source = new TFileReader(new TFile(fileName));
-        dest.setHTMLMode(false);
 
         String dot = ".";
         if (aPackage.packageLevel.isEmpty()) {
@@ -246,29 +245,30 @@ public class Java2HTML {
         }
         String packageLevel = Helper.convert(aPackage.packageLevel);
         String preDir = getDotDotRootPathFromPackage(packageLevel);
-        dest.write(Helper.getPreText(preDir + "java_stylesheet.css",
+        String preText = Helper.getPreText(preDir + "java_stylesheet.css",
                 aPackage.packageLevel + dot +
                         aPackage.className)); // what is this doing ?
-        dest.write(Helper.getHeader(aPackage.className, "", header)); //TODO: add date string
-        dest.write(dest.getFirstLineNumber());
-        dest.setHTMLMode(true);
+                dest.write(Helper.getHeader(aPackage.className, "", header);
+        dest.write(preText); //TODO: add date string
+//        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
         boolean error = false;
         //System.out.print("Reading: "+fileName); // TODO check
 
         try {
-            javaSource.toHtml(source, dest, preDir, this, javaDoc);
-            dest.setHTMLMode(false);
+            String html = javaSource.toHtml(source, preDir, this, javaDoc);
+            dest.write(html);
         }
-        catch (ParseException e) {
-            // This should never happen
-            error = true;
+        catch (ParsingException e) {
+            dest.write("<BR><BR>");
+            dest.write("<FONT CLASS=\"ParseError\">");
+            final String msg = "Non Legal Java File: "+e.getMessage()+")";
+            dest.write(msg);
+            dest.write("</FONT>");
+
+                error = true;
             //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
             System.out.println(fileName + ": Parse Error, Non-Legal Java File: " + e.getMessage());
             // e.printStackTrace();
-        }
-        catch (IOException e) {
-            error = true;
-            System.out.println("IO Error. (2nd Parse)");
         }
         finally {
             // Clear up resources

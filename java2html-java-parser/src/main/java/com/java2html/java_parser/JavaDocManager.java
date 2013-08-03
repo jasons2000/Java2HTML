@@ -20,6 +20,7 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.Link;
+import com.java2html.references.ReferenceIdMutable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,28 +29,31 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 // TODO :Does this deal with the import AClass; scenario, probabaly not
 
 public class JavaDocManager {
 
-    private final Map<String, String> classList = new HashMap<String, String>();
-    private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
+    private ReferenceIdMutable referenceMapJavaDoc = new ReferenceIdMutable();
+
+//    private final Map<String, String> classList = new HashMap<String, String>();
+//    private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
     public JavaDocManager(Link... urls) throws IOException {
+        ReferenceIdMutable referenceIdMutable = new ReferenceIdMutable("javaDoc");
+        ReferenceIdMutable classes =  referenceIdMutable.add("classes");
+        ReferenceIdMutable packages=  referenceIdMutable.add("packages");
 
         for (Link urlString : urls) {
             // todo need to handle non connectables
             URL url = new URL(urlString.getUrl());
 
-            parsePackages(new URL(url, "overview-frame.html"));
-            parseClasses(new URL(url, "allclasses-frame.html"));
+            parsePackages(packages, new URL(url, "overview-frame.html"));
+            parseClasses(classes ,new URL(url, "allclasses-frame.html"));
         }
     }
 
-    private void parseClasses(URL urlClasses) {
+    private void parseClasses(ReferenceIdMutable classList, URL urlClasses) {
         //<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="javax/swing/AbstractAction.html" title="class in javax.swing" target="classFrame">AbstractAction</A>
         try {
             Connection con = Jsoup.connect(urlClasses.toString()).userAgent("Mozilla");
@@ -59,7 +63,7 @@ public class JavaDocManager {
             for (Element link : links) {
                 String titleAttr = link.attr("title");
                 String classRef = titleAttr.substring(titleAttr.indexOf(" in") + 4) + "." + link.text();
-                classList.put(classRef, new URL(urlClasses, link.attr("href")).toString());
+                classList.add(classRef).setHRef(new URL(urlClasses, link.attr("href")).toString());
             }
         }
         catch (IOException e) {
@@ -67,7 +71,7 @@ public class JavaDocManager {
         }
     }
 
-    private void parsePackages(URL urlPackages) {
+    private void parsePackages(ReferenceIdMutable packageList,URL urlPackages) {
 
         try {
             Connection con = Jsoup.connect(urlPackages.toString());
@@ -77,7 +81,7 @@ public class JavaDocManager {
             for (Element link : links) {
                 String text = link.text();
                  if (text.equals("All Classes")) continue;
-                packageList.put(link.text(), new URL(urlPackages, link.attr("href")).toString());
+                packageList.add(link.text()).setHRef(new URL(urlPackages, link.attr("href")).toString());
             }
         }
         catch (IOException e) {
@@ -86,37 +90,41 @@ public class JavaDocManager {
 
     }
 
-
-    public String toString() {
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("*** Classes ***\n");
-
-        for (String s : classList.keySet()) {
-            sb.append(s + " = ");
-            sb.append(classList.get(s));
-            sb.append("\n");
-        }
-
-        sb.append("*** Packages ***\n");
-
-        for (String s : packageList.keySet()) {
-            sb.append(s +  " = ");
-            sb.append(packageList.get(s));
-            sb.append("\n");
-        }
-
-        return sb.toString();
+    public ReferenceIdMutable getReferenceMapJavaDoc() {
+        return referenceMapJavaDoc;
     }
 
-    public String getClassHRef(String classSpec) {
-        return classList.get(classSpec);
-    }
 
-    public String getPackageHRef(String packageSpec) {
-           return packageList.get(packageSpec);
-       }
+//    public String toString() {
+//
+//        StringBuilder sb = new StringBuilder();
+//
+//        sb.append("*** Classes ***\n");
+//
+//        for (String s : classList.keySet()) {
+//            sb.append(s + " = ");
+//            sb.append(classList.get(s));
+//            sb.append("\n");
+//        }
+//
+//        sb.append("*** Packages ***\n");
+//
+//        for (String s : packageList.keySet()) {
+//            sb.append(s +  " = ");
+//            sb.append(packageList.get(s));
+//            sb.append("\n");
+//        }
+//
+//        return sb.toString();
+//    }
+
+//    public String getClassHRef(String classSpec) {
+//        return classList.get(classSpec);
+//    }
+//
+//    public String getPackageHRef(String packageSpec) {
+//           return packageList.get(packageSpec);
+//       }
 }
 
 //

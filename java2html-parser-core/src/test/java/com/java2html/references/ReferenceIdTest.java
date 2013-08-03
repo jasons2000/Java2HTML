@@ -2,17 +2,19 @@ package com.java2html.references;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
+
 public class ReferenceIdTest {
 
     @Test
     public void test() {
-        new ReferenceId.Builder().
-//                ReferenceId ref = new ReferenceId().add("a").add("b").add("c").setHref("url");
+        ReferenceIdMutable ref = new ReferenceIdMutable();
+        ref.add("a").add("b").add("c").setHRef("url");
 
-        assertEquals("url", ref.getHref("a", "b", "c"));
+        assertEquals("url", ref.getHRef("a", "b", "c"));
 
-        ref = ref.getReference("a","b");
+        ReferenceId ref2 = ref.getSub("a", "b");
 
-        assertEquals("url", ref.getHref("c"));
+        assertEquals("url", ref2.getHRef("c"));
     }
 }

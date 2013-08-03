@@ -1,13 +1,14 @@
 package com.java2html.references;
 
 
-import javax.swing.text.html.HTMLWriter;
+import com.java2html.internal.ParsingException;
+
 import java.io.Reader;
 
 public interface SourceParser extends ReferenceParser {
 
     boolean isMatch(String fileName);
 
-    String toHtml(ReferenceMap referenceMap, HTMLWriter htmlWriter, Reader reader);
+    String toHtml(ReferenceId referenceId, Reader reader) throws ParsingException;
 
 }

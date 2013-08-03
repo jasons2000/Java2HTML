@@ -4,7 +4,7 @@ import java.io.Reader;
 
 public interface ReferenceParser {
 
-    void parseReferences(ReferenceMapMutable referenceLookUp,
+    void parseReferences(ReferenceIdMutable referenceLookUp,
                          Reader reader);
 
 }
