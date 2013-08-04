@@ -28,7 +28,6 @@ public class HTMLFileWriter extends Writer {
     private int skipNewLineCharacter;
 
 
-
     public HTMLFileWriter(Writer wrappedWriter, int lineNumberMargin, int convertTabsToSpacesCount) throws IOException {
         this.wrappedWriter = wrappedWriter;
 
@@ -65,12 +64,23 @@ public class HTMLFileWriter extends Writer {
     public void write(String str) {
 
         try {
-                wrappedWriter.write(getHTMLParsedText(str));
+            wrappedWriter.write(getHTMLParsedText(str));
         }
         catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
+    public void writeWithoutEscape(String str) {
+
+        try {
+            wrappedWriter.write(str);
+        }
+        catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
 
     @Override
     public void flush() throws IOException {

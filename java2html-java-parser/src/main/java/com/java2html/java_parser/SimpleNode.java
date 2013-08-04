@@ -311,18 +311,14 @@ class SimpleNode implements Node {
     private void tokenColourizeOpen(Token t, HTMLFileWriter ostr) {
         final String tokenClass = getTokenClass( t );
         if ( tokenClass != null ) {
-            ostr.setHTMLMode(false);
-            ostr.write("<FONT CLASS=\"" + tokenClass + "\">");
-            ostr.setHTMLMode(true);
+            ostr.writeWithoutEscape("<FONT CLASS=\"" + tokenClass + "\">");
         }
     }
 
     private void tokenColourizeClose(Token t, HTMLFileWriter ostr) {
         final String tokenClass = getTokenClass( t );
         if ( tokenClass != null ) {
-            ostr.setHTMLMode(false);
-            ostr.write("</FONT>");
-            ostr.setHTMLMode(true);
+            ostr.writeWithoutEscape("</FONT>");
         }
     }
 

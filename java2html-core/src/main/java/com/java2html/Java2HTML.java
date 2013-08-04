@@ -247,8 +247,8 @@ public class Java2HTML {
         String preDir = getDotDotRootPathFromPackage(packageLevel);
         String preText = Helper.getPreText(preDir + "java_stylesheet.css",
                 aPackage.packageLevel + dot +
-                        aPackage.className)); // what is this doing ?
-                dest.write(Helper.getHeader(aPackage.className, "", header);
+                        aPackage.className); // what is this doing ?
+                dest.write(Helper.getHeader(aPackage.className, "", header));
         dest.write(preText); //TODO: add date string
 //        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
         boolean error = false;

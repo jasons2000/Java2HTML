@@ -104,7 +104,7 @@ public class ASTNameNode
 
         if (isPackage) {
 
-            href = parser.javaSource.packageList.get(text);
+            href = parser.refSrc.packageList.get(text);
             if (href != null) {
                 href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
@@ -114,13 +114,13 @@ public class ASTNameNode
         else if (text.endsWith(".*")) {
             //System.out.println("************************text"+text);
 
-            href = parser.javaSource.packageList.get(text.substring(0,text.length() - 2));
+            href = parser.refSrc.packageList.get(text.substring(0,text.length() - 2));
             if (href != null) {
                 href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
             }
             else {
-                href = parser.javaDoc.getPackageHRef(text.substring(0,
+                href = parser.refSrc.getPackageHRef(text.substring(0,
                     text.length() - 2));
             }
         }
@@ -152,9 +152,7 @@ public class ASTNameNode
 
 
         if (href != null) {
-            ostr.setHTMLMode(false);
-            ostr.write("<A HREF=\"" + href + "\"" + extra + ">");
-            ostr.setHTMLMode(true);
+            ostr.writeWithoutEscape("<A HREF=\"" + href + "\"" + extra + ">");
         }
 
         printToken(t, ostr);
@@ -164,18 +162,14 @@ public class ASTNameNode
             // this looks nicer when having matched on static methods (which now only underlines
             // the class and not the called method too) and on generic types (again only the
             // class of the generic type and not its parameter list too).
-            ostr.setHTMLMode(false);
-            ostr.write("</A>");
-            ostr.setHTMLMode(true);
+            ostr.writeWithoutEscape("</A>");
             href = null; // prevent double closing of the tag below
         }
 
         //tidy up
         if (t == end) {
             if (href != null) {
-                ostr.setHTMLMode(false);
-                ostr.write("</A>");
-                ostr.setHTMLMode(true);
+                ostr.writeWithoutEscape("</A>");
             }
             return;
         }
@@ -187,9 +181,7 @@ public class ASTNameNode
         }
         print(t, ostr);
         if (href != null) {
-            ostr.setHTMLMode(false);
-            ostr.write("</A>");
-            ostr.setHTMLMode(true);
+            ostr.writeWithoutEscape("</A>");
         }
     }
 }

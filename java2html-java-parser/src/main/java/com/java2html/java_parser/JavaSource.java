@@ -52,11 +52,19 @@ public class JavaSource implements SourceParser {
     @Override
     public String toHtml(ReferenceId referenceMap, Reader reader) throws ParsingException {
         StringWriter sw = new StringWriter();
-        HTMLFileWriter dest = new HTMLFileWriter(sw, 4,4); // todo make this HTML only, reworkout dependency
+        HTMLFileWriter dest = null; // todo make this HTML only, reworkout dependency
+        try {
+            dest = new HTMLFileWriter(sw, 4,4);
+            parser.parse(reader,dest,referenceMap);
+                    dest.flush();
+            return sw.toString();
+        }
+        catch (IOException e) {
+            throw new ParsingException(e);
+        }
 
-        parser.parse(reader,dest,referenceMap);
-        dest.flush();
-        return sw.toString();
+
+
 
     }
 

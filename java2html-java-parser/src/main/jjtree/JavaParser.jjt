@@ -94,34 +94,11 @@ public class JavaParser {
 			if (defaultPackage) importList.add(".*");
 		    node.process(dest);
 		  }
-		  catch(Exception e)
+		  catch(Throwable e)
 		  {
 		        throw new ParsingException(e);
-				dest.setHTMLMode(false);
-				dest.write("<BR><BR>");
-				dest.write("<FONT CLASS=\"ParseError\">");
-				final String msg = "Non Legal Java File: "+e.getMessage()+")";
-				dest.write(msg);
-				dest.write("</FONT>");
-				throw e;
 		  }
-		  catch(TokenMgrError e)
-		  {
 
-				// For some reason an Error class is thrown with bad lexical sta
-		  		dest.setHTMLMode(false);
-				dest.write("(Non Legal Java File - Lexical Error)"); // need it here for some reason
-        //e.printStackTrace();
-				throw new ParseException("Lexical Error:-"+e.getMessage());
-		  }
-		  finally
-		  {
-			  dest.flush();
-		  }
-	/*	  catch(IOException e)
-		  {
-				System.out.println("IO Exception parsing file");
-		  }*/
 	}
 
 	 void jjtreeOpenNodeScope(Node n) {
