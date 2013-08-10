@@ -1,13 +1,15 @@
 package com.java2html.references;
 
+import com.java2html.internal.ParsingException;
+
 import java.io.Reader;
 
-public interface ReferenceParser {
+public interface ReferenceParser<S extends Symbol> {
 
     String getLanguageId();
 
     // added references for a particular language
-    void parseReferences(SymbolTableMutable referenceLookUp,
-                         String fullPathFilename,
-                         Reader reader);
+    SymbolTableMutable<S> parseReferences(
+                            String fullPathFilename,
+                            Reader reader)  throws ParsingException;
 }
