@@ -54,8 +54,9 @@ import com.java2html.internal.ParsingException;
 import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
 import com.java2html.java_parser.PackageH;
-import com.java2html.references.ReferenceIdMutable;
 import com.java2html.references.SourceParser;
+import com.java2html.references.SymbolTable;
+import com.java2html.references.SymbolTableMutable;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
@@ -160,7 +161,8 @@ public class Java2HTML {
 
         createSupportingFiles();
 
-        ReferenceIdMutable javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0])).getReferenceMapJavaDoc();
+        // we load up the table with java doc references, these will be gverridden by javasrc references but that's a good thing
+        SymbolTableMutable table = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0])).getReferenceMapJavaDoc();
 
         if (javaSourceFileNameList == null) {
             setJavaDirectorySource(Arrays.asList("."));
@@ -175,7 +177,7 @@ public class Java2HTML {
             Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
 
             LineNumberReader lineNumberReader = new LineNumberReader(reader);
-            String packageLevel = javaSourceParser.parseReferences(fullPathFileName, lineNumberReader);
+            String packageLevel = javaSourceParser.parseReferences(table, fullPathFileName, lineNumberReader);
             // count lines
             marginSize = getMarginSize(lineNumberReader);
 

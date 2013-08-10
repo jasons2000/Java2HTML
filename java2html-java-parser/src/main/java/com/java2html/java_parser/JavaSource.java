@@ -21,11 +21,8 @@ package com.java2html.java_parser;
 
 import com.java2html.internal.HTMLFileWriter;
 import com.java2html.internal.ParsingException;
-import com.java2html.references.ReferenceId;
-import com.java2html.references.ReferenceIdMutable;
-import com.java2html.references.SourceParser;
+import com.java2html.references.*;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 
@@ -50,29 +47,27 @@ public class JavaSource implements SourceParser {
     }
 
     @Override
-    public String toHtml(ReferenceId referenceMap, Reader reader) throws ParsingException {
+    public String toHtml(SymbolTableByLanguage referenceMap, Reader reader) throws ParsingException {
         StringWriter sw = new StringWriter();
-        HTMLFileWriter dest = null; // todo make this HTML only, reworkout dependency
-        try {
-            dest = new HTMLFileWriter(sw, 4,4);
-            parser.parse(reader,dest,referenceMap);
-                    dest.flush();
-            return sw.toString();
-        }
-        catch (IOException e) {
-            throw new ParsingException(e);
-        }
+        HTMLFileWriter dest = new HTMLFileWriter(sw, 4,4); // todo make this HTML only, reworkout dependency
 
-
-
+        parser.parse(reader,dest,referenceMap, prePath);
+        dest.flush();
+        return sw.toString();
 
     }
 
     @Override
-    public void parseReferences(ReferenceIdMutable referenceLookUp, Reader reader) {
+    public String getLanguageId() {
+        return "JAVA";
+    }
+
+    @Override
+    public void parseReferences(SymbolTableMutable symbolTable, String fullPathFilename,Reader reader) {
         String packageName = PackageLocator.scan(reader);
 
          return packageName;
 
     }
+
 }

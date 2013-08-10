@@ -22,6 +22,7 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.HTMLFileWriter;
+import com.java2html.references.Symbol;
 
 public class ASTNameNode
     extends com.java2html.java_parser.SimpleNode {
@@ -47,14 +48,13 @@ public class ASTNameNode
     } // getTokenClass
 
     private String getRef(String text) {
-        String href = parser.refSrc.getHRef(text);
-        if (href == null) {
-            href = parser.refJavaDoc.getHRef(text);
-        }
-        else {
-            href = parser.prePath + href;
+        Symbol symbol = parser.symbolTable.lookup(text);
+        String href = null;
+        if (symbol != null) {
+             href=  symbol.getHRef();
         }
         return href;
+
     }
 
     private String getRefNoDots(String text) {
@@ -104,9 +104,9 @@ public class ASTNameNode
 
         if (isPackage) {
 
-            href = parser.refSrc.packageList.get(text);
+            href = getRef(text);
             if (href != null) {
-                href = parser.prePath + href;
+                if (!href.startsWith("http://")) href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
             }
 
@@ -114,14 +114,15 @@ public class ASTNameNode
         else if (text.endsWith(".*")) {
             //System.out.println("************************text"+text);
 
-            href = parser.refSrc.packageList.get(text.substring(0,text.length() - 2));
+            href = getRef(text.substring(0, text.length() - 2));
             if (href != null) {
-                href = parser.prePath + href;
+                if (!href.startsWith("http://")) href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
             }
             else {
-                href = parser.refSrc.getPackageHRef(text.substring(0,
-                    text.length() - 2));
+                // todo may be not required
+                href = getRef(text.substring(0,
+                        text.length() - 2));
             }
         }
         else if ( (text.indexOf('.')) != -1) { // Is there a '.' in text, if so then

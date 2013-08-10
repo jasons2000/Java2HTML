@@ -4,7 +4,10 @@ import java.io.Reader;
 
 public interface ReferenceParser {
 
-    void parseReferences(ReferenceIdMutable referenceLookUp,
-                         Reader reader);
+    String getLanguageId();
 
+    // added references for a particular language
+    void parseReferences(SymbolTableMutable referenceLookUp,
+                         String fullPathFilename,
+                         Reader reader);
 }

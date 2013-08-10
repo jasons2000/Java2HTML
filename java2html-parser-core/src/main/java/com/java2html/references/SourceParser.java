@@ -9,6 +9,6 @@ public interface SourceParser extends ReferenceParser {
 
     boolean isMatch(String fileName);
 
-    String toHtml(ReferenceId referenceId, Reader reader) throws ParsingException;
+    String toHtml(SymbolTableByLanguage references, Reader reader) throws ParsingException;
 
 }

@@ -53,7 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
-import com.java2html.references.ReferenceId;
+import com.java2html.references.SymbolTable;
 
 public class JavaParser {
 
@@ -63,8 +63,7 @@ public class JavaParser {
     String prePath = "";
     boolean defaultPackage;
 
-    ReferenceId refSrc;
-    ReferenceId refJavaDoc;
+    SymbolTable symbolTable;
 
     private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
@@ -73,13 +72,12 @@ public class JavaParser {
     }
 
 
-	public void parse(Reader source, HTMLFileWriter dest, ReferenceId referenceMap)
+	public void parse(Reader source, HTMLFileWriter dest, SymbolTable symbolTable, String prePath)
 	throws ParsingException {
 
-         this.refSrc = referenceMap.getSub("java/src");
-         this.refJavaDoc = referenceMap.getSub("java/javadoc");
+         this.symbolTable = symbolTable;
 
-	  	  this.prePath = referenceMap.getRoot();
+	  	  this.prePath = prePath;
 		  ASTCompilationUnit node;
 
 	      ReInit(source);
@@ -1264,7 +1262,7 @@ void ClassOrInterfaceBodyDeclaration(boolean isInterface):
   Initializer()
   {
      if (isInterface)
-        throw new ParsingException("An interface cannot have initializers");
+        throw new ParseException("An interface cannot have initializers");
   }
 |
   modifiers = Modifiers() // Just get all the modifiers out of the way. If you want to do

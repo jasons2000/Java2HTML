@@ -20,7 +20,7 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.Link;
-import com.java2html.references.ReferenceIdMutable;
+import com.java2html.references.SymbolTableMutable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,26 +34,25 @@ import java.net.URL;
 
 public class JavaDocManager {
 
-    private ReferenceIdMutable referenceMapJavaDoc = new ReferenceIdMutable();
+    private SymbolTableMutable<JavaSymbol> symbolTable = new SymbolTableMutable<JavaSymbol>();
 
 //    private final Map<String, String> classList = new HashMap<String, String>();
 //    private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
     public JavaDocManager(Link... urls) throws IOException {
-        ReferenceIdMutable referenceIdMutable = new ReferenceIdMutable("javaDoc");
-        ReferenceIdMutable classes =  referenceIdMutable.add("classes");
-        ReferenceIdMutable packages=  referenceIdMutable.add("packages");
+        SymbolTableMutable<JavaSymbol> table = new SymbolTableMutable<JavaSymbol>();
 
         for (Link urlString : urls) {
             // todo need to handle non connectables
             URL url = new URL(urlString.getUrl());
 
-            parsePackages(packages, new URL(url, "overview-frame.html"));
-            parseClasses(classes ,new URL(url, "allclasses-frame.html"));
+            parsePackages(table, new URL(url, "overview-frame.html"));
+            parseClasses(table,new URL(url, "allclasses-frame.html"));
         }
+        this.symbolTable = table;
     }
 
-    private void parseClasses(ReferenceIdMutable classList, URL urlClasses) {
+    private void parseClasses(SymbolTableMutable<JavaSymbol> javaSymbolTable, URL urlClasses) {
         //<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="javax/swing/AbstractAction.html" title="class in javax.swing" target="classFrame">AbstractAction</A>
         try {
             Connection con = Jsoup.connect(urlClasses.toString()).userAgent("Mozilla");
@@ -63,7 +62,8 @@ public class JavaDocManager {
             for (Element link : links) {
                 String titleAttr = link.attr("title");
                 String classRef = titleAttr.substring(titleAttr.indexOf(" in") + 4) + "." + link.text();
-                classList.add(classRef).setHRef(new URL(urlClasses, link.attr("href")).toString());
+                String url = new URL(urlClasses, link.attr("href")).toString();
+                javaSymbolTable.add(new JavaSymbol(url, classRef, Type.Class));
             }
         }
         catch (IOException e) {
@@ -71,7 +71,7 @@ public class JavaDocManager {
         }
     }
 
-    private void parsePackages(ReferenceIdMutable packageList,URL urlPackages) {
+    private void parsePackages(SymbolTableMutable<JavaSymbol> table,URL urlPackages) {
 
         try {
             Connection con = Jsoup.connect(urlPackages.toString());
@@ -81,7 +81,8 @@ public class JavaDocManager {
             for (Element link : links) {
                 String text = link.text();
                  if (text.equals("All Classes")) continue;
-                packageList.add(link.text()).setHRef(new URL(urlPackages, link.attr("href")).toString());
+                 String url = new URL(urlPackages, link.attr("href")).toString();
+                 table.add(new JavaSymbol(url,link.text(), Type.Package));
             }
         }
         catch (IOException e) {
@@ -90,8 +91,8 @@ public class JavaDocManager {
 
     }
 
-    public ReferenceIdMutable getReferenceMapJavaDoc() {
-        return referenceMapJavaDoc;
+    public SymbolTableMutable<JavaSymbol> getReferenceMapJavaDoc() {
+        return symbolTable;
     }
 
 
