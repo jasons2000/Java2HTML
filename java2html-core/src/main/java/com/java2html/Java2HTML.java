@@ -48,13 +48,21 @@
 package com.java2html;
 
 import com.java2html.internal.CommandLineOptions;
-import com.java2html.java_parser.Helper;
 import com.java2html.internal.Link;
+import com.java2html.internal.ParsingException;
+import com.java2html.java_parser.Helper;
+import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
+import com.java2html.java_parser.PackageH;
 import com.java2html.references.SourceParser;
+import com.java2html.references.SymbolTableMutable;
 import de.schlichtherle.truezip.file.TFile;
+import de.schlichtherle.truezip.file.TFileReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.text.DateFormat;
 import java.util.*;
 
 /**
@@ -141,6 +149,177 @@ public class Java2HTML {
         }
         System.exit(success);
     }
+
+    /**
+          * Builds the Java2HTML
+          * <p/>
+          * returns false if any failures were detected
+          */
+         public boolean buildJava2HTML() throws IOException, BadOptionException {
+
+             createSupportingFiles();
+
+             // we load up the javaDoc with java doc references, these will be gverridden by javasrc references but that's a good thing
+             SymbolTableMutable javaDocTable = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0])).getReferenceMapJavaDoc();
+
+             if (javaSourceFileNameList == null) {
+                 setJavaDirectorySource(Arrays.asList("."));
+             }
+             // Performs first parse
+
+
+            // javaSource.setQuiet(quiet);
+             int marginSize = 0;
+
+             for (String fullPathFileName : javaSourceFileNameList) {
+                 Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
+
+                 LineNumberReader lineNumberReader = new LineNumberReader(reader);
+                 String packageLevel = javaSourceParser.parseReferences(javaDocTable, fullPathFileName, lineNumberReader);
+                 // count lines
+                 marginSize = getMarginSize(lineNumberReader);
+
+
+                 reader.close();
+                 fn(fullPathFileName, packageLevel);
+             }
+
+             if (!simple) Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
+
+
+             // Generate files - 2nd parse
+             for (Map.Entry<String, PackageH> entry : directoryToPackage.entrySet()) {
+                 String fileName = entry.getKey();
+                 PackageH aPackage = entry.getValue();
+                 // skip the replacement (as of JDK 1.5) for package.html
+                 if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
+
+                     createTargetFile(javaSourceParser, javaDocTable, fileName, aPackage, marginSize);
+                 }
+             }
+
+             return true;
+         }
+
+    private void createSupportingFiles() throws IOException {
+
+          DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                  DateFormat.SHORT);
+
+          HashMap<String, String> subs = new HashMap<String, String>();
+          subs.put("date", df.format(new Date()));
+          subs.put("version", "1.0");
+          subs.put("title", title);
+
+
+          Helper helper = new Helper(destinationDir, subs, quiet);
+
+          //Create StyleSheet
+          File f = new File(destinationDir + "/stylesheet.css");
+          FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
+
+          //Create Java StyleSheet
+          File javaCss = new File(destinationDir + "/java_stylesheet.css");
+          FileUtils.copyURLToFile(getClass().getResource("/java_stylesheet.css"), javaCss);
+
+
+          if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
+
+          // Check File.Separator
+
+          if (!simple) {
+
+              helper.createPage("front.html");
+              // Create main Index.html
+              helper.createPage("index.html");
+
+          }
+      }
+
+
+    private void createTargetFile(SourceParser javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize) throws IOException {
+
+               // Create directories
+               File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
+               String s = temp.getAbsolutePath();
+               if (!s.endsWith(File.separator)) {
+                   s += File.separator; // if not ending with \ add a \
+               }
+               String destFileName;
+               if (aPackage.packageLevel.isEmpty()) {
+                   destFileName = s;
+               }
+               else {
+                   destFileName = s +
+                       Helper.convertDots(aPackage.packageLevel, File.separatorChar) + File.separatorChar;
+               }
+               destFileName =  destFileName + aPackage.className + ".java.html";
+
+
+               // Make directory (seperate from file portion)
+               File dir = new File(s +
+                       Helper.convertDots(aPackage.packageLevel, '/'));
+               dir.mkdirs();
+               //File f = new File(destFileName);
+               //System.out.println("temp"+temp);
+
+               BufferedWriter dest = new BufferedWriter(new FileWriter(destFileName));
+               TFileReader source = new TFileReader(new TFile(fileName));
+
+               String dot = ".";
+               if (aPackage.packageLevel.isEmpty()) {
+                   dot = ""; // If no package then remove the dot
+
+               }
+               String packageLevel = Helper.convert(aPackage.packageLevel);
+               String preDir = getDotDotRootPathFromPackage(packageLevel);
+               String preText = Helper.getPreText(preDir + "java_stylesheet.css",
+                       aPackage.packageLevel + dot +
+                               aPackage.className); // what is this doing ?
+                       dest.write(Helper.getHeader(aPackage.className, "", header));
+               dest.write(preText); //TODO: add date string
+       //        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
+               boolean error = false;
+               //System.out.print("Reading: "+fileName); // TODO check
+
+               try {
+                   String html = javaSource.toHtml(source, preDir, this, javaDoc);
+                   dest.write(html);
+               }
+               catch (ParsingException e) {
+                   dest.write("<BR><BR>");
+                   dest.write("<FONT CLASS=\"ParseError\">");
+                   final String msg = "Non Legal Java File: "+e.getMessage()+")";
+                   dest.write(msg);
+                   dest.write("</FONT>");
+
+                       error = true;
+                   //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
+                   System.out.println(fileName + ": Parse Error, Non-Legal Java File: " + e.getMessage());
+                   // e.printStackTrace();
+               }
+               finally {
+                   // Clear up resources
+       //            try {
+                       dest.write(Helper.getFooter(aPackage.className, "", footer)); //TODO: add date string
+                       dest.write(Helper.getPostText());
+                       dest.flush();
+                       dest.close();
+       //            }
+       //            catch (IOException e2) {
+       //            }
+                   IOUtils.closeQuietly(source);
+
+               }
+               if (!error  && !quiet) {
+                   System.out.println("Created: " + destFileName);
+               }
+
+           }
+
+
+
+
 
 
     private int getMarginSize(LineNumberReader lineNumberReader) throws IOException {
