@@ -28,15 +28,14 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class JavaSource implements SourceParser {
 
     public Map<String, Map<String, String>> allClassesHRefByPackage = new HashMap<String, Map<String, String>>();
     public Map<String, PackageH> directoryToPackage = new HashMap<String, PackageH>();
+
+    private SymbolTableMutable<JavaSymbol> javaSymbolTable = new SymbolTableMutable<JavaSymbol>();
 
     private boolean quiet = false;
 
@@ -45,7 +44,6 @@ public class JavaSource implements SourceParser {
     public JavaSource() {
 
     }
-
 
     public final boolean isQuiet() {
       return quiet;
@@ -80,7 +78,7 @@ public class JavaSource implements SourceParser {
 
 
     @Override
-    public String toHtml(SymbolTableByLanguage referenceMap, Reader reader) throws ParsingException {
+    public String toHtml(SymbolTableByLanguage otherLangSymbolTables, Reader reader) throws ParsingException {
         try {
             StringWriter sw = new StringWriter();
             HTMLFileWriter dest = new HTMLFileWriter(sw, 4,4); // todo make this HTML only, reworkout dependency
@@ -95,6 +93,10 @@ public class JavaSource implements SourceParser {
 
     }
 
+    @Override
+    public List<Symbol> getAllFiles() {
+        javaSymbolTable.
+    }
 
 
     @Override

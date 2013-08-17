@@ -5,6 +5,7 @@ package com.java2html.references;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class SymbolTableMutable<S extends Symbol> implements SymbolTable<S> {
@@ -19,5 +20,10 @@ public class SymbolTableMutable<S extends Symbol> implements SymbolTable<S> {
     public S lookup(String symbolId) {
 
         return table.get(symbolId);
+    }
+
+    @Override
+    public Iterator<S> iterator() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
