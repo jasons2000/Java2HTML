@@ -12,11 +12,5 @@ public interface SourceParser extends ReferenceParser {
 
     String toHtml(SymbolTableByLanguage references, Reader reader) throws ParsingException;
 
-    List<Symbol> getAllFiles();
 
-    // eg all packages
-    List<String> getAllLimitingScopes();
-
-    // eg return all files for a package
-    List<Symbol> getScopedFiles(String limitingScope);
 }

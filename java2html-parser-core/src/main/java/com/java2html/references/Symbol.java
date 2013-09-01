@@ -7,4 +7,5 @@ package com.java2html.references;
 public interface Symbol {
     String getId();
     String getHRef();
+    String getFileLocation();
 }

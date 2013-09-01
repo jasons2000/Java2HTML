@@ -59,7 +59,7 @@ public class JavaSource implements SourceParser {
     }
 
     @Override
-     public SymbolTableMutable<JavaSymbol> parseReferences(String fullPathFilename, Reader reader)  throws ParsingException  {
+     public SymbolTable<JavaSymbol> parseReferences(String fullPathFilename, Reader reader)  throws ParsingException  {
 
         SymbolTableMutable<JavaSymbol> table = new SymbolTableMutable<JavaSymbol>();
 
@@ -93,10 +93,6 @@ public class JavaSource implements SourceParser {
 
     }
 
-    @Override
-    public List<Symbol> getAllFiles() {
-        javaSymbolTable.
-    }
 
 
     @Override
