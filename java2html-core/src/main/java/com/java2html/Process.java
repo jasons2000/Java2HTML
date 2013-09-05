@@ -25,7 +25,7 @@ public class Process {
 
         for (ReferenceParser<? extends Symbol> referenceParser : referenceParsers) {
 
-
+             referenceParser.parseReferences();
 
         }
 

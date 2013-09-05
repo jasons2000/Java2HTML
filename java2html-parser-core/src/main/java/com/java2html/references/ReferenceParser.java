@@ -12,11 +12,6 @@ public interface ReferenceParser<S extends Symbol> {
 
     String getLanguageId();
 
-    // added references for a particular language
-    void parseReferences(String fullPathFilename,
-                         Reader reader)  throws ParsingException;
-
-
     List<S> getAllFileSymbol();
 
     // eg all packages
@@ -25,3 +20,5 @@ public interface ReferenceParser<S extends Symbol> {
     // eg return all files for a package
     List<S> getScopedFiles(S limitingScope);
 }
+
+
