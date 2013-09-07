@@ -54,7 +54,7 @@ public class JavaSource implements SourceParser {
 
 
     @Override
-    public boolean isMatch(String fileName) {
+    public boolean isFileNameMatch(String fileName) {
         return fileName.endsWith(".java");
     }
 
