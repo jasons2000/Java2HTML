@@ -6,10 +6,10 @@ import com.java2html.internal.ParsingException;
 import java.io.Reader;
 import java.util.List;
 
-public interface SourceParser  {
+public interface SourceParser<S extends Symbol>  {
 
-    boolean isMatch(String fileName);
+    boolean isFileNameMatch(String fileName);
 
-    String toHtml(SymbolTableByLanguage references, Reader reader) throws ParsingException;
+    String toHtml(ReferenceParser<S> references, Reader reader) throws ParsingException;
 
 }

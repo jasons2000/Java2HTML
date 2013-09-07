@@ -442,7 +442,7 @@ public class Java2HTML {
             String fileName = directory + File.separatorChar + file;
 
             if (new TFile(fileName).isFile()) {
-                if (javaSourceParser.isMatch(fileName)) files.add(fileName);
+                if (javaSourceParser.isFileNameMatch(fileName)) files.add(fileName);
             }
             else {
                 getFileListFromDirectory(fileName, files);

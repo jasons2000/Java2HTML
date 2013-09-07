@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface ReferenceParser<S extends Symbol> {
 
+    S lookUp(String symbolId);
+
     String getLanguageId();
 
     List<S> getAllFileSymbol();
