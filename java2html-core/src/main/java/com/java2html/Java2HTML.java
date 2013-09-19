@@ -55,7 +55,7 @@ import com.java2html.java_parser.JavaDocManager;
 import com.java2html.java_parser.JavaSource;
 import com.java2html.java_parser.PackageH;
 import com.java2html.references.SourceParser;
-import com.java2html.references.SymbolTableMutable;
+import com.java2html.references.SymbolTable;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
@@ -160,7 +160,7 @@ public class Java2HTML {
              createSupportingFiles();
 
              // we load up the javaDoc with java doc references, these will be gverridden by javasrc references but that's a good thing
-             SymbolTableMutable javaDocTable = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0])).getReferenceMapJavaDoc();
+             JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
 
              if (javaSourceFileNameList == null) {
                  setJavaDirectorySource(Arrays.asList("."));

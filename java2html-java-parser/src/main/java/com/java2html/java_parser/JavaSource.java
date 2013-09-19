@@ -20,14 +20,10 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.HTMLFileWriter;
-import com.java2html.internal.Link;
 import com.java2html.internal.ParsingException;
 import com.java2html.references.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.util.*;
 
 public class JavaSource implements SourceParser {
@@ -35,7 +31,7 @@ public class JavaSource implements SourceParser {
     public Map<String, Map<String, String>> allClassesHRefByPackage = new HashMap<String, Map<String, String>>();
     public Map<String, PackageH> directoryToPackage = new HashMap<String, PackageH>();
 
-    private SymbolTableMutable<JavaSymbol> javaSymbolTable = new SymbolTableMutable<JavaSymbol>();
+    private SymbolTable<JavaSymbol> symbolTable = new SymbolTable<JavaSymbol>();
 
     private boolean quiet = false;
 
@@ -59,45 +55,59 @@ public class JavaSource implements SourceParser {
     }
 
     @Override
-     public SymbolTable<JavaSymbol> parseReferences(String fullPathFilename, Reader reader)  throws ParsingException  {
-
-        SymbolTableMutable<JavaSymbol> table = new SymbolTableMutable<JavaSymbol>();
+    public void populateForReference(File file) throws ParsingException {
 
         try {
-            String packageName = PackageLocator.scan(reader);
-            fn(fullPathFilename, packageName);
+            String packageName = PackageLocator.scan( new FileReader(file));
+            fn(file.getAbsolutePath(), packageName);
         }
         catch (IOException e) {
             throw new ParsingException(e);
         }
 
-        return table;
-     }
-
-
+    }
 
 
     @Override
-    public String toHtml(SymbolTableByLanguage otherLangSymbolTables, Reader reader) throws ParsingException {
+    public String snippetToHtml(String codeSnippet) {
+        return null;
+    }
+
+    @Override
+    public String toHtml(Reader reader, SourceParser<? extends Symbol> otherLanguages) throws ParsingException {
+
         try {
             StringWriter sw = new StringWriter();
             HTMLFileWriter dest = new HTMLFileWriter(sw, 4,4); // todo make this HTML only, reworkout dependency
 
-            parser.parse(reader,dest,referenceMap, prePath);
+            parser.parse(reader,dest, this, prePath);
             dest.flush();
             return sw.toString();
         }
         catch (IOException ex) {
             throw new ParsingException(ex);
         }
-
     }
-
 
 
     @Override
     public String getLanguageId() {
         return "JAVA";
+    }
+
+    @Override
+    public List getAllFileSymbol() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List getAllLimitingScopes() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public List getScopedFiles(Symbol limitingScope) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     private void fn(String fullPathFileName, String packageLevel) throws FileNotFoundException {
@@ -137,7 +147,5 @@ public class JavaSource implements SourceParser {
            hrefByClassName.put(classString, href);
 
        }
-
-
 
 }

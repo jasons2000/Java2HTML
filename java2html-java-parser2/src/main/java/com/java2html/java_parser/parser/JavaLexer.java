@@ -50,39 +50,40 @@ public final class JavaLexer {
   static final Parser<String> IDENTIFIER = Scanners.pattern(
       Patterns.isChar(JAVA_IDENTIFIER_START).next(Patterns.isChar(JAVA_IDENTIFIER_PART).many()),
       "identifier").source();
-  
-  static final Parser<Void> DECIMAL_POINT_SCANNER =
-      Scanners.pattern(Patterns.INTEGER.optional().next(Patterns.FRACTION),
-          "decimal point number");
-  
+
+    // todo commented  out for now relies on 3.0.SNAPSHOT
+  static final Parser<Void> DECIMAL_POINT_SCANNER = null;
+//      Scanners.pattern(Patterns.INTEGER.optional().next(Patterns.FRACTION),
+//          "decimal point number");
+
   static final Parser<DecimalPointNumberLiteral> DECIMAL_POINT_NUMBER =
       Mapper.curry(DecimalPointNumberLiteral.class).sequence(
           DECIMAL_POINT_SCANNER.source(), numberType(NumberType.DOUBLE));
-  
+
   static final Parser<IntegerLiteral> HEX_INTEGER = new Mapper<IntegerLiteral>() {
     @SuppressWarnings("unused")
     IntegerLiteral map(String text, NumberType type) {
       return new IntegerLiteral(Radix.HEX, text.substring(2), type);
     }
   }.sequence(Scanners.HEX_INTEGER.source(), numberType(NumberType.INT));
-  
+
   static final Parser<IntegerLiteral> OCT_INTEGER = new Mapper<IntegerLiteral>() {
     @SuppressWarnings("unused")
     IntegerLiteral map(String text, NumberType type) {
       return new IntegerLiteral(Radix.OCT, text.length() == 1 ? text : text.substring(1), type);
     }
   }.sequence(Scanners.OCT_INTEGER.source(), numberType(NumberType.INT));
-  
+
   static final Parser<IntegerLiteral> DEC_INTEGER =
       Mapper.curry(IntegerLiteral.class, Radix.DEC)
       .sequence(Scanners.DEC_INTEGER.source(), numberType(NumberType.INT));
-  
+
   static final Parser<IntegerLiteral> INTEGER = Parsers.or(HEX_INTEGER, OCT_INTEGER, DEC_INTEGER);
-  
+
   static final Parser<ScientificNumberLiteral> SCIENTIFIC_NUMBER_LITERAL =
       Mapper.curry(ScientificNumberLiteral.class)
         .sequence(Scanners.SCIENTIFIC_NOTATION, numberType(NumberType.DOUBLE));
-  
+
   static Parser<NumberType> numberType(NumberType defaultType) {
     return Parsers.or(
         Scanners.among("lL").retn(NumberType.LONG),

@@ -20,7 +20,8 @@
 package com.java2html.java_parser;
 
 import com.java2html.internal.Link;
-import com.java2html.references.SymbolTableMutable;
+import com.java2html.references.ReferenceParser;
+import com.java2html.references.SymbolTable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,15 +33,15 @@ import java.net.URL;
 
 // TODO :Does this deal with the import AClass; scenario, probabaly not
 
-public class JavaDocManager {
+public class JavaDocManager implements ReferenceParser<JavaSymbol> {
 
-    private SymbolTableMutable<JavaSymbol> symbolTable = new SymbolTableMutable<JavaSymbol>();
+    private SymbolTable<JavaSymbol> symbolTable = new SymbolTable<JavaSymbol>();
 
 //    private final Map<String, String> classList = new HashMap<String, String>();
 //    private final Map<String, String> packageList = new HashMap<String, String>(); //use JavaSource
 
     public JavaDocManager(Link... urls) throws IOException {
-        SymbolTableMutable<JavaSymbol> table = new SymbolTableMutable<JavaSymbol>();
+        SymbolTable<JavaSymbol> table = new SymbolTable<JavaSymbol>();
 
         for (Link urlString : urls) {
             // todo need to handle non connectables
@@ -52,7 +53,7 @@ public class JavaDocManager {
         this.symbolTable = table;
     }
 
-    private void parseClasses(SymbolTableMutable<JavaSymbol> javaSymbolTable, URL urlClasses) {
+    private void parseClasses(SymbolTable<JavaSymbol> javaSymbolTable, URL urlClasses) {
         //<TD NOWRAP><FONT CLASS="FrameItemFont"><A HREF="javax/swing/AbstractAction.html" title="class in javax.swing" target="classFrame">AbstractAction</A>
         try {
             Connection con = Jsoup.connect(urlClasses.toString()).userAgent("Mozilla");
@@ -71,7 +72,7 @@ public class JavaDocManager {
         }
     }
 
-    private void parsePackages(SymbolTableMutable<JavaSymbol> table,URL urlPackages) {
+    private void parsePackages(SymbolTable<JavaSymbol> table,URL urlPackages) {
 
         try {
             Connection con = Jsoup.connect(urlPackages.toString());
@@ -91,8 +92,9 @@ public class JavaDocManager {
 
     }
 
-    public SymbolTableMutable<JavaSymbol> getReferenceMapJavaDoc() {
-        return symbolTable;
+    @Override
+    public JavaSymbol lookUp(String symbolId) {
+        return symbolTable.lookup(symbolId);
     }
 
 
@@ -119,13 +121,6 @@ public class JavaDocManager {
 //        return sb.toString();
 //    }
 
-//    public String getClassHRef(String classSpec) {
-//        return classList.get(classSpec);
-//    }
-//
-//    public String getPackageHRef(String packageSpec) {
-//           return packageList.get(packageSpec);
-//       }
 }
 
 //
