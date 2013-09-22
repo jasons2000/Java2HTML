@@ -32,7 +32,7 @@ public class SymbolTable<S extends Symbol>  {
     }
 
     // eg return all files for a package
-    List<S> getScopedFiles(S limitingScope) {
+    List<S> getScopedFiles(I limitingScope) {
 
     }
 }

@@ -28,7 +28,17 @@ public class JavaSymbol implements Symbol {
     }
 
     @Override
+    public String getNameScope() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
     public String getHRef() {
         return href;
+    }
+
+    @Override
+    public String getFileLocation() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

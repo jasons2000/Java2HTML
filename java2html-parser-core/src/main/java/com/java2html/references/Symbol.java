@@ -6,6 +6,7 @@ package com.java2html.references;
 
 public interface Symbol {
     String getId();
+    String getNameScope();
     String getHRef();
     String getFileLocation();
 }
