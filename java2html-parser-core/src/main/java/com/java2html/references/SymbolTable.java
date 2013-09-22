@@ -4,16 +4,17 @@ package com.java2html.references;
  * Copyright (c) 2013. test license
  */
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 public class SymbolTable<S extends Symbol>  {
 
-    private final Map<String, S> table = new HashMap<String, S>();
+    private final Map<String, S> fileTable = new HashMap<String, S>();
+    private final Map<String, Set<S>> scopedFileTable = new HashMap<String, Set<S>>();
 
     public void add(S symbol) {
-        table.put(symbol.getId(), symbol);
+
+        if (symbol)
+        fileTable.put(symbol.getId(), symbol);
     }
 
     public S lookup(String symbolId) {
@@ -22,17 +23,20 @@ public class SymbolTable<S extends Symbol>  {
     }
 
 
-    List<S> getAllFileSymbol() {
-
+    Collection<S> getAllFileSymbol() {
+       return fileTable.values();
     }
 
     // eg all packages
-    List<S> getAllLimitingScopes() {
+    Set<String> getAllLimitingScopes() {
+        return scopedFileTable.keySet();
 
     }
 
     // eg return all files for a package
-    List<S> getScopedFiles(I limitingScope) {
+    Set<S> getScopedFiles(String limitingScope) {
+        return scopedFileTable.get(limitingScope);
+
 
     }
 }

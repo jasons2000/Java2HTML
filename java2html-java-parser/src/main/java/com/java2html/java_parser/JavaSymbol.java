@@ -15,11 +15,13 @@ public class JavaSymbol implements Symbol {
     private String id;
     private Type type;
     private String href;
+    private String nameScope;
 
-    public JavaSymbol(String href, String id, Type type) {
+    public JavaSymbol(String href, String id, String nameScope, Type type) {
         this.href = href;
         this.id = id;
         this.type = type;
+        this.nameScope = nameScope;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class JavaSymbol implements Symbol {
 
     @Override
     public String getNameScope() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return nameScope;
     }
 
     @Override
