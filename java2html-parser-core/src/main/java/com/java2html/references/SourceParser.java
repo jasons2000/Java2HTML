@@ -5,13 +5,14 @@ import com.java2html.internal.ParsingException;
 
 import java.io.File;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.List;
 
 public interface SourceParser<S extends Symbol>  {
 
     boolean isFileNameMatch(String fileName);
 
-    void populateForReference(File reader) throws ParsingException;
+    void populateForReference(String fullPath, Reader reader) throws ParsingException;
 
     // null return means not parsable
     String snippetToHtml(String codeSnippet);
@@ -21,12 +22,12 @@ public interface SourceParser<S extends Symbol>  {
 
     String getLanguageId();
 
-    List<S> getAllFileSymbol();
+    Collection<S> getAllFileSymbols();
 
     // eg all packages
-    List<S> getAllLimitingScopes();
+    Collection<S> getAllDirSymbols();
 
     // eg return all files for a package
-    List<S> getScopedFiles(S limitingScope);
+    Collection<S> getScopedFiles(S limitingScope);
 
 }

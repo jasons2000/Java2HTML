@@ -4,9 +4,17 @@ package com.java2html.references;
  * Copyright (c) 2013. test license
  */
 
-public interface Symbol {
+public interface Symbol<S extends Symbol> {
     String getId();
-    String getNameScope();
+    S getParentSymbol();
     String getHRef();
     String getFileLocation();
+
+    Type getType();
+
+    enum Type {
+        Dir,File,Other
+    }
 }
+
+

@@ -175,13 +175,10 @@ public class Java2HTML {
                  Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
 
                  LineNumberReader lineNumberReader = new LineNumberReader(reader);
-                 String packageLevel = javaSourceParser.parseReferences(javaDocTable, fullPathFileName, lineNumberReader);
+                 javaSourceParser.populateForReference(fullPathFileName, lineNumberReader);
                  // count lines
                  marginSize = getMarginSize(lineNumberReader);
-
-
                  reader.close();
-                 fn(fullPathFileName, packageLevel);
              }
 
              if (!simple) Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
@@ -191,6 +188,7 @@ public class Java2HTML {
              for (Map.Entry<String, PackageH> entry : directoryToPackage.entrySet()) {
                  String fileName = entry.getKey();
                  PackageH aPackage = entry.getValue();
+
                  // skip the replacement (as of JDK 1.5) for package.html
                  if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 

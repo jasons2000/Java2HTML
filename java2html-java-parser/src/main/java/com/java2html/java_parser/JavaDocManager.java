@@ -21,6 +21,7 @@ package com.java2html.java_parser;
 
 import com.java2html.internal.Link;
 import com.java2html.references.ReferenceParser;
+import com.java2html.references.Symbol;
 import com.java2html.references.SymbolTable;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -83,7 +84,7 @@ public class JavaDocManager implements ReferenceParser<JavaSymbol> {
                 String text = link.text();
                  if (text.equals("All Classes")) continue;
                  String url = new URL(urlPackages, link.attr("href")).toString();
-                 table.add(new JavaSymbol(url,link.text(), Type.Package));
+                 table.add(new JavaSymbol(url,link.text(), Symbol.Type.Dir));
             }
         }
         catch (IOException e) {
