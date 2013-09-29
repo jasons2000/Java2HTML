@@ -27,6 +27,16 @@ public class JavaSymbol implements Symbol<JavaSymbol> {
     }
 
     @Override
+    public String getName() {
+        if (id == null) {
+            return "[Default]";
+        }
+        else {
+
+        }
+    }
+
+    @Override
     public JavaSymbol getParentSymbol() {
         return parent;
     }
@@ -61,5 +71,10 @@ public class JavaSymbol implements Symbol<JavaSymbol> {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(JavaSymbol o) {
+        return 0; // TODO for
     }
 }

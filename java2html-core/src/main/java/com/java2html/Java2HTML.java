@@ -109,7 +109,6 @@ public class Java2HTML {
 
     private String title = "Java Source";
 
-    public Map<String, String> packageList = new HashMap<String, String>();
     private List<String> javaSourceFileNameList = null;
 
     private List<Link> javaDocOptionLinks = Collections.emptyList();
@@ -171,6 +170,7 @@ public class Java2HTML {
             // javaSource.setQuiet(quiet);
              int marginSize = 0;
 
+             // Collect References - 1st Parse
              for (String fullPathFileName : javaSourceFileNameList) {
                  Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
 
@@ -181,7 +181,10 @@ public class Java2HTML {
                  reader.close();
              }
 
-             if (!simple) Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
+             if (!simple) {
+                 Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
+                 Helper.createAllClassIndex(destinationDir, allClassesHRefByPackage);
+             }
 
 
              // Generate files - 2nd parse

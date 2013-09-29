@@ -19,6 +19,8 @@
 
 package com.java2html.java_parser;
 
+import com.java2html.references.Symbol;
+import com.java2html.references.SymbolTable;
 import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.io.*;
@@ -42,14 +44,14 @@ public class Helper {
         this.substitutor = new StrSubstitutor(subs);
         this.quiet = quiet;
         // Create Output destination directory
-       (new File(destination)).mkdirs();
+        (new File(destination)).mkdirs();
     }
 
     public void createPage(String fileName) throws IOException {
 
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(getClass().getResource("/templates/" + fileName).openStream()));
 
-        File f =  new File(destination + File.separator + fileName);
+        File f = new File(destination + File.separator + fileName);
 
         PrintWriter printWriter = new PrintWriter(f);
 
@@ -69,14 +71,14 @@ public class Helper {
 
     private static String getStyleOption(String languageSpecificStyleSheet) {
         return "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + "stylesheet.css" + "\" TITLE=\"Style\">" + lineSep +
-               "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + languageSpecificStyleSheet + "\" TITLE=\"Style\">";
+                "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=\"" + languageSpecificStyleSheet + "\" TITLE=\"Style\">";
     }
 
     public static String getPreText(String styleSheetRef, String className) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" + lineSep +
                 "<HTML>" + lineSep +
                 "<HEAD>" + lineSep +
-                getStyleOption( styleSheetRef)+ lineSep +
+                getStyleOption(styleSheetRef) + lineSep +
                 "<META NAME=\"GENERATOR\" CONTENT=\"" + version + "\">" + lineSep +
                 "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep + /*required for umlats etc*/
                 "<TITLE>" + className + " (Java2HTML)</TITLE>" + lineSep +
@@ -120,50 +122,48 @@ public class Helper {
         }
     }
 
-        // top left
+    // top left
     public final static String getPreIndex(String title) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
-            lineSep +
-            "<HTML>" + lineSep +
-            "<HEAD>" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" + lineSep +
-            "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep +
-            "<TITLE>" + title + " (Java2HTML)" + lineSep +
-            "</TITLE>" + lineSep +
-            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-            lineSep +
-            "</HEAD>" + lineSep +
-            "<BODY>" + lineSep +
-            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\"><A HREF=\"front.html\" TARGET=\"SourceFrame\">" +
-            title + "</A></FONT>" + lineSep +
-            "<BR> <FONT CLASS=\"FrameItemFont\"><A HREF=\"AllClasses.html\" TARGET=\"packageFrame\">All Classes</A></FONT>" +
-            lineSep +
-            "<BR> <FONT size=\"+1\" CLASS=\"FrameHeadingFont\">Packages</FONT>" +
-            lineSep;
+                lineSep +
+                "<HTML>" + lineSep +
+                "<HEAD>" + lineSep +
+                "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" + lineSep +
+                "<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\"/>" + lineSep +
+                "<TITLE>" + title + " (Java2HTML)" + lineSep +
+                "</TITLE>" + lineSep +
+                "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+                lineSep +
+                "</HEAD>" + lineSep +
+                "<BODY>" + lineSep +
+                "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\"><A HREF=\"front.html\" TARGET=\"SourceFrame\">" +
+                title + "</A></FONT>" + lineSep +
+                "<BR> <FONT CLASS=\"FrameItemFont\"><A HREF=\"AllClasses.html\" TARGET=\"packageFrame\">All Classes</A></FONT>" +
+                lineSep +
+                "<BR> <FONT size=\"+1\" CLASS=\"FrameHeadingFont\">Packages</FONT>" +
+                lineSep;
     }
 
     // Bottom Left (Package Index)
     public final static String getClassesFrame(String packageName) {
         return "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" +
-            lineSep +
-            "<HTML>" + lineSep +
-            "<HEAD>" + lineSep +
-            "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
-            lineSep +
-            "<TITLE>" + packageName + " (Java2HTML)</TITLE>" + lineSep +
-            "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-            lineSep +
-            "</HEAD>" + lineSep +
-            "<BODY>" + lineSep +
-            "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\">" + packageName +
-            "</FONT>" + lineSep;
+                lineSep +
+                "<HTML>" + lineSep +
+                "<HEAD>" + lineSep +
+                "<META NAME=\"GENERATOR\" CONTENT=\"" + Helper.version + "\">" +
+                lineSep +
+                "<TITLE>" + packageName + " (Java2HTML)</TITLE>" + lineSep +
+                "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+                lineSep +
+                "</HEAD>" + lineSep +
+                "<BODY>" + lineSep +
+                "<FONT size=\"+1\" CLASS=\"FrameHeadingFont\">" + packageName +
+                "</FONT>" + lineSep;
     }
 
 
     public static final String postIndex = "</BODY>" + Helper.lineSep +
-        "</HTML>" + Helper.lineSep;
-
-
+            "</HTML>" + Helper.lineSep;
 
 
     /**
@@ -180,70 +180,71 @@ public class Helper {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
 
-    public static void createPackageIndex(String dest, String title, Map<String, Map<String,String>> allClassRefs, Map<String,String> packageList) throws
+    public static void createPackageIndex(String dest, String title,SymbolTable<?> symbolTableMap) throws
             IOException {
 
-            FileWriter file = new FileWriter(dest + File.separator +
-                                             "packages.html");
-            StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
+        FileWriter file = new FileWriter(dest + File.separator +
+                "packages.html");
+        StringBuffer index = new StringBuffer(Helper.getPreIndex(title));
 
-        List<String> sortedList = new ArrayList<String>();
-        sortedList.addAll(allClassRefs.keySet());
-        Collections.sort(sortedList);
+        List<Symbol> sortedDirs = new ArrayList<Symbol>();
+        sortedDirs.addAll(symbolTableMap.getAllDirSymbols());
+        Collections.sort(sortedDirs);
 
-        createAllClassIndex(dest, allClassRefs);
+        for (Symbol dir : sortedDirs) {
+            createClassIndex(dest, dir, symbolTableMap.getFileSymbolsInDir(dir.getId()));
 
-            for (String text : sortedList) {
-                String href = createClassIndex(dest, text, allClassRefs.get(text));
-
-                //System.out.println("text="+text+" href=" + href);
-                packageList.put(text, href);
-                if (text.equals("")) {
-                    text = "[DEFAULT]";
-                }
-                index.append("<BR>" + Helper.lineSep +
-                             "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
-                             "\" TARGET=\"packageFrame\">" + text + "</A></FONT>");
+            //System.out.println("text="+text+" href=" + href);
+            if (text.equals("")) {
+                text = "[DEFAULT]";
             }
-
-            index.append(Helper.postIndex);
-            file.write(index.toString());
-            file.close();
+            index.append("<BR>" + Helper.lineSep +
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + dir.getHRef() +
+                    "\" TARGET=\"packageFrame\">" + dir.getName() + "</A></FONT>");
         }
 
-    static String createClassIndex(String dest, String packageString, Map<String, String> classListInPackage) throws
-           IOException {
+        index.append(Helper.postIndex);
+        file.write(index.toString());
+        file.close();
+    }
 
-           String href2 = (packageString.equals("") ? "default" : packageString) +
-               ".index.html";
-           FileWriter file = new FileWriter(dest + File.separatorChar + href2);
-           if (packageString.equals("")) {
-               file.write(Helper.getClassesFrame("Package Default"));
-           }
-           else {
-               file.write(Helper.getClassesFrame("Package " + packageString));
-           }
+    public static String getHrefForClassIndexForPackage(String packageString) {
+        return  (packageString.equals("") ? "default" : packageString) +
+                ".index.html";
 
+    }
 
-           List<String>  sortedClasses = new ArrayList<String>();
-           sortedClasses.addAll(classListInPackage.keySet());
-           Collections.sort( sortedClasses);
-
-           for (String text : sortedClasses) {
-
-               String href = classListInPackage.get(text);
-
-               file.write("<BR>" + Helper.lineSep +
-                          "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + href +
-                          "\" TARGET=\"SourceFrame\">" + text + "</A></FONT>");
-           }
-           file.write(Helper.postIndex);
-           file.close();
-           return href2;
-       }
+    static void createClassIndex(String dest, Symbol parent, Collection<Symbol> fileListInDir) throws
+            IOException {
 
 
-    private static class Pair implements Comparable<Pair>{
+        FileWriter file = new FileWriter(dest + File.separatorChar + parent.getHRef());
+        if (dirId.equals("")) {
+            file.write(Helper.getClassesFrame("Package Default"));
+        }
+        else {
+            file.write(Helper.getClassesFrame("Package " + dirId));
+        }
+
+
+        List<Symbol> sortedClasses = new ArrayList<Symbol>();
+        sortedClasses.addAll(fileListInDir);
+        Collections.sort(sortedClasses);
+
+        for (Symbol symbol : sortedClasses) {
+
+
+            file.write("<BR>" + Helper.lineSep +
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + symbol.getHRef() +
+                    "\" TARGET=\"SourceFrame\">" + symbol.getName() + "</A></FONT>");
+        }
+        file.write(Helper.postIndex);
+        file.close();
+
+    }
+
+
+    private static class Pair implements Comparable<Pair> {
 
         Pair(String text, String ref) {
             this.text = text;
@@ -261,28 +262,27 @@ public class Helper {
     }
 
 
-
-    static void createAllClassIndex(String dest, Map<String, Map<String,String>> classList) throws IOException {
+    public static void createAllClassIndex(String dest, Map<String, Map<String, String>> classList) throws IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
-                                         "AllClasses.html");
+                "AllClasses.html");
         file.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">"
-                   + Helper.lineSep + "<HTML>"
-                   + Helper.lineSep + "<HEAD>"
-                   + Helper.lineSep + "<META NAME=\"GENERATOR\" CONTENT=\"" +
-                   Helper.version + "\">" + Helper.lineSep +
-                   "<TITLE>All Classes (Java2HTML)</TITLE>" + Helper.lineSep +
-                   "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
-                   Helper.lineSep +
-                   "</HEAD>" + Helper.lineSep +
-                   "<BODY BGCOLOR=\"white\">" + Helper.lineSep +
-                   "<FONT CLASS=\"FrameHeadingFont\" size=\"+1\">" +
-                   Helper.lineSep +
-                   //"<FONT size=+1>"+
-                   "All Classes</FONT>" + Helper.lineSep);
+                + Helper.lineSep + "<HTML>"
+                + Helper.lineSep + "<HEAD>"
+                + Helper.lineSep + "<META NAME=\"GENERATOR\" CONTENT=\"" +
+                Helper.version + "\">" + Helper.lineSep +
+                "<TITLE>All Classes (Java2HTML)</TITLE>" + Helper.lineSep +
+                "<LINK REL =\"stylesheet\" TYPE=\"text/css\" HREF=\"stylesheet.css\" TITLE=\"Style\">" +
+                Helper.lineSep +
+                "</HEAD>" + Helper.lineSep +
+                "<BODY BGCOLOR=\"white\">" + Helper.lineSep +
+                "<FONT CLASS=\"FrameHeadingFont\" size=\"+1\">" +
+                Helper.lineSep +
+                //"<FONT size=+1>"+
+                "All Classes</FONT>" + Helper.lineSep);
 
         List<Pair> pairs = new ArrayList<Pair>();
-        for (Map<String,String> maps : classList.values()) {
+        for (Map<String, String> maps : classList.values()) {
             for (Map.Entry<String, String> entry : maps.entrySet()) {
                 pairs.add(new Pair(entry.getKey(), entry.getValue()));
             }
@@ -293,8 +293,8 @@ public class Helper {
 
 
             file.write("<BR>" + Helper.lineSep +
-                       "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
-                       "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // Taken out CR
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
+                    "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // Taken out CR
         }
         file.write(Helper.postIndex);
         file.close();

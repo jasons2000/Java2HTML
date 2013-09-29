@@ -65,7 +65,7 @@ public class JavaDocManager implements ReferenceParser<JavaSymbol> {
                 String titleAttr = link.attr("title");
                 String classRef = titleAttr.substring(titleAttr.indexOf(" in") + 4) + "." + link.text();
                 String url = new URL(urlClasses, link.attr("href")).toString();
-                javaSymbolTable.add(new JavaSymbol(url, classRef, Type.Class));
+                javaSymbolTable.add(new JavaSymbol(url, classRef, null,Symbol.Type.File));
             }
         }
         catch (IOException e) {
@@ -84,7 +84,7 @@ public class JavaDocManager implements ReferenceParser<JavaSymbol> {
                 String text = link.text();
                  if (text.equals("All Classes")) continue;
                  String url = new URL(urlPackages, link.attr("href")).toString();
-                 table.add(new JavaSymbol(url,link.text(), Symbol.Type.Dir));
+                 table.add(new JavaSymbol(url,link.text(), null, Symbol.Type.Dir));
             }
         }
         catch (IOException e) {

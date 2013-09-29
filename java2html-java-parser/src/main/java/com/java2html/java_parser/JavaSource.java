@@ -59,11 +59,10 @@ public class JavaSource implements SourceParser<JavaSymbol> {
     public void populateForReference(String fullPath, Reader reader) throws ParsingException {
 
         try {
-
-
             String packageName = PackageLocator.scan(reader);
             populateSymbolTable(fullPath, packageName);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new ParsingException(e);
         }
     }
@@ -130,8 +129,9 @@ public class JavaSource implements SourceParser<JavaSymbol> {
                     Helper.webSep + fileName + ".html";
         }
 
-        JavaSymbol packageSymbol = new JavaSymbol(href, packageLevel, null, Symbol.Type.Dir);
-        symbolTable.add(packageSymbol);
+        String packageHref = Helper.getHrefForClassIndexForPackage(packageLevel);
+        JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageLevel, null, Symbol.Type.Dir);
+        symbolTable.add( packageSymbol);
 
         JavaSymbol classSymbol = new JavaSymbol(href, packageLevel + "." + classString, packageSymbol, Symbol.Type.File);
         symbolTable.add(classSymbol);

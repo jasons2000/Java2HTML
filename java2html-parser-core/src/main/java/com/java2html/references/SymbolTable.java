@@ -57,7 +57,7 @@ public class SymbolTable<S extends Symbol>  {
     }
 
     // eg return all files for a package
-    public Set<S> getFileSymbolsInDir(String dirSymbolId) {
+    public Collection<S> getFileSymbolsInDir(String dirSymbolId) {
         return symbolsByParentIdByChildType.get(Symbol.Type.File).get(dirSymbolId);
     }
 }
