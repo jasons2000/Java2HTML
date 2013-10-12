@@ -21,17 +21,17 @@ public class Process {
 
 
 
-    public void buildOutput() {
-
-        for (ReferenceParser<? extends Symbol> referenceParser : referenceParsers) {
-
-             referenceParser.parseReferences();
-
-        }
-
-
-
-    }
+//    public void buildOutput() {
+//
+//        for (ReferenceParser<? extends Symbol> referenceParser : referenceParsers) {
+//
+//             referenceParser.parseReferences();
+//
+//        }
+//
+//
+//
+//    }
 
 
 }

@@ -5,40 +5,57 @@ package com.java2html.java_parser;
  */
 
 import com.java2html.references.Symbol;
+import org.apache.commons.lang3.ObjectUtils;
 
 
-public class JavaSymbol implements Symbol<JavaSymbol> {
+public class JavaSymbol implements Symbol {
 
-    private String id;
-    private Type type;
-    private String href;
-    private JavaSymbol parent; // optional , unknown or don't care
+    private final String id;
+    private final String fullParentId;
+    private final Type type;
+    private final String href;
+    private final String fileLocation;
 
-    public JavaSymbol(String href, String id, JavaSymbol parent, Type type) {
+    public JavaSymbol(String href, String id, String fullParentId, Type type) {
         this.href = href;
         this.id = id;
         this.type = type;
-        this.parent = parent;
+        this.fullParentId = fullParentId;
+        fileLocation = null;
+    }
+
+    public JavaSymbol(String href, String id, String fullParentId, String fileLocation) {
+        this.href = href;
+        this.id = id;
+        this.type = Type.File;
+        this.fullParentId= fullParentId;
+        this.fileLocation = fileLocation;
+    }
+
+
+    @Override
+    public String getFullId() {
+        return id + "." + fullParentId;
+    }
+
+    @Override
+    public String getFullParentId() {
+        return fullParentId;
+    }
+
+    @Override
+    public String getDescriptiveName() {
+        if (id == "") {
+            return "[Default]";
+        }
+        else {
+            return id;
+        }
     }
 
     @Override
     public String getId() {
         return id;
-    }
-
-    @Override
-    public String getName() {
-        if (id == null) {
-            return "[Default]";
-        }
-        else {
-
-        }
-    }
-
-    @Override
-    public JavaSymbol getParentSymbol() {
-        return parent;
     }
 
     @Override
@@ -48,12 +65,7 @@ public class JavaSymbol implements Symbol<JavaSymbol> {
 
     @Override
     public String getFileLocation() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Type getType() {
-        return type;
+        return fileLocation;
     }
 
     @Override
@@ -63,6 +75,7 @@ public class JavaSymbol implements Symbol<JavaSymbol> {
 
         JavaSymbol that = (JavaSymbol) o;
 
+        if (fullParentId != null ? !fullParentId.equals(that.fullParentId) : that.fullParentId != null) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
@@ -70,11 +83,19 @@ public class JavaSymbol implements Symbol<JavaSymbol> {
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (fullParentId != null ? fullParentId.hashCode() : 0);
+        return result;
     }
 
     @Override
-    public int compareTo(JavaSymbol o) {
-        return 0; // TODO for
+    public Type getType() {
+        return type;
     }
+
+
+    public int compareTo(Symbol o) {
+        return ObjectUtils.compare(getFullParentId(), o.getFullParentId());
+    }
+
 }

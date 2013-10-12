@@ -27,16 +27,16 @@ public class SymbolTable<S extends Symbol>  {
         symbolsById.put(symbol.getId(), symbol);
 
         // grouped by Parent
-        if (symbol.getParentSymbol() != null) {
+        if (symbol.getFullParentId() != null) {
             Map<String, Set<S>> childSymbolsByParentId = symbolsByParentIdByChildType.get(symbol.getType());
             if (childSymbolsByParentId == null) {
                 childSymbolsByParentId = new HashMap<String, Set<S>>();
                 symbolsByParentIdByChildType.put(symbol.getType(), childSymbolsByParentId);
             }
-            Set<S> childSymbols = childSymbolsByParentId.get(symbol.getParentSymbol().getId());
+            Set<S> childSymbols = childSymbolsByParentId.get(symbol.getFullParentId());
             if (childSymbols == null) {
                 childSymbols = new HashSet<S>();
-                childSymbolsByParentId.put(symbol.getParentSymbol().getId(), childSymbols);
+                childSymbolsByParentId.put(symbol.getFullParentId(), childSymbols);
             }
             childSymbols.add(symbol);
         }
@@ -48,16 +48,30 @@ public class SymbolTable<S extends Symbol>  {
     }
 
     public Collection<S> getAllFileSymbols() {
-       return symbolsByIdByType.get(Symbol.Type.File).values();
+        Map<String, S> map = symbolsByIdByType.get(Symbol.Type.File);
+        if (map == null) {
+            map = Collections.emptyMap();
+        }
+        return map.values();
     }
 
     // eg all packages
     public Collection<S> getAllDirSymbols() {
-        return symbolsByIdByType.get(Symbol.Type.Dir).values();
+        Map<String, S> map = symbolsByIdByType.get(Symbol.Type.Dir);
+        if (map == null) {
+            map = Collections.emptyMap();
+        }
+        return map.values();
     }
 
     // eg return all files for a package
     public Collection<S> getFileSymbolsInDir(String dirSymbolId) {
-        return symbolsByParentIdByChildType.get(Symbol.Type.File).get(dirSymbolId);
+        Collection<S> collection = symbolsByParentIdByChildType.get(Symbol.Type.File).get(dirSymbolId);
+        if (collection == null)  {
+            collection = Collections.emptySet();
+        }
+
+
+        return collection;
     }
 }

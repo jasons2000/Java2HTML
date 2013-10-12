@@ -50,12 +50,9 @@ package com.java2html;
 import com.java2html.internal.CommandLineOptions;
 import com.java2html.internal.Link;
 import com.java2html.internal.ParsingException;
-import com.java2html.java_parser.Helper;
-import com.java2html.java_parser.JavaDocManager;
-import com.java2html.java_parser.JavaSource;
-import com.java2html.java_parser.PackageH;
+import com.java2html.java_parser.*;
 import com.java2html.references.SourceParser;
-import com.java2html.references.SymbolTable;
+import com.java2html.references.Symbol;
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileReader;
 import org.apache.commons.io.FileUtils;
@@ -93,7 +90,7 @@ import java.util.*;
 
 public class Java2HTML {
 
-    private SourceParser javaSourceParser = new JavaSource();
+    private SourceParser<JavaSymbol> javaSourceParser = new JavaSourceParser();
 
     // Options
     private boolean showLineNumbers = false;
@@ -182,22 +179,23 @@ public class Java2HTML {
              }
 
              if (!simple) {
-                 Helper.createPackageIndex(destinationDir, title, allClassesHRefByPackage, packageList);
-                 Helper.createAllClassIndex(destinationDir, allClassesHRefByPackage);
+                 Helper.createPackageIndex(destinationDir, title, javaSourceParser.getSymbolTable());
+                 Helper.createAllClassIndex(destinationDir, javaSourceParser.getSymbolTable());
              }
 
 
              // Generate files - 2nd parse
-             for (Map.Entry<String, PackageH> entry : directoryToPackage.entrySet()) {
-                 String fileName = entry.getKey();
-                 PackageH aPackage = entry.getValue();
+             for (Symbol fileSymbol : javaSourceParser.getSymbolTable().getAllFileSymbols() )  {
 
+                 // Todo probably don't need the below
                  // skip the replacement (as of JDK 1.5) for package.html
-                 if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
+//                 if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
+//                 }
 
-                     createTargetFile(javaSourceParser, javaDocTable, fileName, aPackage, marginSize);
-                 }
+                 createTargetFile(javaSourceParser, null, fileSymbol, marginSize);
+
              }
+
 
              return true;
          }
@@ -238,7 +236,7 @@ public class Java2HTML {
       }
 
 
-    private void createTargetFile(SourceParser javaSource, JavaDocManager javaDoc, String fileName, PackageH aPackage, int marginSize) throws IOException {
+    private void createTargetFile(SourceParser javaSource, SourceParser<? extends Symbol> otherLanguages, Symbol fileSymbol, int marginSize) throws IOException {
 
                // Create directories
                File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
@@ -247,44 +245,44 @@ public class Java2HTML {
                    s += File.separator; // if not ending with \ add a \
                }
                String destFileName;
-               if (aPackage.packageLevel.isEmpty()) {
+               if (fileSymbol.getFullParentId().isEmpty()) {
                    destFileName = s;
                }
                else {
                    destFileName = s +
-                       Helper.convertDots(aPackage.packageLevel, File.separatorChar) + File.separatorChar;
+                       Helper.convertDots(fileSymbol.getFullParentId(), File.separatorChar) + File.separatorChar;
                }
-               destFileName =  destFileName + aPackage.className + ".java.html";
+               destFileName =  destFileName + fileSymbol.getId() + ".java.html";   // todo this needs to be lang specific
 
 
                // Make directory (seperate from file portion)
                File dir = new File(s +
-                       Helper.convertDots(aPackage.packageLevel, '/'));
+                       Helper.convertDots(fileSymbol.getFullParentId(), '/'));
                dir.mkdirs();
                //File f = new File(destFileName);
                //System.out.println("temp"+temp);
 
                BufferedWriter dest = new BufferedWriter(new FileWriter(destFileName));
-               TFileReader source = new TFileReader(new TFile(fileName));
+               TFileReader sourceReader = new TFileReader(new TFile(fileSymbol.getFileLocation()));
 
                String dot = ".";
-               if (aPackage.packageLevel.isEmpty()) {
+               if (fileSymbol.getFullParentId().isEmpty()) {
                    dot = ""; // If no package then remove the dot
 
                }
-               String packageLevel = Helper.convert(aPackage.packageLevel);
+               String packageLevel = Helper.convert(fileSymbol.getFullParentId());
                String preDir = getDotDotRootPathFromPackage(packageLevel);
                String preText = Helper.getPreText(preDir + "java_stylesheet.css",
-                       aPackage.packageLevel + dot +
-                               aPackage.className); // what is this doing ?
-                       dest.write(Helper.getHeader(aPackage.className, "", header));
+                       fileSymbol.getFullParentId() + dot +
+                               fileSymbol.getId()); // what is this doing ?
+                       dest.write(Helper.getHeader(fileSymbol.getId(), "", header));
                dest.write(preText); //TODO: add date string
        //        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
                boolean error = false;
                //System.out.print("Reading: "+fileName); // TODO check
 
                try {
-                   String html = javaSource.toHtml(source, preDir, this, javaDoc);
+                   String html = javaSource.toHtml(sourceReader, preDir, otherLanguages);
                    dest.write(html);
                }
                catch (ParsingException e) {
@@ -296,20 +294,20 @@ public class Java2HTML {
 
                        error = true;
                    //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
-                   System.out.println(fileName + ": Parse Error, Non-Legal Java File: " + e.getMessage());
+                   System.out.println(fileSymbol.getFileLocation() + ": Parse Error, Non-Legal Java File: " + e.getMessage());
                    // e.printStackTrace();
                }
                finally {
                    // Clear up resources
        //            try {
-                       dest.write(Helper.getFooter(aPackage.className, "", footer)); //TODO: add date string
+                       dest.write(Helper.getFooter(fileSymbol.getId(), "", footer)); //TODO: add date string
                        dest.write(Helper.getPostText());
                        dest.flush();
                        dest.close();
        //            }
        //            catch (IOException e2) {
        //            }
-                   IOUtils.closeQuietly(source);
+                   IOUtils.closeQuietly(sourceReader);
 
                }
                if (!error  && !quiet) {
@@ -502,20 +500,6 @@ public class Java2HTML {
         return s.toString();
     }
 
-
-    public String getClassHRef(String text) {
-        //System.out.println("Text="+text);
-        int x = text.lastIndexOf(".");
-        String packageName = text.substring(0, x);
-        String className = text.substring(x + 1, text.length());
-        //System.out.println("****Cn="+className+", packagName="+packageName);
-        Map<String, String> ht = allClassesHRefByPackage.get(packageName);
-        if (ht == null) {
-            return null;
-        }
-        //System.out.println("Match ClassName="+className+", packagName="+packageName);
-        return ht.get(className);
-    }
 //    private void loadParsers() {
 //        List<ReferenceParser> referenceParsers = locateAllReferenceParsers();
 //
@@ -533,7 +517,7 @@ public class Java2HTML {
 //        // TODO needs to locate dynamiclly either from  classpath or something
 //
 //        List<ReferenceParser> referenceParsers = new ArrayList<ReferenceParser>();
-//        referenceParsers.add(new JavaSource());
+//        referenceParsers.add(new JavaSourceParser());
 //        referenceParsers.add(new JavaDocManager());
 //        return referenceParsers;
 //

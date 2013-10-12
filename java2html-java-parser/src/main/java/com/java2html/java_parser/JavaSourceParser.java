@@ -26,7 +26,7 @@ import com.java2html.references.*;
 import java.io.*;
 import java.util.*;
 
-public class JavaSource implements SourceParser<JavaSymbol> {
+public class JavaSourceParser implements SourceParser<JavaSymbol> {
 
 //    public Map<String, Map<String, String>> allClassesHRefByPackage = new HashMap<String, Map<String, String>>();
 //    public Map<String, PackageH> directoryToPackage = new HashMap<String, PackageH>();
@@ -37,7 +37,7 @@ public class JavaSource implements SourceParser<JavaSymbol> {
 
     private JavaParser parser = new JavaParser(System.in); // Todo: System.in not required
 
-    public JavaSource() {
+    public JavaSourceParser() {
 
     }
 
@@ -74,12 +74,12 @@ public class JavaSource implements SourceParser<JavaSymbol> {
     }
 
     @Override
-    public String toHtml(File file, SourceParser<? extends Symbol> otherLanguages) throws ParsingException {
+    public String toHtml(Reader reader, String pathToRoot,SourceParser<? extends Symbol>... otherLanguages) throws ParsingException {
         try {
             StringWriter sw = new StringWriter();
             HTMLFileWriter dest = new HTMLFileWriter(sw, 4, 4); // todo make this HTML only, reworkout dependency
 
-            parser.parse(reader, dest, symbolTable, prePath);
+            parser.parse(reader, dest, symbolTable, pathToRoot);
             dest.flush();
             return sw.toString();
         } catch (IOException ex) {
@@ -94,18 +94,8 @@ public class JavaSource implements SourceParser<JavaSymbol> {
     }
 
     @Override
-    public Collection<JavaSymbol> getAllFileSymbols() {
-        return symbolTable.getAllFileSymbols();
-    }
-
-    @Override
-    public Collection<JavaSymbol> getAllDirSymbols() {
-        return symbolTable.getAllDirSymbols();
-    }
-
-    @Override
-    public Collection<JavaSymbol> getScopedFiles(JavaSymbol limitingScope) {
-        return symbolTable.getFileSymbolsInDir(limitingScope.getId());
+    public SymbolTable<JavaSymbol> getSymbolTable() {
+        return symbolTable;       // todo needs to be readonly
     }
 
     private void populateSymbolTable(String fullPathFileName, String packageLevel) {
@@ -121,10 +111,23 @@ public class JavaSource implements SourceParser<JavaSymbol> {
         //int idx = base.length()+1;
         String href;
         // System.err.println( fullPathfileName + ": " + packageLevel );
+        String packageParent;
+        String packageId;
         if (packageLevel == null || packageLevel.length() == 0) {
-            packageLevel = ""; //default package =""
+            packageId = ""; //default package =""
+            packageParent = null;
             href = fileName + ".html";
-        } else {
+        }
+        else  {
+            int ix = packageLevel.lastIndexOf(".");
+            if (ix == -1) {
+                packageId = packageLevel;
+                packageParent = "";
+            }
+            else {
+                packageId = packageLevel.substring(ix + 1);
+                packageParent = packageLevel.substring(0, ix);
+            }
             href = Helper.convertDots(packageLevel, '/') +
                     Helper.webSep + fileName + ".html";
         }
@@ -133,7 +136,7 @@ public class JavaSource implements SourceParser<JavaSymbol> {
         JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageLevel, null, Symbol.Type.Dir);
         symbolTable.add( packageSymbol);
 
-        JavaSymbol classSymbol = new JavaSymbol(href, packageLevel + "." + classString, packageSymbol, Symbol.Type.File);
+        JavaSymbol classSymbol = new JavaSymbol(href, classString, packageId + "." + packageParent, fullPathFileName);
         symbolTable.add(classSymbol);
 
     }

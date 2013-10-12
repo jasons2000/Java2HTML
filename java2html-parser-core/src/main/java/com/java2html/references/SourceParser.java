@@ -12,22 +12,16 @@ public interface SourceParser<S extends Symbol>  {
 
     boolean isFileNameMatch(String fileName);
 
+    //fullpath just required for th string
     void populateForReference(String fullPath, Reader reader) throws ParsingException;
 
     // null return means not parsable
     String snippetToHtml(String codeSnippet);
 
-    String toHtml(File file, SourceParser<? extends Symbol>  otherLanguages) throws ParsingException;
-
+    String toHtml(Reader reader, String pathToRoot,SourceParser<? extends Symbol>...  otherLanguages) throws ParsingException;
 
     String getLanguageId();
 
-    Collection<S> getAllFileSymbols();
-
-    // eg all packages
-    Collection<S> getAllDirSymbols();
-
-    // eg return all files for a package
-    Collection<S> getScopedFiles(S limitingScope);
+    SymbolTable<S> getSymbolTable();
 
 }

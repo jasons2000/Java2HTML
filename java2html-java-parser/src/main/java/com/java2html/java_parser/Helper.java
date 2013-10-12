@@ -180,7 +180,8 @@ public class Helper {
         return webRef.replace('\\', '/').replaceFirst(":", "|");
     }
 
-    public static void createPackageIndex(String dest, String title,SymbolTable<?> symbolTableMap) throws
+    // a list of packages
+    public static void createPackageIndex(String dest, String title, SymbolTable<?> symbolTableMap) throws
             IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
@@ -192,15 +193,12 @@ public class Helper {
         Collections.sort(sortedDirs);
 
         for (Symbol dir : sortedDirs) {
-            createClassIndex(dest, dir, symbolTableMap.getFileSymbolsInDir(dir.getId()));
+            Collection<? extends Symbol> children = symbolTableMap.getFileSymbolsInDir(dir.getFullId());
+            createClassIndex(dest, dir, children);
 
-            //System.out.println("text="+text+" href=" + href);
-            if (text.equals("")) {
-                text = "[DEFAULT]";
-            }
             index.append("<BR>" + Helper.lineSep +
                     "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + dir.getHRef() +
-                    "\" TARGET=\"packageFrame\">" + dir.getName() + "</A></FONT>");
+                    "\" TARGET=\"packageFrame\">" + dir.getDescriptiveName() + "</A></FONT>");
         }
 
         index.append(Helper.postIndex);
@@ -214,18 +212,17 @@ public class Helper {
 
     }
 
-    static void createClassIndex(String dest, Symbol parent, Collection<Symbol> fileListInDir) throws
+    // create a list of classes for a particular package
+    static void createClassIndex(String dest, Symbol parent, Collection<? extends Symbol> fileListInDir) throws
             IOException {
 
-
         FileWriter file = new FileWriter(dest + File.separatorChar + parent.getHRef());
-        if (dirId.equals("")) {
+        if (parent.getFullParentId() == null) {
             file.write(Helper.getClassesFrame("Package Default"));
         }
         else {
-            file.write(Helper.getClassesFrame("Package " + dirId));
+            file.write(Helper.getClassesFrame("Package " + parent.getFullId()));
         }
-
 
         List<Symbol> sortedClasses = new ArrayList<Symbol>();
         sortedClasses.addAll(fileListInDir);
@@ -233,10 +230,9 @@ public class Helper {
 
         for (Symbol symbol : sortedClasses) {
 
-
             file.write("<BR>" + Helper.lineSep +
                     "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + symbol.getHRef() +
-                    "\" TARGET=\"SourceFrame\">" + symbol.getName() + "</A></FONT>");
+                    "\" TARGET=\"SourceFrame\">" + symbol.getDescriptiveName() + "</A></FONT>");
         }
         file.write(Helper.postIndex);
         file.close();
@@ -244,25 +240,7 @@ public class Helper {
     }
 
 
-    private static class Pair implements Comparable<Pair> {
-
-        Pair(String text, String ref) {
-            this.text = text;
-            this.ref = ref;
-        }
-
-        String text;
-        String ref;
-
-
-        @Override
-        public int compareTo(Pair o) {
-            return text.compareTo(o.text);
-        }
-    }
-
-
-    public static void createAllClassIndex(String dest, Map<String, Map<String, String>> classList) throws IOException {
+    public static void createAllClassIndex(String dest,  SymbolTable<? extends Symbol> symbolTable) throws IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
                 "AllClasses.html");
@@ -281,20 +259,15 @@ public class Helper {
                 //"<FONT size=+1>"+
                 "All Classes</FONT>" + Helper.lineSep);
 
-        List<Pair> pairs = new ArrayList<Pair>();
-        for (Map<String, String> maps : classList.values()) {
-            for (Map.Entry<String, String> entry : maps.entrySet()) {
-                pairs.add(new Pair(entry.getKey(), entry.getValue()));
-            }
-        }
-        Collections.sort(pairs);
+        ArrayList<? extends Symbol> allFileSymbols = new ArrayList<Symbol>(symbolTable.getAllFileSymbols());
 
-        for (Pair p : pairs) {
+        Collections.sort(allFileSymbols);
 
+        for (Symbol s : allFileSymbols) {
 
             file.write("<BR>" + Helper.lineSep +
-                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + p.ref +
-                    "\" TARGET=\"SourceFrame\">" + p.text + "</A></FONT>"); // Taken out CR
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + s.getHRef() +
+                    "\" TARGET=\"SourceFrame\">" + s.getFullId()+ "</A></FONT>"); // Taken out CR
         }
         file.write(Helper.postIndex);
         file.close();

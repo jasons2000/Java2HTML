@@ -37,26 +37,26 @@ public class JavaSourceTest {
     @Test
     public void testParse() throws Exception {
 
-        JavaSource javaSource = new JavaSource();
+        JavaSourceParser javaSourceParser = new JavaSourceParser();
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream("/javasrc_sample/SampleInputSource.java"));
 
         StringWriter writer = new StringWriter();
 
-        javaSource.toHtml(reader, new HTMLFileWriter(writer, 4, 4), ".", new Java2HTML(), jdm);
+        javaSourceParser.toHtml(reader, "");
 
         System.out.println(writer);
     }
 
     @Test
     public void testLoopIndefinitely() throws IOException, ParseException {
-        JavaSource javaSource = new JavaSource();
+        JavaSourceParser javaSourceParser = new JavaSourceParser();
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream("/javasrc_sample/LoopIndefinitelyBug.java"));
 
         StringWriter writer = new StringWriter();
 
-        javaSource.toHtml(reader, new HTMLFileWriter(writer, 4, 4), ".", new Java2HTML(), jdm);
+        javaSourceParser.toHtml(reader, "");
 
         System.out.println(writer);
 
