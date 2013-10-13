@@ -35,7 +35,14 @@ public class JavaSymbol implements Symbol {
 
     @Override
     public String getFullId() {
-        return id + "." + fullParentId;
+        if (fullParentId == null || fullParentId.isEmpty()) {
+            return id;
+        }
+        else {
+            return fullParentId + "." + id;
+
+        }
+
     }
 
     @Override
@@ -98,4 +105,8 @@ public class JavaSymbol implements Symbol {
         return ObjectUtils.compare(getFullParentId(), o.getFullParentId());
     }
 
+    @Override
+    public String toString() {
+        return getFullId();
+    }
 }

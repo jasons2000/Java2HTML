@@ -16,7 +16,7 @@ public class SymbolTable<S extends Symbol>  {
     public void add(S symbol) {
 
         // Add Symbols
-        allSymbolsById.put(symbol.getId(), symbol);
+        allSymbolsById.put(symbol.getFullId(), symbol);
 
         // grouped by Type
         Map<String, S> symbolsById = symbolsByIdByType.get(symbol.getType());

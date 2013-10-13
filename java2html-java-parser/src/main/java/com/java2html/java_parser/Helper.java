@@ -267,7 +267,7 @@ public class Helper {
 
             file.write("<BR>" + Helper.lineSep +
                     "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + s.getHRef() +
-                    "\" TARGET=\"SourceFrame\">" + s.getFullId()+ "</A></FONT>"); // Taken out CR
+                    "\" TARGET=\"SourceFrame\">" + s.getId()+ "</A></FONT>"); // Taken out CR
         }
         file.write(Helper.postIndex);
         file.close();

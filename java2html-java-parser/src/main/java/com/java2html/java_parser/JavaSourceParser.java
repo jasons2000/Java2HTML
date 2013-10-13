@@ -24,7 +24,6 @@ import com.java2html.internal.ParsingException;
 import com.java2html.references.*;
 
 import java.io.*;
-import java.util.*;
 
 public class JavaSourceParser implements SourceParser<JavaSymbol> {
 
@@ -60,7 +59,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
 
         try {
             String packageName = PackageLocator.scan(reader);
-            populateSymbolTable(fullPath, packageName);
+            populateSymbolTableWithFile(fullPath, packageName);
         }
         catch (IOException e) {
             throw new ParsingException(e);
@@ -98,7 +97,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         return symbolTable;       // todo needs to be readonly
     }
 
-    private void populateSymbolTable(String fullPathFileName, String packageLevel) {
+    private void populateSymbolTableWithFile(String fullPathFileName, String packageLevel) {
 
         int i = fullPathFileName.lastIndexOf(File.separator);
         String fileName = fullPathFileName.substring(i + 1, fullPathFileName.length());
@@ -113,7 +112,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         // System.err.println( fullPathfileName + ": " + packageLevel );
         String packageParent;
         String packageId;
-        if (packageLevel == null || packageLevel.length() == 0) {
+        if (packageLevel == null || packageLevel.isEmpty()) {
             packageId = ""; //default package =""
             packageParent = null;
             href = fileName + ".html";
@@ -133,10 +132,10 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         }
 
         String packageHref = Helper.getHrefForClassIndexForPackage(packageLevel);
-        JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageLevel, null, Symbol.Type.Dir);
+        JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageLevel, packageParent, Symbol.Type.Dir);
         symbolTable.add( packageSymbol);
 
-        JavaSymbol classSymbol = new JavaSymbol(href, classString, packageId + "." + packageParent, fullPathFileName);
+        JavaSymbol classSymbol = new JavaSymbol(href, classString,  packageId, fullPathFileName);
         symbolTable.add(classSymbol);
 
     }
