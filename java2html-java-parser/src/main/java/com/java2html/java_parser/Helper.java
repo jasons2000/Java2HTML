@@ -21,6 +21,7 @@ package com.java2html.java_parser;
 
 import com.java2html.references.Symbol;
 import com.java2html.references.SymbolTable;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 
 import java.io.*;
@@ -190,7 +191,13 @@ public class Helper {
 
         List<Symbol> sortedDirs = new ArrayList<Symbol>();
         sortedDirs.addAll(symbolTableMap.getAllDirSymbols());
-        Collections.sort(sortedDirs);
+        Collections.sort(sortedDirs, new Comparator<Symbol>() {
+                    @Override
+                    public int compare(Symbol o1, Symbol o2) {
+                        return ObjectUtils.compare(o1.getFullId(), o2.getFullId());
+
+                    }
+                });
 
         for (Symbol dir : sortedDirs) {
             Collection<? extends Symbol> children = symbolTableMap.getFileSymbolsInDir(dir.getFullId());
@@ -226,7 +233,13 @@ public class Helper {
 
         List<Symbol> sortedClasses = new ArrayList<Symbol>();
         sortedClasses.addAll(fileListInDir);
-        Collections.sort(sortedClasses);
+        Collections.sort(sortedClasses, new Comparator<Symbol>() {
+            @Override
+            public int compare(Symbol o1, Symbol o2) {
+                return ObjectUtils.compare(o1.getId(), o2.getId());
+
+            }
+        });
 
         for (Symbol symbol : sortedClasses) {
 
@@ -261,7 +274,14 @@ public class Helper {
 
         ArrayList<? extends Symbol> allFileSymbols = new ArrayList<Symbol>(symbolTable.getAllFileSymbols());
 
-        Collections.sort(allFileSymbols);
+        Collections.sort(allFileSymbols, new Comparator<Symbol>() {
+                    @Override
+                    public int compare(Symbol o1, Symbol o2) {
+                        return ObjectUtils.compare(o1.getId(), o2.getId());
+
+                    }
+                });
+
 
         for (Symbol s : allFileSymbols) {
 

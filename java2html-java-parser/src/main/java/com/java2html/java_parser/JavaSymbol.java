@@ -55,9 +55,14 @@ public class JavaSymbol implements Symbol {
         if (id == "") {
             return "[Default]";
         }
+        else if (type == Type.Dir) {
+            return getFullId();
+        }
         else {
             return id;
         }
+
+
     }
 
     @Override
@@ -101,9 +106,6 @@ public class JavaSymbol implements Symbol {
     }
 
 
-    public int compareTo(Symbol o) {
-        return ObjectUtils.compare(getFullParentId(), o.getFullParentId());
-    }
 
     @Override
     public String toString() {
