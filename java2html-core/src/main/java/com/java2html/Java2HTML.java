@@ -244,20 +244,12 @@ public class Java2HTML {
                if (!s.endsWith(File.separator)) {
                    s += File.separator; // if not ending with \ add a \
                }
-               String destFileName;
-               if (fileSymbol.getFullParentId().isEmpty()) {
-                   destFileName = s;
-               }
-               else {
-                   destFileName = s +
-                       Helper.convertDots(fileSymbol.getFullParentId(), File.separatorChar) + File.separatorChar;
-               }
-               destFileName =  destFileName + fileSymbol.getId() + ".java.html";   // todo this needs to be lang specific
+               String destFileName = s + Helper.convertDots(fileSymbol.getFullId(), File.separatorChar) + ".java.html";   // todo this needs to be lang specific;
 
 
                // Make directory (seperate from file portion)
                File dir = new File(s +
-                       Helper.convertDots(fileSymbol.getFullParentId(), '/'));
+                       Helper.convertDots(fileSymbol.getFullParentId(), File.separatorChar));
                dir.mkdirs();
                //File f = new File(destFileName);
                //System.out.println("temp"+temp);

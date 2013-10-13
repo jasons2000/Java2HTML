@@ -111,23 +111,23 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         String href;
         // System.err.println( fullPathfileName + ": " + packageLevel );
         String packageParent;
-        String packageId;
+        String packageFullId;
         if (packageLevel == null || packageLevel.isEmpty()) {
-            packageId = ""; //default package =""
+            packageFullId = ""; //default package =""
             packageParent = null;
             href = fileName + ".html";
         }
         else  {
             int ix = packageLevel.lastIndexOf(".");
             if (ix == -1) {
-                packageId = packageLevel;
+                packageFullId = packageLevel;
                 packageParent = "";
             }
             else {
-                packageId = packageLevel.substring(ix + 1);
+                packageFullId = packageLevel.substring(ix + 1);
                 packageParent = packageLevel.substring(0, ix);
             }
-            href = Helper.convertDots(packageLevel, '/') +
+            href = Helper.convertDots(packageLevel, Helper.webSep ) +
                     Helper.webSep + fileName + ".html";
         }
 
@@ -135,7 +135,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageLevel, packageParent, Symbol.Type.Dir);
         symbolTable.add( packageSymbol);
 
-        JavaSymbol classSymbol = new JavaSymbol(href, classString,  packageId, fullPathFileName);
+        JavaSymbol classSymbol = new JavaSymbol(href, classString,  packageFullId, fullPathFileName);
         symbolTable.add(classSymbol);
 
     }

@@ -30,7 +30,7 @@ public class Helper {
 
     public static String lineSep = System.getProperty("line.separator");
 
-    public static final String webSep = "/";
+    public static final char webSep = '/';
 
     private final StrSubstitutor substitutor;
 
