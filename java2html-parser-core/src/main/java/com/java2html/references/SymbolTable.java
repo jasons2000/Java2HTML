@@ -27,19 +27,17 @@ public class SymbolTable<S extends Symbol>  {
         symbolsById.put(symbol.getId(), symbol);
 
         // grouped by Parent
-//        if (symbol.getFullParentId() != null) {
-            Map<String, Set<S>> childSymbolsByParentId = symbolsByParentIdByChildType.get(symbol.getType());
-            if (childSymbolsByParentId == null) {
-                childSymbolsByParentId = new HashMap<String, Set<S>>();
-                symbolsByParentIdByChildType.put(symbol.getType(), childSymbolsByParentId);
-            }
-            Set<S> childSymbols = childSymbolsByParentId.get(symbol.getFullParentId());
-            if (childSymbols == null) {
-                childSymbols = new HashSet<S>();
-                childSymbolsByParentId.put(symbol.getFullParentId(), childSymbols);
-            }
-            childSymbols.add(symbol);
-//        }
+        Map<String, Set<S>> childSymbolsByParentId = symbolsByParentIdByChildType.get(symbol.getType());
+        if (childSymbolsByParentId == null) {
+            childSymbolsByParentId = new HashMap<String, Set<S>>();
+            symbolsByParentIdByChildType.put(symbol.getType(), childSymbolsByParentId);
+        }
+        Set<S> childSymbols = childSymbolsByParentId.get(symbol.getFullParentId());
+        if (childSymbols == null) {
+            childSymbols = new HashSet<S>();
+            childSymbolsByParentId.put(symbol.getFullParentId(), childSymbols);
+        }
+        childSymbols.add(symbol);
     }
 
     public S lookup(String symbolId) {
@@ -70,8 +68,6 @@ public class SymbolTable<S extends Symbol>  {
         if (collection == null)  {
             collection = Collections.emptySet();
         }
-
-
         return collection;
     }
 }

@@ -75,7 +75,7 @@ import java.util.*;
  * site release -
  * create test java which use javadoc sample package and class
  * write unit test case which tests javadoc links using webunit or jsoup
-
+ * <p/>
  * test each frame
  * link to full
  * <p/>
@@ -114,8 +114,6 @@ public class Java2HTML {
     public static ResourceBundle bundle = ResourceBundle.getBundle("general_text");
 
 
-
-
     /**
      * Called by Command Line Wrappers
      *
@@ -136,8 +134,7 @@ public class Java2HTML {
                 return; // return if just asking for help
             }
             java2HTML.buildJava2HTML();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             final String msg = e.getMessage();
             System.err.print(msg != null ? msg : e.toString());
             success = 1;
@@ -147,182 +144,170 @@ public class Java2HTML {
     }
 
     /**
-          * Builds the Java2HTML
-          * <p/>
-          * returns false if any failures were detected
-          */
-         public boolean buildJava2HTML() throws IOException, BadOptionException {
+     * Builds the Java2HTML
+     * <p/>
+     * returns false if any failures were detected
+     */
+    public boolean buildJava2HTML() throws IOException, BadOptionException {
 
-             createSupportingFiles();
+        createSupportingFiles();
 
-             // we load up the javaDoc with java doc references, these will be gverridden by javasrc references but that's a good thing
-             JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
+        // we load up the javaDoc with java doc references, these will be gverridden by javasrc references but that's a good thing
+        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
 
-             if (javaSourceFileNameList == null) {
-                 setJavaDirectorySource(Arrays.asList("."));
-             }
-             // Performs first parse
-
-
-            // javaSource.setQuiet(quiet);
-             int marginSize = 0;
-
-             // Collect References - 1st Parse
-             for (String fullPathFileName : javaSourceFileNameList) {
-                 Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
-
-                 LineNumberReader lineNumberReader = new LineNumberReader(reader);
-                 javaSourceParser.populateForReference(fullPathFileName, lineNumberReader);
-                 // count lines
-                 marginSize = getMarginSize(lineNumberReader);
-                 reader.close();
-             }
-
-             if (!simple) {
-                 Helper.createPackageIndex(destinationDir, title, javaSourceParser.getSymbolTable());
-                 Helper.createAllClassIndex(destinationDir, javaSourceParser.getSymbolTable());
-             }
+        if (javaSourceFileNameList == null) {
+            setJavaDirectorySource(Arrays.asList("."));
+        }
+        // Performs first parse
 
 
-             // Generate files - 2nd parse
-             for (Symbol fileSymbol : javaSourceParser.getSymbolTable().getAllFileSymbols() )  {
+        // javaSource.setQuiet(quiet);
+        int marginSize = 0;
 
-                 // Todo probably don't need the below
-                 // skip the replacement (as of JDK 1.5) for package.html
+        // Collect References - 1st Parse
+        for (String fullPathFileName : javaSourceFileNameList) {
+            Reader reader = new BufferedReader(new TFileReader(new TFile(fullPathFileName)));
+
+            LineNumberReader lineNumberReader = new LineNumberReader(reader);
+            javaSourceParser.populateForReference(fullPathFileName, lineNumberReader);
+            // count lines
+            marginSize = getMarginSize(lineNumberReader);
+            reader.close();
+        }
+
+        if (!simple) {
+            Helper.createPackageIndex(destinationDir, title, javaSourceParser.getSymbolTable());
+            Helper.createAllClassIndex(destinationDir, javaSourceParser.getSymbolTable());
+        }
+
+
+        // Generate files - 2nd parse
+        for (Symbol fileSymbol : javaSourceParser.getSymbolTable().getAllFileSymbols()) {
+
+            // Todo probably don't need the below
+            // skip the replacement (as of JDK 1.5) for package.html
 //                 if (!"package-info.java".equalsIgnoreCase(new TFile(fileName).getName())) {
 //                 }
 
-                 createTargetFile(javaSourceParser, null, fileSymbol, marginSize);
+            createTargetFile(javaSourceParser, null, fileSymbol, marginSize);
 
-             }
+        }
 
 
-             return true;
-         }
+        return true;
+    }
 
     private void createSupportingFiles() throws IOException {
 
-          DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-                  DateFormat.SHORT);
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                DateFormat.SHORT);
 
-          HashMap<String, String> subs = new HashMap<String, String>();
-          subs.put("date", df.format(new Date()));
-          subs.put("version", "1.0");
-          subs.put("title", title);
-
-
-          Helper helper = new Helper(destinationDir, subs, quiet);
-
-          //Create StyleSheet
-          File f = new File(destinationDir + "/stylesheet.css");
-          FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
-
-          //Create Java StyleSheet
-          File javaCss = new File(destinationDir + "/java_stylesheet.css");
-          FileUtils.copyURLToFile(getClass().getResource("/java_stylesheet.css"), javaCss);
+        HashMap<String, String> subs = new HashMap<String, String>();
+        subs.put("date", df.format(new Date()));
+        subs.put("version", "1.0");
+        subs.put("title", title);
 
 
-          if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
+        Helper helper = new Helper(destinationDir, subs, quiet);
 
-          // Check File.Separator
+        //Create StyleSheet
+        File f = new File(destinationDir + "/stylesheet.css");
+        FileUtils.copyURLToFile(getClass().getResource("/stylesheet.css"), f);
 
-          if (!simple) {
+        //Create Java StyleSheet
+        File javaCss = new File(destinationDir + "/java_stylesheet.css");
+        FileUtils.copyURLToFile(getClass().getResource("/java_stylesheet.css"), javaCss);
 
-              helper.createPage("front.html");
-              // Create main Index.html
-              helper.createPage("index.html");
 
-          }
-      }
+        if (!quiet) System.out.println("Created: " + f.getAbsolutePath());
+
+        // Check File.Separator
+
+        if (!simple) {
+
+            helper.createPage("front.html");
+            // Create main Index.html
+            helper.createPage("index.html");
+
+        }
+    }
 
 
     private void createTargetFile(SourceParser javaSource, SourceParser<? extends Symbol> otherLanguages, Symbol fileSymbol, int marginSize) throws IOException {
 
-               // Create directories
-               File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
-               String s = temp.getAbsolutePath();
-               if (!s.endsWith(File.separator)) {
-                   s += File.separator; // if not ending with \ add a \
-               }
-               String destFileName = s + Helper.convertDots(fileSymbol.getFullId(), File.separatorChar) + ".java.html";   // todo this needs to be lang specific;
+        // Create directories
+        File temp = new File(destinationDir); // this code deals with the c: or c:\ problem
+        String s = temp.getAbsolutePath();
+        if (!s.endsWith(File.separator)) {
+            s += File.separator; // if not ending with \ add a \
+        }
+        String destFileName = s + Helper.convertDots(fileSymbol.getFullId(), File.separatorChar) + ".java.html";   // todo this needs to be lang specific;
 
+        // Make directory (seperate from file portion)
+        File dir = new File(s +
+                Helper.convertDots(fileSymbol.getFullParentId(), File.separatorChar));
+        dir.mkdirs();
+        //File f = new File(destFileName);
+        //System.out.println("temp"+temp);
 
-               // Make directory (seperate from file portion)
-               File dir = new File(s +
-                       Helper.convertDots(fileSymbol.getFullParentId(), File.separatorChar));
-               dir.mkdirs();
-               //File f = new File(destFileName);
-               //System.out.println("temp"+temp);
+        BufferedWriter dest = new BufferedWriter(new FileWriter(destFileName));
+        TFileReader sourceReader = new TFileReader(new TFile(fileSymbol.getFileLocation()));
 
-               BufferedWriter dest = new BufferedWriter(new FileWriter(destFileName));
-               TFileReader sourceReader = new TFileReader(new TFile(fileSymbol.getFileLocation()));
+        String dot = ".";
+        if (fileSymbol.getFullParentId().isEmpty()) {
+            dot = ""; // If no package then remove the dot
+        }
+        String packageLevel = Helper.convert(fileSymbol.getFullParentId());
+        String preDir = getDotDotRootPathFromPackage(packageLevel);
+        String preText = Helper.getPreText(preDir + "java_stylesheet.css",
+                fileSymbol.getFullParentId() + dot +
+                        fileSymbol.getId()); // what is this doing ?
 
-               String dot = ".";
-               if (fileSymbol.getFullParentId().isEmpty()) {
-                   dot = ""; // If no package then remove the dot
+        dest.write(preText); //TODO: add date string
+        dest.write(Helper.getHeader(fileSymbol.getId(), "", header));
+        //        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
+        boolean error = false;
+        //System.out.print("Reading: "+fileName); // TODO check
 
-               }
-               String packageLevel = Helper.convert(fileSymbol.getFullParentId());
-               String preDir = getDotDotRootPathFromPackage(packageLevel);
-               String preText = Helper.getPreText(preDir + "java_stylesheet.css",
-                       fileSymbol.getFullParentId() + dot +
-                               fileSymbol.getId()); // what is this doing ?
-                       dest.write(Helper.getHeader(fileSymbol.getId(), "", header));
-               dest.write(preText); //TODO: add date string
-       //        dest.write(dest.getFirstLineNumber()); // todo what the hell was this for???
-               boolean error = false;
-               //System.out.print("Reading: "+fileName); // TODO check
+        try {
+            String html = javaSource.toHtml(sourceReader, preDir, otherLanguages);
+            dest.write(html);
+        } catch (ParsingException e) {
+            dest.write("<BR><BR>");
+            dest.write("<FONT CLASS=\"ParseError\">");
+            final String msg = "Non Legal Java File: " + e.getMessage() + ")";
+            dest.write(msg);
+            dest.write("</FONT>");
 
-               try {
-                   String html = javaSource.toHtml(sourceReader, preDir, otherLanguages);
-                   dest.write(html);
-               }
-               catch (ParsingException e) {
-                   dest.write("<BR><BR>");
-                   dest.write("<FONT CLASS=\"ParseError\">");
-                   final String msg = "Non Legal Java File: "+e.getMessage()+")";
-                   dest.write(msg);
-                   dest.write("</FONT>");
+            error = true;
+            //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
+            System.out.println(fileSymbol.getFileLocation() + ": Parse Error, Non-Legal Java File: " + e.getMessage());
+            // e.printStackTrace();
+        } finally {
+            // Clear up resources
+            //            try {
+            dest.write(Helper.getFooter(fileSymbol.getId(), "", footer)); //TODO: add date string
+            dest.write(Helper.getPostText());
+            dest.flush();
+            dest.close();
+            //            }
+            //            catch (IOException e2) {
+            //            }
+            IOUtils.closeQuietly(sourceReader);
 
-                       error = true;
-                   //System.out.println("Parse Error for file: "+file.getName()/*+", "+e.getMessage()*/);
-                   System.out.println(fileSymbol.getFileLocation() + ": Parse Error, Non-Legal Java File: " + e.getMessage());
-                   // e.printStackTrace();
-               }
-               finally {
-                   // Clear up resources
-       //            try {
-                       dest.write(Helper.getFooter(fileSymbol.getId(), "", footer)); //TODO: add date string
-                       dest.write(Helper.getPostText());
-                       dest.flush();
-                       dest.close();
-       //            }
-       //            catch (IOException e2) {
-       //            }
-                   IOUtils.closeQuietly(sourceReader);
+        }
+        if (!error && !quiet) {
+            System.out.println("Created: " + destFileName);
+        }
 
-               }
-               if (!error  && !quiet) {
-                   System.out.println("Created: " + destFileName);
-               }
-
-           }
-
-
-
-
+    }
 
 
     private int getMarginSize(LineNumberReader lineNumberReader) throws IOException {
         while (lineNumberReader.readLine() != null) {
         }
         return showLineNumbers ? ("" + lineNumberReader.getLineNumber()).length() : 0;
-
-
     }
-
-
-
 
     // setters
 
@@ -410,7 +395,8 @@ public class Java2HTML {
         // Validate that all sources are directories
         for (String directory : rootDirectories) {
             TFile file = new TFile(directory);
-            if (!file.isDirectory() && !file.isArchive()) throw new BadOptionException(directory + " is not a directory");
+            if (!file.isDirectory() && !file.isArchive())
+                throw new BadOptionException(directory + " is not a directory");
         }
 
         // Convert directory to String[] of file names
@@ -434,8 +420,7 @@ public class Java2HTML {
 
             if (new TFile(fileName).isFile()) {
                 if (javaSourceParser.isFileNameMatch(fileName)) files.add(fileName);
-            }
-            else {
+            } else {
                 getFileListFromDirectory(fileName, files);
             }
         }

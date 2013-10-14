@@ -20,6 +20,7 @@ public class HTMLFileWriter extends Writer {
     final private int convertTabsToSpacesCount;
     private boolean wasCR = false;
     private boolean useLineNumbers = true;
+    private boolean first = true;
 
     /**
      * Margin Size (only used if using Line Numbers)
@@ -164,6 +165,11 @@ public class HTMLFileWriter extends Writer {
         StringBuilder s = new StringBuilder();
         final int len = str.length();
         int c;
+
+        if (first)  {
+            writeLineNumber(s);
+        }
+        first = false;
         while (cnt < len) {
             c = str.charAt(cnt);
             switch (c) {
