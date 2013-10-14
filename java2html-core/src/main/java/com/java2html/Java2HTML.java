@@ -259,7 +259,7 @@ public class Java2HTML {
         }
         String packageLevel = Helper.convert(fileSymbol.getFullParentId());
         String preDir = getDotDotRootPathFromPackage(packageLevel);
-        String preText = Helper.getPreText(preDir + "java_stylesheet.css",
+        String preText = Helper.getPreText(preDir , "java_stylesheet.css",
                 fileSymbol.getFullParentId() + dot +
                         fileSymbol.getId()); // what is this doing ?
 
