@@ -153,7 +153,7 @@ public class Java2HTML {
         createSupportingFiles();
 
         // we load up the javaDoc with java doc references, these will be gverridden by javasrc references but that's a good thing
-        JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
+       // JavaDocManager javaDoc = new JavaDocManager(javaDocOptionLinks.toArray(new Link[0]));
 
         if (javaSourceFileNameList == null) {
             setJavaDirectorySource(Arrays.asList("."));
@@ -176,13 +176,13 @@ public class Java2HTML {
         }
 
         if (!simple) {
-            Helper.createPackageIndex(destinationDir, title, javaSourceParser.getSymbolTable());
-            Helper.createAllClassIndex(destinationDir, javaSourceParser.getSymbolTable());
+            Helper.createPackageIndex(destinationDir, title, javaSourceParser);
         }
+        Helper.createAllClassIndex(destinationDir, javaSourceParser);
 
 
         // Generate files - 2nd parse
-        for (Symbol fileSymbol : javaSourceParser.getSymbolTable().getAllFileSymbols()) {
+        for (Symbol fileSymbol : javaSourceParser.getAllFileSymbols()) {
 
             // Todo probably don't need the below
             // skip the replacement (as of JDK 1.5) for package.html

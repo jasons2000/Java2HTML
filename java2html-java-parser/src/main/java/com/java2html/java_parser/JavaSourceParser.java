@@ -24,6 +24,7 @@ import com.java2html.internal.ParsingException;
 import com.java2html.references.*;
 
 import java.io.*;
+import java.util.Collection;
 
 public class JavaSourceParser implements SourceParser<JavaSymbol> {
 
@@ -60,8 +61,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         try {
             String packageName = PackageLocator.scan(reader);
             populateSymbolTableWithFile(fullPath, packageName);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new ParsingException(e);
         }
     }
@@ -73,12 +73,12 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
     }
 
     @Override
-    public String toHtml(Reader reader, String pathToRoot,SourceParser<? extends Symbol>... otherLanguages) throws ParsingException {
+    public String toHtml(Reader reader, String pathToRoot, SourceParser<? extends Symbol>... otherLanguages) throws ParsingException {
         try {
             StringWriter sw = new StringWriter();
             HTMLFileWriter dest = new HTMLFileWriter(sw, 4, 4); // todo make this HTML only, reworkout dependency
 
-            parser.parse(reader, dest, symbolTable, pathToRoot);
+            parser.parse(reader, dest, this, pathToRoot);
             dest.flush();
             return sw.toString();
         } catch (IOException ex) {
@@ -93,9 +93,25 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
     }
 
     @Override
-    public SymbolTable<JavaSymbol> getSymbolTable() {
-        return symbolTable;       // todo needs to be readonly
+    public JavaSymbol lookup(String symbolId) {
+        return symbolTable.lookup(symbolId);
     }
+
+    @Override
+    public Collection<JavaSymbol> getAllFileSymbols() {
+        return symbolTable.getAllFileSymbols();
+    }
+
+    @Override
+    public Collection<JavaSymbol> getAllDirSymbols() {
+        return symbolTable.getAllDirSymbols();
+    }
+
+    @Override
+    public Collection<JavaSymbol> getFileSymbolsInDir(String dirSymbolId) {
+        return symbolTable.getFileSymbolsInDir(dirSymbolId);
+    }
+
 
     private void populateSymbolTableWithFile(String fullPathFileName, String packageLevel) {
 
@@ -116,26 +132,24 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
             packageId = ""; //default package =""
             packageParent = null;
             href = fileName + ".html";
-        }
-        else  {
+        } else {
             int ix = packageLevel.lastIndexOf(".");
             if (ix == -1) {
                 packageId = packageLevel;
                 packageParent = "";
-            }
-            else {
+            } else {
                 packageId = packageLevel.substring(ix + 1);
                 packageParent = packageLevel.substring(0, ix);
             }
-            href = Helper.convertDots(packageLevel, Helper.webSep ) +
+            href = Helper.convertDots(packageLevel, Helper.webSep) +
                     Helper.webSep + fileName + ".html";
         }
 
         String packageHref = Helper.getHrefForClassIndexForPackage(packageLevel);
         JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageId, packageParent, Symbol.Type.Dir);
-        symbolTable.add( packageSymbol);
+        symbolTable.add(packageSymbol);
 
-        JavaSymbol classSymbol = new JavaSymbol(href, classString,  packageLevel, fullPathFileName);
+        JavaSymbol classSymbol = new JavaSymbol(href, classString, packageLevel, fullPathFileName);
         symbolTable.add(classSymbol);
 
     }

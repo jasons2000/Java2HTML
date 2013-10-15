@@ -9,7 +9,7 @@ public interface Symbol {
     String getId(); // scoped to parent id
     String getFullParentId();
     String getDescriptiveName();
-    String getHRef();
+    String getHRef(String preDir);
     String getFileLocation();
 
     Type getType();

@@ -19,6 +19,7 @@
 
 package com.java2html.java_parser;
 
+import com.java2html.references.SourceParser;
 import com.java2html.references.Symbol;
 import com.java2html.references.SymbolTable;
 import org.apache.commons.lang3.ObjectUtils;
@@ -182,7 +183,7 @@ public class Helper {
     }
 
     // a list of packages
-    public static void createPackageIndex(String dest, String title, SymbolTable<?> symbolTableMap) throws
+    public static void createPackageIndex(String dest, String title, SourceParser<? extends Symbol> symbolTableMap) throws
             IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
@@ -204,7 +205,7 @@ public class Helper {
             createClassIndex(dest, dir, children);
 
             index.append("<BR>" + Helper.lineSep +
-                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + dir.getHRef() +
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + dir.getHRef("") +
                     "\" TARGET=\"packageFrame\">" + dir.getDescriptiveName() + "</A></FONT>");
         }
 
@@ -223,7 +224,7 @@ public class Helper {
     static void createClassIndex(String dest, Symbol parent, Collection<? extends Symbol> fileListInDir) throws
             IOException {
 
-        FileWriter file = new FileWriter(dest + File.separatorChar + parent.getHRef());
+        FileWriter file = new FileWriter(dest + File.separatorChar + parent.getHRef(""));
         if (parent.getFullParentId() == null) {
             file.write(Helper.getClassesFrame("Package Default"));
         }
@@ -244,7 +245,7 @@ public class Helper {
         for (Symbol symbol : sortedClasses) {
 
             file.write("<BR>" + Helper.lineSep +
-                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + symbol.getHRef() +
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + symbol.getHRef("") +
                     "\" TARGET=\"SourceFrame\">" + symbol.getDescriptiveName() + "</A></FONT>");
         }
         file.write(Helper.postIndex);
@@ -253,7 +254,7 @@ public class Helper {
     }
 
 
-    public static void createAllClassIndex(String dest,  SymbolTable<? extends Symbol> symbolTable) throws IOException {
+    public static void createAllClassIndex(String dest,  SourceParser<? extends Symbol> symbolTable) throws IOException {
 
         FileWriter file = new FileWriter(dest + File.separator +
                 "AllClasses.html");
@@ -286,7 +287,7 @@ public class Helper {
         for (Symbol s : allFileSymbols) {
 
             file.write("<BR>" + Helper.lineSep +
-                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + s.getHRef() +
+                    "<FONT CLASS=\"FrameItemFont\"><A HREF=\"" + s.getHRef("") +
                     "\" TARGET=\"SourceFrame\">" + s.getId()+ "</A></FONT>"); // Taken out CR
         }
         file.write(Helper.postIndex);

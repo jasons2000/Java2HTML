@@ -29,7 +29,7 @@
                             <title>Java 6 Source</title>
                             <showLineNumbers>true</showLineNumbers>
                             <javaSources>
-                                <param>C:\Program Files\Java\jdk1.6.0_43\src.zip</param>
+                                <param>C:\Program Files\Java\jdk1.6.0_45\src.zip</param>
                             </javaSources>
                             <destination>${project.build.directory}/java6</destination>
                         </configuration>
@@ -44,7 +44,7 @@
                             <title>Java 7 Source</title>
                             <showLineNumbers>true</showLineNumbers>
                             <javaSources>
-                                <param>C:\Program Files\Java\jdk1.7.0_17\src.zip</param>
+                                <param>C:\Program Files\Java\jdk1.7.0_40\src.zip</param>
                             </javaSources>
                             <destination>${project.build.directory}/java7</destination>
                         </configuration>

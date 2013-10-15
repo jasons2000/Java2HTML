@@ -47,11 +47,11 @@ public class ASTNameNode
       return super.getTokenClass( t );
     } // getTokenClass
 
-    private String getRef(String text) {
-        Symbol symbol = parser.symbolTable.lookup(text);
+    private String getRef(String symbolId) {
+        Symbol symbol = parser.symbolTable.lookup(symbolId);
         String href = null;
         if (symbol != null) {
-             href=  symbol.getHRef();
+             href=    symbol.getHRef(parser.prePath);
         }
         return href;
 

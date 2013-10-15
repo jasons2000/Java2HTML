@@ -63,7 +63,7 @@ public class JavaParser {
     String prePath = "";
     boolean defaultPackage;
 
-    SymbolTable symbolTable;
+    JavaSourceParser symbolTable;
 
     private final Map<Position, String> unicodeRemappings = new HashMap<Position, String>();
 
@@ -72,7 +72,7 @@ public class JavaParser {
     }
 
 
-	public void parse(Reader source, HTMLFileWriter dest, SymbolTable symbolTable, String prePath)
+	public void parse(Reader source, HTMLFileWriter dest, JavaSourceParser symbolTable, String prePath)
 	throws ParsingException {
 
          this.symbolTable = symbolTable;
