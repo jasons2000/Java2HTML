@@ -41,7 +41,6 @@ public class JavaSymbol implements Symbol {
         else {
             return fullParentId + "." + id;
         }
-
     }
 
     @Override
@@ -69,7 +68,7 @@ public class JavaSymbol implements Symbol {
 
     @Override
     public String getHRef(String preDir) {
-        if (!preDir.startsWith("http://")) {
+        if (!href.startsWith("http://")) {
             return preDir + href;
 
         }

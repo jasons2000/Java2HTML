@@ -38,7 +38,6 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
     private JavaParser parser = new JavaParser(System.in); // Todo: System.in not required
 
     public JavaSourceParser() {
-
     }
 
     public final boolean isQuiet() {
@@ -146,7 +145,7 @@ public class JavaSourceParser implements SourceParser<JavaSymbol> {
         }
 
         String packageHref = Helper.getHrefForClassIndexForPackage(packageLevel);
-        JavaSymbol packageSymbol = new JavaSymbol(packageHref, packageId, packageParent, Symbol.Type.Dir);
+        JavaSymbol packageSymbol = new JavaSymbol( packageHref, packageId, packageParent, Symbol.Type.Dir);
         symbolTable.add(packageSymbol);
 
         JavaSymbol classSymbol = new JavaSymbol(href, classString, packageLevel, fullPathFileName);

@@ -19,9 +19,6 @@
 
 /*
  * BIG TODO - In order of priorty
- * run peformace  analyzer
- * Tidy up option - ie check before commencing processing
- * change title default colour to line nuber colour
  * Specifi Properites files with default that are overidden by commandlines
  * link instances to declaration
  * link methods ( probably use exta frame)
@@ -30,7 +27,6 @@
  * Class list frame will need extra link for class summary ( can u have two targets )
  * Single Java File
  * Add Top right hand field indicating type (Java but in the future will include SQL)
- * Allow Thridr PArty Plugins
  * Simpler single file option , eg j2h AFile.java, j2h AFile.java AFile2.java, j2h A????.java
  * Specifiy File criteria option (accepting wild cards) as above
  * better error handling of non conformant JAva , use red highlighting
@@ -69,7 +65,6 @@ import java.util.*;
  * Hi
  * Use profile for owner specific site build
  * SLF logging
- * upgrade to maven  3.1
  * property expansion
  * options usage
  * site release -
@@ -429,7 +424,7 @@ public class Java2HTML {
     /**
      * Sets a list of java source files that will be converted into HTML.
      * <p/>
-     * Use instead of setJavaDirectorySource() if a file lisy is availabe
+     * Use instead of setJavaDirectorySource() if a file list is available
      *
      * @param files List of Java Files
      */

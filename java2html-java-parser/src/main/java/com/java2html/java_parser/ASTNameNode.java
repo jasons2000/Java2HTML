@@ -106,7 +106,6 @@ public class ASTNameNode
 
             href = getRef(text);
             if (href != null) {
-                if (!href.startsWith("http://")) href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
             }
 
@@ -116,7 +115,6 @@ public class ASTNameNode
 
             href = getRef(text.substring(0, text.length() - 2));
             if (href != null) {
-                if (!href.startsWith("http://")) href = parser.prePath + href;
                 extra = " target=\"packageFrame\"";
             }
             else {
