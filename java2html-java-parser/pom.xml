@@ -12,11 +12,7 @@
     <artifactId>java2html-java-parser</artifactId>
 
     <dependencies>
-        <!--<dependency>-->
-        <!--<artifactId>java2html-core</artifactId>-->
-        <!--<groupId>com.java2html</groupId>-->
-        <!--<version>${project.version}</version>-->
-        <!--</dependency>-->
+
 
         <dependency>
             <artifactId>java2html-parser-core</artifactId>
@@ -24,11 +20,18 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- temp-->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.7.2</version>
+        </dependency>
+
+        <!-- Tests -->
+        <dependency>
+            <groupId>com.java2html</groupId>
+            <version>${project.version}</version>
+            <artifactId>java2html-testing-tools</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

@@ -9,8 +9,8 @@
 .FormalComment		{ color: #008000; }
 .MultiLineComment	{ color: #008000; }
 .Abstract		{ color: #0000FF ; font-weight: bold }
-.Annotation	{ color: #66CCFF ; font-weight: bold }
-.Assert			{ color: #FF0000 ; font-weight: bold }
+.Annotation	    { color: #66CCFF ; font-weight: bold }
+.Assert			{ color: #0000FF ; font-weight: bold }
 .Boolean		{ color: #0000FF ; font-weight: bold }
 .Break			{ color: #0000FF ; font-weight: bold }
 .Byte			{ color: #0000FF ; font-weight: bold }
@@ -21,8 +21,8 @@
 .Const			{ color: #0000FF ; font-weight: bold }
 .Continue		{ color: #0000FF ; font-weight: bold }
 .Default		{ color: #0000FF ; font-weight: bold }
-.Do			{ color: #0000FF ; font-weight: bold }
-.Double		{ color: #0000FF ; font-weight: bold }
+.Do			    { color: #0000FF ; font-weight: bold }
+.Double		    { color: #0000FF ; font-weight: bold }
 .Else			{ color: #0000FF ; font-weight: bold }
 .Enum			{ color: #0000FF ; font-weight: bold }
 .Extends		{ color: #0000FF ; font-weight: bold }

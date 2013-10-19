@@ -43,7 +43,6 @@
  */
 package com.java2html;
 
-import com.java2html.internal.CommandLineOptions;
 import com.java2html.internal.Link;
 import com.java2html.internal.ParsingException;
 import com.java2html.java_parser.*;
