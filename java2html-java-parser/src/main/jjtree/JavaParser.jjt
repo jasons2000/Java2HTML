@@ -23,7 +23,7 @@
  *
  * Author: Sreenivasa Viswanadha
  *
- * modified by Jason Shattu for Java2HTHML
+ * modified by Jason Shattu for Java2HTML
  * extended by Leon Poyyayil to support JDK 1.5 features (generics, enum & annotations)
  * extended by pilcrow to support Java 7 language features (binary literals, 
  *   underscores in all numeric literals,

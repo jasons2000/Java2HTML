@@ -54,8 +54,30 @@ public class ASTNameNode
              href=    symbol.getHRef(parser.prePath);
         }
         return href;
+    }
+
+    private String getExtra(String symbolId) {
+
+        Symbol symbol = parser.symbolTable.lookup(symbolId);
+        if (symbol == null) return "";
+        String result;
+        switch (symbol.getType()) {
+
+            case Dir:
+                result = " target=\"packageFrame\"";
+                break;
+            case File:
+            case Other:
+                result ="";
+
+                break;
+            default:
+                throw new IllegalStateException();
+        }
+        return result;
 
     }
+
 
     private String getRefNoDots(String text) {
 
@@ -66,20 +88,20 @@ public class ASTNameNode
         // 'import com.foo.bar.FooBar;' shouldn't be matching when we're looking for 'Bar';
         final String qtext = "." + text;
 
-        for (String s : parser.importList) {
-            if (s.endsWith(qtext)) { // is it in a non '.*' import
-                if (s.indexOf(".") == -1) { // TODO: this deals with import AClass;, need to look at
-                    href = getRef("." + s);
+        for (String imprt : parser.importList) {
+            if (imprt.endsWith(qtext)) { // is it in a non '.*' import
+                if (imprt.indexOf(".") == -1) { // TODO: this deals with import AClass;, need to look at
+                    href = getRef("." + imprt);
                 }
                 else {
-                    href = getRef(s);
+                    href = getRef(imprt);
                 }
                 break;
             }
-            else if (s.endsWith(".*")) { // is it in '.*' import
-                String tx = s.substring(0, s.length() - 1) + text; // generate a fully qualified name
-                //System.out.println("***************************"+tx);
-                href = getRef(tx); //get the ref to this if it exists
+            else if (imprt.endsWith(".*")) { // is it in '.*' import
+                String qualName = imprt.substring(0, imprt.length() - 1) + text; // generate a fully qualified name
+                System.out.println("***************************" + qualName);
+                href = getRef(qualName); //get the ref to this if it exists
                 if (href != null) {
                     break;
                 }
@@ -105,23 +127,15 @@ public class ASTNameNode
         if (isPackage) {
 
             href = getRef(text);
-            if (href != null) {
-                extra = " target=\"packageFrame\"";
-            }
-
+            extra = getExtra(text);
         }
         else if (text.endsWith(".*")) {
             //System.out.println("************************text"+text);
 
-            href = getRef(text.substring(0, text.length() - 2));
-            if (href != null) {
-                extra = " target=\"packageFrame\"";
-            }
-            else {
-                // todo may be not required
-                href = getRef(text.substring(0,
-                        text.length() - 2));
-            }
+            String val = text.substring(0, text.length() - 2);
+            href = getRef(val);
+            extra = getExtra(val);
+
         }
         else if ( (text.indexOf('.')) != -1) { // Is there a '.' in text, if so then
             // Possibly fully qualified name
@@ -133,6 +147,7 @@ public class ASTNameNode
                 }
                 else {
                     href = getRef(tempText); //get the href fors this fully qualified name
+
                 }
                 if (href != null) {
                     break;
@@ -183,4 +198,5 @@ public class ASTNameNode
             ostr.writeWithoutEscape("</A>");
         }
     }
+
 }
