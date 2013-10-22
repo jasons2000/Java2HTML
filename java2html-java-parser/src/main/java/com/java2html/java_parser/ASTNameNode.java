@@ -79,28 +79,24 @@ public class ASTNameNode
     }
 
 
-    private String getRefNoDots(String text) {
+    private String getNonQualifiedNameRef(String text) {
 
         String href = null;
 
-        // prepending a dot to the given name to prevent matching on imports which
-        // accidentially end with the given text but aren't what we're looking for:
+        // pre-pending a dot delimt the given name to prevent matching on imports which
+        // happen to end with the given text but aren't what we're looking for:
         // 'import com.foo.bar.FooBar;' shouldn't be matching when we're looking for 'Bar';
         final String qtext = "." + text;
 
         for (String imprt : parser.importList) {
             if (imprt.endsWith(qtext)) { // is it in a non '.*' import
-                if (imprt.indexOf(".") == -1) { // TODO: this deals with import AClass;, need to look at
-                    href = getRef("." + imprt);
-                }
-                else {
-                    href = getRef(imprt);
-                }
+                // note: you cant import from default
+                href = getRef(imprt);
                 break;
             }
             else if (imprt.endsWith(".*")) { // is it in '.*' import
                 String qualName = imprt.substring(0, imprt.length() - 1) + text; // generate a fully qualified name
-                System.out.println("***************************" + qualName);
+                //System.out.println("***************************" + qualName);
                 href = getRef(qualName); //get the ref to this if it exists
                 if (href != null) {
                     break;
@@ -129,12 +125,11 @@ public class ASTNameNode
             href = getRef(text);
             extra = getExtra(text);
         }
-        else if (text.endsWith(".*")) {
+        else if (isImport) {
             //System.out.println("************************text"+text);
 
-            String val = text.substring(0, text.length() - 2);
-            href = getRef(val);
-            extra = getExtra(val);
+            href = getRef(text);
+            extra = getExtra(text);
 
         }
         else if ( (text.indexOf('.')) != -1) { // Is there a '.' in text, if so then
@@ -143,11 +138,10 @@ public class ASTNameNode
 
             while (true) {
                 if (tempText.indexOf('.') == -1) {
-                    href = getRefNoDots(tempText);
+                    href = getNonQualifiedNameRef(tempText);
                 }
                 else {
                     href = getRef(tempText); //get the href fors this fully qualified name
-
                 }
                 if (href != null) {
                     break;
@@ -161,7 +155,7 @@ public class ASTNameNode
             }
         }
         else {
-            href = getRefNoDots(text);
+            href = getNonQualifiedNameRef(text);
         }
 
 
