@@ -13,7 +13,6 @@
 
     <dependencies>
 
-
         <dependency>
             <artifactId>java2html-parser-core</artifactId>
             <groupId>com.java2html</groupId>
@@ -58,6 +57,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>

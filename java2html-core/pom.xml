@@ -15,6 +15,10 @@
 
     <artifactId>java2html-core</artifactId>
 
+    <properties>
+        <truezip.version>7.7.3</truezip.version>
+    </properties>
+
     <repositories>
         <repository>
             <id>repository.apache.org.snapshots</id>
@@ -56,13 +60,13 @@
         <dependency>
             <groupId>de.schlichtherle.truezip</groupId>
             <artifactId>truezip-file</artifactId>
-            <version>7.7.3</version>
+            <version>${truezip.version}</version>
         </dependency>
 
         <dependency>
             <groupId>de.schlichtherle.truezip</groupId>
             <artifactId>truezip-driver-zip</artifactId>
-            <version>7.7.3</version>
+            <version>${truezip.version}</version>
         </dependency>
 
         <dependency>
