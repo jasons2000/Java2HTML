@@ -20,7 +20,7 @@
 /**
  * Wrapper class to make convieniant command line calls
  */
-import com.java2html.Java2HTML;
+import com.src2html.Java2HTML;
 
 public class j2h {
 	public static void main(String[] args) throws Exception	{

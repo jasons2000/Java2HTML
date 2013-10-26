@@ -79,7 +79,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <taskdef name="src2html" classname="com.java2html.ant.Java2HTMLTask"
+                                <taskdef name="src2html" classname="com.src2html.ant.Java2HTMLTask"
                                          classpathref="maven.plugin.classpath"/>
                                 <src2html title="Ant Task Integration Test"
                                            simple="no"

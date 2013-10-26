@@ -1,4 +1,4 @@
-import com.java2html.*;
+import com.src2html.*;
 
 /**
  * This class demonstrates the use of the Java2HTML API
