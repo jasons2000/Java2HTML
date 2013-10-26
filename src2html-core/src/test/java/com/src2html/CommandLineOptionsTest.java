@@ -96,7 +96,7 @@ public class CommandLineOptionsTest {
     @Test
     public void testUsage() throws ParseException, BadOptionException {
         CommandLineOptions clo = new CommandLineOptions(new String[]{ "-h"});
-        clo.setOptionsFromCommandLine(new Java2HTML());
+        clo.setOptionsFromCommandLine(new Src2Html());
 
     }
 

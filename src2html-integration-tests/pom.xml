@@ -70,7 +70,7 @@
                 </executions>
             </plugin>
 
-            <!-- test Ant Java2HTMLTask-->
+            <!-- test Ant Src2HTMLTask-->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.7</version>
@@ -79,7 +79,7 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <taskdef name="src2html" classname="com.src2html.ant.Java2HTMLTask"
+                                <taskdef name="src2html" classname="com.src2html.ant.Src2HTMLTask"
                                          classpathref="maven.plugin.classpath"/>
                                 <src2html title="Ant Task Integration Test"
                                            simple="no"

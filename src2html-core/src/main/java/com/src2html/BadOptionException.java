@@ -5,7 +5,7 @@
 package com.src2html;
 
 /**
- * Exception Indicating a bad Java2HTML option
+ * Exception Indicating a bad Src2Html option
  *
  **/
 

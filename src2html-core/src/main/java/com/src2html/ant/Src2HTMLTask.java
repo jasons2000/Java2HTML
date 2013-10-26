@@ -7,7 +7,7 @@
 
 package com.src2html.ant;
 
-import com.src2html.Java2HTML;
+import com.src2html.Src2Html;
 import com.src2html.internal.Link;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -18,9 +18,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Java2HTMLTask extends Task {
+public class Src2HTMLTask extends Task {
 
-    private Java2HTML java2HTML = new Java2HTML();
+    private Src2Html src2Html = new Src2Html();
 
     private List<String> javaSourceFileList = new ArrayList<String>();
     private List<Link> javaDocList = new ArrayList<Link>();
@@ -29,42 +29,42 @@ public class Java2HTMLTask extends Task {
 
     public void execute() throws BuildException {
         try {
-            java2HTML.setJavaFileSource(javaSourceFileList);
-            java2HTML.setJavaDocLinks(javaDocList);
-            if (!java2HTML.buildJava2HTML() && failOnError) throw new BuildException("Some Java files failed to convert to HTML");
+            src2Html.setJavaFileSource(javaSourceFileList);
+            src2Html.setJavaDocLinks(javaDocList);
+            if (!src2Html.generateHtml() && failOnError) throw new BuildException("Some Java files failed to convert to HTML");
         }
         catch (Exception e) {
-            throw new BuildException("Java2HTML Build Problem:" + e.getMessage(), e);
+            throw new BuildException("Src2Html Build Problem:" + e.getMessage(), e);
         }
     }
 
 
       /**
-     * Set the margin size that should be generated when buildJava2HTML() is called.
+     * Set the margin size that should be generated when generateHtml() is called.
      *
      * @param showLineNumbers Show Line Numbers
      */
     public void setShowLineNumbers(boolean showLineNumbers) {
-        java2HTML.setShowLineNumbers(showLineNumbers);
+        src2Html.setShowLineNumbers(showLineNumbers);
     }
 
     /**
      * Set the number of spaces that tabs will be converted
-     * to when buildJava2HTML() is called.
+     * to when generateHtml() is called.
      *
      * @param tabSize Number of spaces tabs should be converted to.
      */
     public void setTabSize(int tabSize) {
-        java2HTML.setTabSize(tabSize);
+        src2Html.setTabSize(tabSize);
     }
 
     /**
-     * Determines if a header should be generated when buildJava2HTML() is called.
+     * Determines if a header should be generated when generateHtml() is called.
      *
      * @param header set to true if a header is required
      */
     public void setHeader(boolean header) {
-        java2HTML.setHeader(header);
+        src2Html.setHeader(header);
     }
     /**
      * Determines if only the java source and stylesheet files will be output
@@ -72,27 +72,27 @@ public class Java2HTMLTask extends Task {
      * @param simple set to true for simple output
      */
     public void setSimple(boolean simple) {
-        java2HTML.setSimple(simple);
+        src2Html.setSimple(simple);
     }
 
 
     /**
-     * Determines if a footer should be generated when buildJava2HTML() is called.
+     * Determines if a footer should be generated when generateHtml() is called.
      *
      * @param footer set to true if a header is required
      */
     public void setFooter(boolean footer) {
-        java2HTML.setFooter(footer);
+        src2Html.setFooter(footer);
     }
 
 
     /**
-     * Set the title that will be used when buildJava2HTML() is called.
+     * Set the title that will be used when generateHtml() is called.
      *
      * @param title The title that will be displayed in the generated HTML
      */
     public void setTitle(String title) {
-        java2HTML.setTitle(title);
+        src2Html.setTitle(title);
     }
 
     /**
@@ -101,7 +101,7 @@ public class Java2HTMLTask extends Task {
      * @param quiet true to be quiet, false to be verbose. default is verbose.
      */
     public final void setQuiet( final boolean quiet ) {
-      java2HTML.setQuiet( quiet );
+      src2Html.setQuiet( quiet );
     } // setQuiet
 
     /**
@@ -161,8 +161,8 @@ public class Java2HTMLTask extends Task {
      * @param destination Directory where output will be directed to
      */
     public void setDestination(File destination) {
-        if ( !java2HTML.isQuiet() ) System.out.println(destination.getAbsolutePath());
-        java2HTML.setDestinationDir(destination.getAbsolutePath());
+        if ( !src2Html.isQuiet() ) System.out.println(destination.getAbsolutePath());
+        src2Html.setDestinationDir(destination.getAbsolutePath());
     }
 
 

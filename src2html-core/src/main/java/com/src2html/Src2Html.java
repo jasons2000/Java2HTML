@@ -60,7 +60,7 @@ import java.text.DateFormat;
 import java.util.*;
 
 /**
- * Generates Java2HTML output
+ * Generates Src2Html output
  * <p/>
  * TODO
  * Hi
@@ -84,7 +84,7 @@ import java.util.*;
  * 2nd parse detectect com.src2html.references
  */
 
-public class Java2HTML {
+public class Src2Html {
 
     private SourceParser<JavaSymbol> javaSourceParser = new JavaSourceParser();
 
@@ -122,14 +122,14 @@ public class Java2HTML {
         System.out.println(Helper.version);
         System.out.println(bundle.getString("copyright"));
 
-        Java2HTML java2HTML = new Java2HTML();
+        Src2Html src2Html = new Src2Html();
 
         try {
             CommandLineOptions cmd = new CommandLineOptions(options);
-            if (!cmd.setOptionsFromCommandLine(java2HTML)) {
+            if (!cmd.setOptionsFromCommandLine(src2Html)) {
                 return; // return if just asking for help
             }
-            java2HTML.buildJava2HTML();
+            src2Html.generateHtml();
         } catch (Exception e) {
             final String msg = e.getMessage();
             System.err.print(msg != null ? msg : e.toString());
@@ -140,11 +140,11 @@ public class Java2HTML {
     }
 
     /**
-     * Builds the Java2HTML
+     * Builds the Src2Html
      * <p/>
      * returns false if any failures were detected
      */
-    public boolean buildJava2HTML() throws IOException, BadOptionException {
+    public boolean generateHtml() throws IOException, BadOptionException {
 
         createSupportingFiles();
 
@@ -309,7 +309,7 @@ public class Java2HTML {
 
 
     /**
-     * Set the margin size that should be generated when buildJava2HTML() is called.
+     * Set the margin size that should be generated when generateHtml() is called.
      *
      * @param showLineNumbers show line numbers
      */
@@ -319,7 +319,7 @@ public class Java2HTML {
 
     /**
      * Set the number of spaces that tabs will be converted
-     * to when buildJava2HTML() is called.
+     * to when generateHtml() is called.
      *
      * @param tabSize Number of spaces tabs should be converted to.
      */
@@ -328,7 +328,7 @@ public class Java2HTML {
     }
 
     /**
-     * Determines if a header should be generated when buildJava2HTML() is called.
+     * Determines if a header should be generated when generateHtml() is called.
      *
      * @param header set to true if a header is required
      */
@@ -346,7 +346,7 @@ public class Java2HTML {
     }
 
     /**
-     * Determines if a footer should be generated when buildJava2HTML() is called.
+     * Determines if a footer should be generated when generateHtml() is called.
      *
      * @param footer set to true if a header is required
      */
@@ -356,7 +356,7 @@ public class Java2HTML {
 
 
     /**
-     * Set the title that will be used when buildJava2HTML() is called.
+     * Set the title that will be used when generateHtml() is called.
      *
      * @param title The title that will be displayed in the generated HTML
      */

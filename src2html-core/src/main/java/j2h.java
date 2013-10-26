@@ -20,10 +20,10 @@
 /**
  * Wrapper class to make convieniant command line calls
  */
-import com.src2html.Java2HTML;
+import com.src2html.Src2Html;
 
 public class j2h {
 	public static void main(String[] args) throws Exception	{
-		Java2HTML.main(args);
+		Src2Html.main(args);
 	}
 }

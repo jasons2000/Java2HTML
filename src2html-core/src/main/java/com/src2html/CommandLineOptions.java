@@ -137,7 +137,7 @@ public class CommandLineOptions {
      * @throws BadOptionException
      *
      */
-    public boolean setOptionsFromCommandLine(Java2HTML java2HTML) throws
+    public boolean setOptionsFromCommandLine(Src2Html src2Html) throws
             BadOptionException {
         try {
 
@@ -148,25 +148,25 @@ public class CommandLineOptions {
                 return false;
             }
 
-            java2HTML.setTitle(getTitle());
+            src2Html.setTitle(getTitle());
 
-            java2HTML.setFooter(noFooter());
+            src2Html.setFooter(noFooter());
 
-            java2HTML.setHeader(noHeader());
+            src2Html.setHeader(noHeader());
 
-            java2HTML.setSimple(isSimple());
+            src2Html.setSimple(isSimple());
 
-            java2HTML.setQuiet(isQuite());
+            src2Html.setQuiet(isQuite());
 
-            java2HTML.setShowLineNumbers(isShowLineNumbers());
+            src2Html.setShowLineNumbers(isShowLineNumbers());
 
-            java2HTML.setTabSize(getTabCount());
+            src2Html.setTabSize(getTabCount());
 
-            java2HTML.setDestinationDir(getDestination());
+            src2Html.setDestinationDir(getDestination());
 
-            java2HTML.setJavaDirectorySource(getSourceFiles());
+            src2Html.setJavaDirectorySource(getSourceFiles());
 
-            java2HTML.setJavaDocLinks(getJavaDocUrls());
+            src2Html.setJavaDocLinks(getJavaDocUrls());
 
             return true;
 

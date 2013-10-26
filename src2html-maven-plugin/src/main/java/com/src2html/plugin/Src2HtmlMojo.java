@@ -1,7 +1,7 @@
 package com.src2html.plugin;
 
 
-import com.src2html.Java2HTML;
+import com.src2html.Src2Html;
 import com.src2html.internal.Link;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -16,10 +16,10 @@ import java.util.List;
 // http://maven.apache.org/plugin-tools/maven-plugin-tools-annotations/index.html
 
 /**
- * generate Src2HTML
+ * generate Src2Html
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
-public class Src2HTMLMojo extends AbstractMojo {
+public class Src2HtmlMojo extends AbstractMojo {
 
     @Component
     private org.apache.maven.project.MavenProject project;
@@ -51,33 +51,33 @@ public class Src2HTMLMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException {
 
-        getLog().info("Java2HTML Running");
+        getLog().info("Src2Html Running");
 
-        Java2HTML java2HTML = new Java2HTML();
+        Src2Html src2Html = new Src2Html();
 
         try {
             if (javaSources == null || javaSources.isEmpty()) {
-                java2HTML.setJavaDirectorySource(project.getCompileSourceRoots());
+                src2Html.setJavaDirectorySource(project.getCompileSourceRoots());
             }
             else {
-                java2HTML.setJavaDirectorySource(javaSources);
+                src2Html.setJavaDirectorySource(javaSources);
             }
 
-            java2HTML.setDestinationDir(destination != null ? destination: project.getBuild().getDirectory() + File.separator + "src2html-output");
+            src2Html.setDestinationDir(destination != null ? destination: project.getBuild().getDirectory() + File.separator + "src2html-output");
 
-            java2HTML.setTitle(title);
-            java2HTML.setQuiet(quite);
-            java2HTML.setShowLineNumbers(showLineNumbers);
-            if (tabSize != null) java2HTML.setTabSize(tabSize);
-            java2HTML.setJavaDocLinks(links);
+            src2Html.setTitle(title);
+            src2Html.setQuiet(quite);
+            src2Html.setShowLineNumbers(showLineNumbers);
+            if (tabSize != null) src2Html.setTabSize(tabSize);
+            src2Html.setJavaDocLinks(links);
 
-            java2HTML.buildJava2HTML();
+            src2Html.generateHtml();
         }
         catch (Exception e) {
-            throw new MojoExecutionException("Java2HTML encountered a problem", e);
+            throw new MojoExecutionException("Src2Html encountered a problem", e);
         }
 
-        getLog().info("Java2HTML Completed");
+        getLog().info("Src2Html Completed");
     }
 
 

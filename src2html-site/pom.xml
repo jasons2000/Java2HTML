@@ -57,7 +57,7 @@
                 <!--<configuration>-->
                 <!--<archive>-->
                 <!--<manifest>-->
-                <!--<mainClass>com.src2html.Src2HTML</mainClass>-->
+                <!--<mainClass>com.src2html.Src2Html</mainClass>-->
                 <!--</manifest>-->
                 <!--</archive>-->
                 <!--<descriptorRefs>-->

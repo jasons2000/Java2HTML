@@ -43,11 +43,11 @@ public class Src2HTMLITCase {
     }
 
     private static void runMainSplit(String args) {
-        Java2HTML.main(args.split(" "));
+        Src2Html.main(args.split(" "));
     }
 
     private static void runMain(String... args) {
-        Java2HTML.main(args);
+        Src2Html.main(args);
     }
 
 }
