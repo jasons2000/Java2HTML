@@ -3,18 +3,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>java2html</artifactId>
-        <groupId>com.java2html</groupId>
+        <artifactId>src2html</artifactId>
+        <groupId>com.src2html</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>java2html-integration-tests</artifactId>
+    <artifactId>src2html-integration-tests</artifactId>
     <dependencies>
 
         <dependency>
-            <groupId>com.java2html</groupId>
-            <artifactId>java2html-core</artifactId>
+            <groupId>com.src2html</groupId>
+            <artifactId>src2html-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -31,9 +31,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.java2html</groupId>
+            <groupId>com.src2html</groupId>
             <version>${project.version}</version>
-            <artifactId>java2html-testing-tools</artifactId>
+            <artifactId>src2html-testing-tools</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -44,8 +44,8 @@
         <plugins>
             <!-- test for Mojo (aka Maven Plugin), maven needs to be ran twice to pick this up-->
             <plugin>
-                <groupId>com.java2html</groupId>
-                <artifactId>java2html-maven-plugin</artifactId>
+                <groupId>com.src2html</groupId>
+                <artifactId>src2html-maven-plugin</artifactId>
                 <version>${project.version}</version>
                 <configuration>
                     <title>Mojo Integration Test</title>
@@ -79,9 +79,9 @@
                         <phase>generate-resources</phase>
                         <configuration>
                             <target>
-                                <taskdef name="java2html" classname="com.java2html.ant.Java2HTMLTask"
+                                <taskdef name="src2html" classname="com.java2html.ant.Java2HTMLTask"
                                          classpathref="maven.plugin.classpath"/>
-                                <java2html title="Ant Task Integration Test"
+                                <src2html title="Ant Task Integration Test"
                                            simple="no"
                                            tabsize="4"
                                            showLinenumbers="yes"
@@ -90,7 +90,7 @@
                                         <include name="**/*.java"/>
                                     </fileset>
                                     <link url="http://docs.oracle.com/javase/6/docs/api/"/>
-                                </java2html>
+                                </src2html>
 
                             </target>
                         </configuration>
@@ -101,8 +101,8 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>com.java2html</groupId>
-                        <artifactId>java2html-core</artifactId>
+                        <groupId>com.src2html</groupId>
+                        <artifactId>src2html-core</artifactId>
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>

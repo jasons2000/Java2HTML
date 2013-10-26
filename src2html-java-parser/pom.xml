@@ -3,19 +3,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>java2html</artifactId>
-        <groupId>com.java2html</groupId>
+        <artifactId>src2html</artifactId>
+        <groupId>com.src2html</groupId>
         <version>2.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>java2html-java-parser</artifactId>
+    <artifactId>src2html-java-parser</artifactId>
 
     <dependencies>
 
         <dependency>
-            <artifactId>java2html-parser-core</artifactId>
-            <groupId>com.java2html</groupId>
+            <artifactId>src2html-parser-core</artifactId>
+            <groupId>com.src2html</groupId>
             <version>${project.version}</version>
         </dependency>
 
@@ -27,9 +27,9 @@
 
         <!-- Tests -->
         <dependency>
-            <groupId>com.java2html</groupId>
+            <groupId>com.src2html</groupId>
             <version>${project.version}</version>
-            <artifactId>java2html-testing-tools</artifactId>
+            <artifactId>src2html-testing-tools</artifactId>
             <scope>test</scope>
         </dependency>
 
